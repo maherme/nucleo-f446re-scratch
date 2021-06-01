@@ -245,7 +245,7 @@ void Reset_Handler(void){
     pDst = (uint8_t*)&_sbss;
 
     for(uint32_t i = 0; i < size; i++){
-        *pDst++ = *pSrc++;
+        *pDst++ = 0;
     }
 
     main();
