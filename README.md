@@ -1,5 +1,5 @@
 # NUCLEO-F446RE from Scratch
-This is an embedded project for nucleo-f446re board from scratch. This board is based on STM32F446RE microcontroller.
+This is an embedded project for [NUCLEO-F446RE](https://www.st.com/en/evaluation-tools/nucleo-f446re.html) board, based on [STM32F446RE](https://www.st.com/en/microcontrollers-microprocessors/stm32f446re.html) microcontroller.
 
 ## OpenOCD
 You can use OpenOCD (Open On-Chip Debugger) for programming or debugging this project. You can starting OpenOCD typing:
