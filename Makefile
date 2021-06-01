@@ -1,9 +1,9 @@
 CC=arm-none-eabi-gcc
 MACH=cortex-m4
-CFLAGS= -c -mcpu=$(MACH) -mthumb -std=gnu11 -Wall -O0 -ffreestanding
-LDFLAGS= -nostdlib -T lk_f446re.ld -Wl,-Map=final.map
+CFLAGS= -c -mcpu=$(MACH) -mthumb -mfloat-abi=soft -std=gnu11 -Wall -O0
+LDFLAGS= -mcpu=$(MACH) -mthumb -mfloat-abi=soft -specs=nano.specs -T lk_f446re.ld -Wl,-Map=final.map
 
-all: main.o startup.o final.elf
+all: main.o startup.o syscalls.o final.elf
 
 main.o: main.c
 	$(CC) $(CFLAGS) $^ -o $@
@@ -11,7 +11,10 @@ main.o: main.c
 startup.o: startup.c
 	$(CC) $(CFLAGS) $^ -o $@
 
-final.elf: main.o startup.o
+syscalls.o: syscalls.c
+	$(CC) $(CFLAGS) $^ -o $@
+
+final.elf: main.o startup.o syscalls.o
 	$(CC) $(LDFLAGS) $^ -o $@
 
 clean:
