@@ -1,8 +1,9 @@
+/* Entry Point */
 ENTRY(Reset_Handler)
 
 MEMORY
 {
-    FLASH(RX) : ORIGIN = 0x08000000, LENGTH = 1024K
+    FLASH(RX) : ORIGIN = 0x08000000, LENGTH = 512K
     SRAM(RWX) : ORIGIN = 0x20000000, LENGTH = 128K
 }
 
@@ -10,11 +11,11 @@ SECTIONS
 {
     .text :
     {
-        *(.isr_vector)
+        KEEP (*(.isr_vector))
         *(.text)
         *(.text.*)
-        *(.init)
-        *(.fini)
+        KEEP (*(.init))
+    	KEEP (*(.fini))
         *(.rodata)
         *(.rodata.*)
         . = ALIGN(4);
@@ -44,5 +45,6 @@ SECTIONS
         __bss_end__ = _ebss;
         . = ALIGN(4);
         end = .;
+        __end__ = .;
     }> SRAM
 }
