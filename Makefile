@@ -1,30 +1,45 @@
+TARGET1 = $(BLD_DIR)/nucleof446re.elf
+TARGET2 = $(BLD_DIR)/nucleof446re_sh.elf
+SRC_DIR = ./src
+INC_DIR = ./inc
+LNK_DIR = ./lnk
+OBJ_DIR = ./obj
+BLD_DIR = ./build
+OBJS1 = $(OBJ_DIR)/main.o \
+		$(OBJ_DIR)/startup.o \
+		$(OBJ_DIR)/syscalls.o
+OBJS2 = $(OBJ_DIR)/main.o \
+		$(OBJ_DIR)/startup.o
 CC=arm-none-eabi-gcc
 MACH=cortex-m4
-CFLAGS= -c -mcpu=$(MACH) -mthumb -mfloat-abi=soft -std=gnu11 -Wall -O0
-LDFLAGS= -mcpu=$(MACH) -mthumb -mfloat-abi=soft --specs=nano.specs -T lk_f446re.ld -Wl,-Map=final.map
-LDFLAGS_SH= -mcpu=$(MACH) -mthumb -mfloat-abi=soft --specs=rdimon.specs -T lk_f446re.ld -Wl,-Map=final.map
+CFLAGS= -c -mcpu=$(MACH) -mthumb -mfloat-abi=soft -std=gnu11 -Wall -I$(INC_DIR) -O0
+LDFLAGS= -mcpu=$(MACH) -mthumb -mfloat-abi=soft --specs=nano.specs -T $(LNK_DIR)/lk_f446re.ld -Wl,-Map=$(BLD_DIR)/nucleof446re.map
+LDFLAGS_SH= -mcpu=$(MACH) -mthumb -mfloat-abi=soft --specs=rdimon.specs -T $(LNK_DIR)/lk_f446re.ld -Wl,-Map=$(BLD_DIR)/nucleof446re.map
 
-all: main.o startup.o syscalls.o final.elf
+$(TARGET1) : $(OBJS1)
+	@mkdir -p $(BLD_DIR)
+	$(CC) $(LDFLAGS) $(OBJS1) -o $(TARGET1)
 
-semi: main.o startup.o syscalls.o final_sh.elf
+$(TARGET2) : $(OBJS2)
+	@mkdir -p $(BLD_DIR)
+	$(CC) $(LDFLAGS_SH) $(OBJS2) -o $(TARGET2)
 
-main.o: main.c
-	$(CC) $(CFLAGS) $^ -o $@
+$(OBJ_DIR)/%.o : $(SRC_DIR)/%.c
+	@mkdir -p $(OBJ_DIR)
+	$(CC) $(CFLAGS) $< -o $@
 
-startup.o: startup.c
-	$(CC) $(CFLAGS) $^ -o $@
+-include $(OBJ_DIR)*.d
 
-syscalls.o: syscalls.c
-	$(CC) $(CFLAGS) $^ -o $@
+.PHONY : all
+all: $(TARGET1)
 
-final.elf: main.o startup.o syscalls.o
-	$(CC) $(LDFLAGS) $^ -o $@
+.PHONY : semi
+semi: $(TARGET2)
 
-final_sh.elf: main.o startup.o
-	$(CC) $(LDFLAGS_SH) $^ -o $@
-
+.PHONY : clean
 clean:
-	rm -rf *.o *.elf *.map
+	rm -r $(OBJ_DIR) $(BLD_DIR)
 
+.PHONY : load
 load:
 	openocd -f board/st_nucleo_f4.cfg
