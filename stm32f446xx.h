@@ -1,6 +1,12 @@
 #ifndef STM32F446XX_H
 #define STM32F446XX_H
 
+#include <stdint.h>
+
+/*****************************************************************************************************/
+/*                          Memory and Bus Base Address Definition                                   */
+/*****************************************************************************************************/
+
 /**
  * Base addresses of memories.
  */
@@ -19,6 +25,10 @@
 #define AHB1_BASEADDR       0x40020000U         /* Base address of peripheral connected to AHB1 bus */
 #define AHB2_BASEADDR       0x50000000U         /* Base address of peripheral connected to AHB2 bus */
 #define AHB3_BASEADDR       0xA0000000U         /* Base address of peripheral connected to AHB3 bus */
+
+/*****************************************************************************************************/
+/*                          Peripheral Base Address Definition                                       */
+/*****************************************************************************************************/
 
 /**
  * Base addresses of peripheral connected to AHB1 bus.
@@ -100,5 +110,38 @@
  */
 #define FMC_BASEADDR        (AHB3_BASEADDR + 0x0000)    /* Base address of FMC control register */
 #define QUADSPI_BASEADDR    (AHB3_BASEADDR + 0x1000)    /* Base address of QUADSPI register */
+
+/*****************************************************************************************************/
+/*                          Peripheral Register Definition Structures                                */
+/*****************************************************************************************************/
+/**
+ * Peripheral register definition structure for GPIO.
+ */
+typedef struct
+{
+    volatile uint32_t MODER;     /* GPIO port mode register                      Address offset 0x00 */
+    volatile uint32_t OTYPER;    /* GPIO port output type register               Address offset 0x04 */
+    volatile uint32_t OSPEEDER;  /* GPIO port output speed register              Address offset 0x08 */
+    volatile uint32_t PUPDR;     /* GPIO port pull-up/pull-down register         Address offset 0x0C */
+    volatile uint32_t IDR;       /* GPIO port input data register                Address offset 0x10 */
+    volatile uint32_t ODR;       /* GPIO port output data register               Address offset 0x14 */
+    volatile uint32_t BSRR;      /* GPIO port bit set/reset register             Address offset 0x18 */
+    volatile uint32_t LCKR;      /* GPIO port configuration lock register        Address offset 0x1C */
+    volatile uint32_t AFR[2];    /* GPIO alternate function low register AFR[0]  Address offset 0x20 */
+                        /* GPIO alternate function high register AFR[1] Address offset 0x24 */
+} GPIO_RegDef_t;
+
+/**
+ * Peripheral definitions (peripheral base addresses typecasted to xxx_RegDef_t).
+ */
+#define GPIOA   ((GPIO_RegDef_t*)GPIOA_BASEADDR)
+#define GPIOB   ((GPIO_RegDef_t*)GPIOB_BASEADDR)
+#define GPIOC   ((GPIO_RegDef_t*)GPIOC_BASEADDR)
+#define GPIOD   ((GPIO_RegDef_t*)GPIOD_BASEADDR)
+#define GPIOE   ((GPIO_RegDef_t*)GPIOE_BASEADDR)
+#define GPIOF   ((GPIO_RegDef_t*)GPIOF_BASEADDR)
+#define GPIOG   ((GPIO_RegDef_t*)GPIOG_BASEADDR)
+#define GPIOH   ((GPIO_RegDef_t*)GPIOH_BASEADDR)
+#define GPIOI   ((GPIO_RegDef_t*)GPIOI_BASEADDR)
 
 #endif /* STM32F446XX_H */
