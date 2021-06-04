@@ -1,8 +1,11 @@
 #include "../inc/gpio_driver.h"
+#include <stdint.h>
 
 void GPIO_Init(GPIO_Handle_t* pGPIOHandle){
 
     uint32_t temp = 0;
+    uint8_t temp1, temp2 = 0;
+    uint8_t portcode = 0;
 
     /* Configure the mode */
     if(pGPIOHandle->GPIO_PinConfig.GPIO_PinMode <= GPIO_MODE_ANALOG){
@@ -12,7 +15,30 @@ void GPIO_Init(GPIO_Handle_t* pGPIOHandle){
         pGPIOHandle->pGPIOx->MODER |= temp; /* setting */
     }
     else{
-        /* to do */
+        /* Interrupt mode */
+        if(pGPIOHandle->GPIO_PinConfig.GPIO_PinMode == GPIO_MODE_IT_FT){
+            /* Configure the FTSR */
+            EXTI->FTSR |= (1 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);
+            /* Clear the corresponding RTSR bit */
+            EXTI->RTSR &= ~(1 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);
+        }
+        else if(pGPIOHandle->GPIO_PinConfig.GPIO_PinMode == GPIO_MODE_IT_RT){
+            /* Configure both the FTSR and RTSR */
+            EXTI->RTSR |= (1 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);
+            EXTI->FTSR |= (1 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);
+        }
+        else if(pGPIOHandle->GPIO_PinConfig.GPIO_PinMode == GPIO_MODE_IT_RFT){
+        }
+
+        /* Configure the GPIO port selection in SYSCFG_EXTICR */
+        temp1 = pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber / 4;
+        temp2 = pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber % 4;
+        portcode = GPIO_BASEADDR_TO_CODE(pGPIOHandle->pGPIOx);
+        SYSCFG_PCLK_EN();
+        SYSCFG->EXTICR[temp1] = portcode << (temp2*4);
+
+        /* Enable the EXTI interrupt delivery using IMR */
+        EXTI->IMR |= (1 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);
     }
 
     temp = 0;
@@ -37,8 +63,6 @@ void GPIO_Init(GPIO_Handle_t* pGPIOHandle){
 
     /* Configure the alternate functionality */
     if(pGPIOHandle->GPIO_PinConfig.GPIO_PinMode == GPIO_MODE_ALTFN){
-
-        uint8_t temp1, temp2 = 0;
 
         temp1 = pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber / 8;
         temp2 = pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber % 8;

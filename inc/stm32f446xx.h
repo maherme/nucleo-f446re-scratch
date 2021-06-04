@@ -187,6 +187,38 @@ typedef struct
 } RCC_RegDef_t;
 
 /**
+ * Peripheral register definition structure for EXTI.
+ */
+typedef struct
+{
+    volatile uint32_t IMR;      /* Interrupt mask register              Address offset 0x00 */
+    volatile uint32_t EMR;      /* Event mask register                  Address offset 0x04 */
+    volatile uint32_t RTSR;     /* Rising trigger selection register    Address offset 0x08 */
+    volatile uint32_t FTSR;     /* Falling trigger selection register   Address offset 0x0C */
+    volatile uint32_t SWIER;    /* Software interrupt event register    Address offset 0x10 */
+    volatile uint32_t PR;       /* Pending register                     Address offset 0x14 */
+}EXTI_RegDef_t;
+
+/**
+ * Peripheral register definition structure for SYSCFG.
+ */
+typedef struct
+{
+    volatile uint32_t MEMRMP;       /* SYSCFG memory remap register                 Address offset 0x00 */
+    volatile uint32_t PMC;          /* SYSCFG peripheral mode config register       Address offset 0x04 */
+    volatile uint32_t EXTICR[4];    /* SYSCFG ext interrupt cfg reg 1 EXTICR[0]     Address offset 0x08 */
+                                    /* SYSCFG ext interrupt cfg reg 2 EXTICR[1]     Address offset 0x0C */
+                                    /* SYSCFG ext interrupt cfg reg 3 EXTICR[2]     Address offset 0x10 */
+                                    /* SYSCFG ext interrupt cfg reg 4 EXTICR[3]     Address offset 0x14 */
+    uint32_t RESERVED0;             /* Reserved                                     Address offset 0x18 */
+    uint32_t RESERVED1;             /* Reserved                                     Address offset 0x1C */
+    volatile uint32_t CMPCR;        /* Compensation cell control register           Address offset 0x20 */
+    uint32_t RESERVED2;             /* Reserved                                     Address offset 0x24 */
+    uint32_t RESERVED3;             /* Reserved                                     Address offset 0x28 */
+    volatile uint32_t CFGR;         /* SYSCFG configuration register                Address offset 0x2C */
+}SYSCFG_RegDef_t;
+
+/**
  * Peripheral definitions (peripheral base addresses typecasted to xxx_RegDef_t).
  */
 #define GPIOA   ((GPIO_RegDef_t*)GPIOA_BASEADDR)
@@ -200,6 +232,10 @@ typedef struct
 #define GPIOI   ((GPIO_RegDef_t*)GPIOI_BASEADDR)
 
 #define RCC     ((RCC_RegDef_t*)RCC_BASEADDR)
+
+#define EXTI    ((EXTI_RegDef_t*)EXTI_BASEADDR)
+
+#define SYSCFG  ((SYSCFG_RegDef_t*)SYSCFG_BASEADDR)
 
 /**
  * Clock enable macros for GPIOx peripheral.
@@ -296,5 +332,17 @@ typedef struct
 #define GPIOF_REG_RESET()   do{(RCC->AHB1RSTR |= (1 << 5)); (RCC->AHB1RSTR &= ~(1 << 5));}while(0)
 #define GPIOG_REG_RESET()   do{(RCC->AHB1RSTR |= (1 << 6)); (RCC->AHB1RSTR &= ~(1 << 6));}while(0)
 #define GPIOH_REG_RESET()   do{(RCC->AHB1RSTR |= (1 << 7)); (RCC->AHB1RSTR &= ~(1 << 7));}while(0)
+
+/**
+ * This macro returns a code between 0 to 7 for a given GPIO base address(x).
+ */
+#define GPIO_BASEADDR_TO_CODE(x)    ((x == GPIOA) ? 0 :\
+                                    (x == GPIOB) ? 1 :\
+                                    (x == GPIOC) ? 2 :\
+                                    (x == GPIOD) ? 3 :\
+                                    (x == GPIOE) ? 4 :\
+                                    (x == GPIOF) ? 5 :\
+                                    (x == GPIOG) ? 6 :\
+                                    (x == GPIOH) ? 7 : 0)
 
 #endif /* STM32F446XX_H */
