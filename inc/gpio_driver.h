@@ -33,9 +33,9 @@
 #define GPIO_MODE_OUT       1   /* General purpose output mode */
 #define GPIO_MODE_ALTFN     2   /* Alternate function mode */
 #define GPIO_MODE_ANALOG    3   /* Analog mode */
-#define GPIO_MODE_IT_FT     4   /* Input falling edge trigger */
-#define GPIO_MODE_IT_RT     5   /* Input rising edge trigger */
-#define GPIO_MODE_IT_RFT    6   /* Input rising and falling edge trigger */
+#define GPIO_MODE_IT_FT     4   /* Interrupt falling edge trigger */
+#define GPIO_MODE_IT_RT     5   /* Interrupt rising edge trigger */
+#define GPIO_MODE_IT_RFT    6   /* Interrupt rising and falling edge trigger */
 
 /**
  * @GPIO_PIN_OPTYPE
