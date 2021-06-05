@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdint.h>
+#include <string.h>
 #include "../inc/stm32f446xx.h"
 #include "../inc/gpio_driver.h"
 
@@ -21,6 +22,9 @@ int main(void){
 
     GPIO_Handle_t GpioLed, GpioBtn;
 
+    memset(&GpioLed, 0, sizeof(GpioLed));
+    memset(&GpioBtn, 0, sizeof(GpioBtn));
+
     GpioLed.pGPIOx = GPIOA;
     GpioLed.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_5;
     GpioLed.GPIO_PinConfig.GPIO_PinMode = GPIO_MODE_OUT;
@@ -33,19 +37,25 @@ int main(void){
 
     GpioBtn.pGPIOx = GPIOC;
     GpioBtn.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_13;
-    GpioBtn.GPIO_PinConfig.GPIO_PinMode = GPIO_MODE_IN;
+    GpioBtn.GPIO_PinConfig.GPIO_PinMode = GPIO_MODE_IT_RT;
     GpioBtn.GPIO_PinConfig.GPIO_PinSpeed = GPIO_SPEED_FAST;
-    GpioBtn.GPIO_PinConfig.GPIO_PinPuPdControl = GPIO_NO_PULL;
+    GpioBtn.GPIO_PinConfig.GPIO_PinPuPdControl = GPIO_PIN_PD;
 
     GPIO_PerClkCtrl(GPIOC, ENABLE);
     GPIO_Init(&GpioBtn);
 
+    /* IRQ configuration */
+    GPIO_IRQPriorityConfig(IRQ_NO_EXTI15_10, NVIC_IRQ_PRIORITY15);
+    GPIO_IRQConfig(IRQ_NO_EXTI15_10, ENABLE);
+
     for(;;){
-        if(GPIO_ReadFromInputPin(GPIOC, GPIO_PIN_NO_13) == BTN_PRESSED){
-            delay();
-            GPIO_ToggleOutputPin(GPIOA, GPIO_PIN_NO_5);
-        }
     }
 
     return 0;
+}
+
+void EXTI15_10_Handler(void){
+    delay();
+    GPIO_IRQHandling(GPIO_PIN_NO_13);
+    GPIO_ToggleOutputPin(GPIOA, GPIO_PIN_NO_5);
 }
