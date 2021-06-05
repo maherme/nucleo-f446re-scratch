@@ -187,12 +187,23 @@ void GPIO_ToggleOutputPin(GPIO_RegDef_t* pGPIOx, uint8_t pin_number);
  * @brief function to configure the IRQ number of the GPIO pin.
  *
  * @param[in] IRQNumber number of the interrupt.
- * @param[in] IRQPriority priority of the interrupt.
  * @param[in] en_or_di for enable or disable.
  *
  * @return void.
  */
-void GPIO_IRQConfig(uint8_t IRQNumber, uint8_t IRQPriority, uint8_t en_or_di);
+void GPIO_IRQConfig(uint8_t IRQNumber, uint8_t en_or_di);
+
+/**
+ * @fn GPIO_IRQPriorityConfig
+ *
+ * @brief function to configure the IRQ number of the GPIO pin.
+ *
+ * @param[in] IRQNumber number of the interrupt.
+ * @param[in] IRQPriority priority of the interrupt.
+ *
+ * @return void.
+ */
+void GPIO_IRQPriorityConfig(uint8_t IRQNumber, uint8_t IRQPriority);
 
 /**
  * @fn GPIO_IRQHandling
