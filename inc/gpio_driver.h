@@ -203,7 +203,7 @@ void GPIO_IRQConfig(uint8_t IRQNumber, uint8_t en_or_di);
  *
  * @return void.
  */
-void GPIO_IRQPriorityConfig(uint8_t IRQNumber, uint8_t IRQPriority);
+void GPIO_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority);
 
 /**
  * @fn GPIO_IRQHandling
