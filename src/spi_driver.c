@@ -23,6 +23,41 @@
 #include "spi_driver.h"
 
 void SPI_Init(SPI_Handle_t* pSPI_Handle){
+    /* Configure the SPI_CR1 register */
+    uint32_t temp = 0;
+
+    /* Configure the device mode */
+    temp |= pSPI_Handle->SPIConfig.SPI_DeviceMode << SPI_CR1_MSTR;
+
+    /* Configure the bus config */
+    if(pSPI_Handle->SPIConfig.SPI_BusConfig == SPI_BUS_CFG_FD){
+        /* BIDI mode should be cleared */
+        temp &= ~(1 << 15);
+    }
+    else if(pSPI_Handle->SPIConfig.SPI_BusConfig == SPI_BUS_CFG_HD){
+        /* BIDI mode should be set */
+        temp |= (1 << 15);
+    }
+    else if(pSPI_Handle->SPIConfig.SPI_BusConfig == SPI_BUS_CFG_S_RXONLY){
+        /* BIDI mode should be cleared */
+        temp &= ~(1 << 15);
+        /* RXONLY bit must be set */
+        temp |= (1 << 10);
+    }
+
+    /* Configure the SPI serial clock speed (baud rate) */
+    temp |= pSPI_Handle->SPIConfig.SPI_SclkSpeed << SPI_CR1_BR;
+
+    /* Configure the DFF */
+    temp |= pSPI_Handle->SPIConfig.SPI_DFF << SPI_CR1_DFF;
+
+    /* Configure the CPOL */
+    temp |= pSPI_Handle->SPIConfig.SPI_CPOL << SPI_CR1_CPOL;
+
+    /* Configure the CPHA */
+    temp |= pSPI_Handle->SPIConfig.SPI_CPHA << SPI_CR1_CPHA;
+
+    pSPI_Handle->pSPIx->CR1 = temp;
 }
 
 void SPI_DeInit(SPI_RegDef_t* pSPIx){

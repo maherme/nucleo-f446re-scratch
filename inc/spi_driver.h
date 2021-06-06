@@ -23,17 +23,73 @@
 #include "stm32f446xx.h"
 
 /**
+ * @SPI_DEVICE_MODE
+ * SPI possible device modes.
+ */
+#define SPI_DEV_MODE_MASTER     1
+#define SPI_DEV_MODE_SLAVE      0
+
+/**
+ * @SPI_BUS_CFG
+ * SPI possible bus configuration.
+ */
+#define SPI_BUS_CFG_FD          0   /* Full Duplex */
+#define SPI_BUS_CFG_HD          1   /* Half Duplex */
+#define SPI_BUS_CFG_S_RXONLY    2   /* Simplex RX Only */
+
+/**
+ * @SPI_SCLK_SPEED
+ * SPI possible baud rate control.
+ */
+#define SPI_SCLK_SPEED_DIV2     0
+#define SPI_SCLK_SPEED_DIV4     1
+#define SPI_SCLK_SPEED_DIV8     2
+#define SPI_SCLK_SPEED_DIV16    3
+#define SPI_SCLK_SPEED_DIV32    4
+#define SPI_SCLK_SPEED_DIV64    5
+#define SPI_SCLK_SPEED_DIV128   6
+#define SPI_SCLK_SPEED_DIV256   7
+
+/**
+ * @SPI_DFF
+ * SPI possible data frame format.
+ */
+#define SPI_DFF_8BITS   0
+#define SPI_DFF_16BITS  1
+
+/**
+ * @SPI_CPOL
+ * SPI possible clock polarity.
+ */
+#define SPI_CPOL_HIGH   1
+#define SPI_CPOL_LOW    0
+
+/**
+ * @SPI_CPHA
+ * SPI possible clock phase.
+ */
+#define SPI_CPHA_HIGH   1
+#define SPI_CPHA_LOW    0
+
+/**
+ * @SPI_SSM
+ * SPI software slave management configuration.
+ */
+#define SPI_SSM_EN      1
+#define SPI_SSM_DI      0
+
+/**
  * Configuration structure for SPI peripheral.
  */
 typedef struct
 {
-    uint8_t SPI_DeviceMode;
-    uint8_t SPI_BusConfig;
-    uint8_t SPI_SclkSpeed;
-    uint8_t SPI_DFF;
-    uint8_t SPI_CPOL;
-    uint8_t SPI_CPHA;
-    uint8_t SPI_SSM;
+    uint8_t SPI_DeviceMode;     /* Possible values from @SPI_DEVICE_MODE */
+    uint8_t SPI_BusConfig;      /* Possible values from @SPI_BUS_CFG */
+    uint8_t SPI_SclkSpeed;      /* Possible values from @SPI_SCLK_SPEED */
+    uint8_t SPI_DFF;            /* Possible values from @SPI_DFF */
+    uint8_t SPI_CPOL;           /* Possible values from @SPI_CPOL */
+    uint8_t SPI_CPHA;           /* Possible values from @SPI_CPHA */
+    uint8_t SPI_SSM;            /* Possible values from @SPI_SSM */
 }SPI_Config_t;
 
 /**
