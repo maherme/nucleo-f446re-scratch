@@ -58,7 +58,7 @@ typedef struct
  *
  * @return void
  */
-void SPI_Init(SPI_RegDef_t* pSPI_Handle);
+void SPI_Init(SPI_Handle_t* pSPI_Handle);
 
 /**
  *@fn SPI_DeInit

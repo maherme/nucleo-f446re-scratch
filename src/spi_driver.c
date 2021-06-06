@@ -22,13 +22,48 @@
 #include <stdint.h>
 #include "spi_driver.h"
 
-void SPI_Init(SPI_RegDef_t* pSPI_Handle){
+void SPI_Init(SPI_Handle_t* pSPI_Handle){
 }
 
 void SPI_DeInit(SPI_RegDef_t* pSPIx){
 }
 
 void SPI_PerClkCtrl(SPI_RegDef_t* pSPIx, uint8_t en_or_di){
+
+    if(en_or_di == ENABLE){
+        if(pSPIx == SPI1){
+            SPI1_PCLK_EN();
+        }
+        else if(pSPIx == SPI2){
+            SPI2_PCLK_EN();
+        }
+        else if(pSPIx == SPI3){
+            SPI3_PCLK_EN();
+        }
+        else if(pSPIx == SPI4){
+            SPI4_PCLK_EN();
+        }
+        else{
+            /* do nothing */
+        }
+    }
+    else{
+        if(pSPIx == SPI1){
+            SPI1_PCLK_DI();
+        }
+        else if(pSPIx == SPI2){
+            SPI2_PCLK_DI();
+        }
+        else if(pSPIx == SPI3){
+            SPI3_PCLK_DI();
+        }
+        else if(pSPIx == SPI4){
+            SPI4_PCLK_DI();
+        }
+        else{
+            /* do nothing */
+        }
+    }
 }
 
 void SPI_SendData(SPI_RegDef_t* pSPIx, uint8_t* pTxBuffer, uint32_t len){
