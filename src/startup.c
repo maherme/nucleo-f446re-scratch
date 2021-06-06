@@ -1,3 +1,14 @@
+/*****************************************************************************************************
+* FILENAME :        startup.c
+*
+* DESCRIPTION :
+*       File containing the interrupt vector table and initialize process of the microcontroller.
+*
+* NOTES :
+*       These file is for the specific STM32F446xx microcontroller.
+*
+**/
+
 #include <stdint.h>
 
 #define SRAM_START      0x20000000U

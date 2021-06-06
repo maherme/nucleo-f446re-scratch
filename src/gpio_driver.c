@@ -1,3 +1,27 @@
+/*****************************************************************************************************
+* FILENAME :        gpio_driver.c
+*
+* DESCRIPTION :
+*       File containing the APIs for configuring the GPIO peripheral.
+*
+* PUBLIC FUNCTIONS :
+*       void        GPIO_Init(GPIO_Handle_t* pGPIOHandle) 
+*       void        GPIO_DeInit(GPIO_RegDef_t* pGPIOx)
+*       void        GPIO_PerClkCtrl(GPIO_RegDef_t* pGPIOx, uint8_t en_or_di)
+*       uint8_t     GPIO_ReadFromInputPin(GPIO_RegDef_t* pGPIOx, uint8_t pin_number)
+*       uint16_t    GPIO_ReadFromInputPort(GPIO_RegDef_t* pGPIOx)
+*       void        GPIO_WriteToOutputPin(GPIO_RegDef_t* pGPIOx, uint8_t pin_number, uint8_t value)
+*       void        GPIO_WriteToOutputPort(GPIO_RegDef_t* pGPIOx, uint16_t value)
+*       void        GPIO_ToggleOutputPin(GPIO_RegDef_t* pGPIOx, uint8_t pin_number)
+*       void        GPIO_IRQConfig(uint8_t IRQNumber, uint8_t en_or_di)
+*       void        GPIO_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority)
+*       void        GPIO_IRQHandling(uint8_t pin_number)
+*
+* NOTES :
+*       For further information about functions refer to the corresponding header file.
+*
+**/
+
 #include "gpio_driver.h"
 #include <stdint.h>
 

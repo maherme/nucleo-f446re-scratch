@@ -1,8 +1,16 @@
+/*****************************************************************************************************
+* FILENAME :        main.c
+*
+* DESCRIPTION :
+*       File containing the main function.
+*
+**/
+
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
-#include "../inc/stm32f446xx.h"
-#include "../inc/gpio_driver.h"
+#include "stm32f446xx.h"
+#include "gpio_driver.h"
 
 #define HIGH 1
 #define LOW 0

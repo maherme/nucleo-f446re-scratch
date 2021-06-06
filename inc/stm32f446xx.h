@@ -1,3 +1,14 @@
+/*****************************************************************************************************
+* FILENAME :        stm32f446xx.h
+*
+* DESCRIPTION :
+*       File containing macros definition and structures for configuring the microcontroller.
+*
+* NOTES :
+*       These file is for the specific STM32F446xx microcontroller.
+*
+**/
+
 #ifndef STM32F446XX_H
 #define STM32F446XX_H
 
