@@ -260,6 +260,23 @@ typedef struct
 }SYSCFG_RegDef_t;
 
 /**
+ * Peripheral register definition structure for SPI.
+ */
+typedef struct
+{
+    volatile uint32_t CR1;          /* SPI control register 1               Address offset 0x00 */
+    volatile uint32_t CR2;          /* SPI control register 2               Address offset 0x04 */
+    volatile uint32_t SR;           /* SPI status register                  Address offset 0x08 */
+    volatile uint32_t DR;           /* SPI data register                    Address offset 0x0C */
+    volatile uint32_t CRCPR;        /* SPI CRC polynomial register          Address offset 0x10 */
+    volatile uint32_t RXCRCR;       /* SPI RX CRC register                  Address offset 0x14 */
+    volatile uint32_t TXCRCR;       /* SPI TX CRC register                  Address offset 0x18 */
+    volatile uint32_t I2SCFGR;      /* SPI_I2S configuration register       Address offset 0x1C */
+    volatile uint32_t I2SPR;        /* SPI_I2S prescaler register           Address offset 0x20 */
+
+}SPI_RegDef_t;
+
+/**
  * Peripheral definitions (peripheral base addresses typecasted to xxx_RegDef_t).
  */
 #define GPIOA   ((GPIO_RegDef_t*)GPIOA_BASEADDR)
@@ -277,6 +294,11 @@ typedef struct
 #define EXTI    ((EXTI_RegDef_t*)EXTI_BASEADDR)
 
 #define SYSCFG  ((SYSCFG_RegDef_t*)SYSCFG_BASEADDR)
+
+#define SPI1    ((SPI_RegDef_t*)SPI1_BASEADDR)
+#define SPI2    ((SPI_RegDef_t*)SPI2_I2S2_BASEADDR)
+#define SPI3    ((SPI_RegDef_t*)SPI3_I2S3_BASEADDR)
+#define SPI4    ((SPI_RegDef_t*)SPI4_BASEADDR)
 
 /**
  * Clock enable macros for GPIOx peripheral.
