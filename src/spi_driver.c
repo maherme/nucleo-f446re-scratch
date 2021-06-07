@@ -14,6 +14,7 @@
 *       void    SPI_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority)
 *       void    SPI_IRQHandling(SPI_Handle_t* pHandle)
 *       void    SPI_Enable(SPI_RegDef_t *pSPIx, uint8_t en_or_di)
+*       void    SPI_SSICfg(SPI_RegDef_t* pSPIx, uint8_t en_or_di)
 *
 * NOTES :
 *       For further information about functions refer to the corresponding header file.
@@ -69,6 +70,9 @@ void SPI_Init(SPI_Handle_t* pSPI_Handle){
 
     /* Configure the CPHA */
     temp |= pSPI_Handle->SPIConfig.SPI_CPHA << SPI_CR1_CPHA;
+
+    /* Configure the SSM */
+    temp |= pSPI_Handle->SPIConfig.SPI_SSM << SPI_CR1_SSM;
 
     pSPI_Handle->pSPIx->CR1 = temp;
 }
@@ -172,5 +176,15 @@ void SPI_Enable(SPI_RegDef_t *pSPIx, uint8_t en_or_di){
     }
     else{
         pSPIx->CR1 &= ~(1 << SPI_CR1_SPE);
+    }
+}
+
+void SPI_SSICfg(SPI_RegDef_t* pSPIx, uint8_t en_or_di){
+
+    if(en_or_di == ENABLE){
+        pSPIx->CR1 |= (1 << SPI_CR1_SSI);
+    }
+    else{
+        pSPIx->CR1 &= ~(1 << SPI_CR1_SSI);
     }
 }

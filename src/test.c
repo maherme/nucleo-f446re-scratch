@@ -56,6 +56,8 @@ void SPI2_GPIOInit(void){
 
     GPIO_Handle_t SPIPins;
 
+    memset(&SPIPins, 0, sizeof(SPIPins));
+
     SPIPins.pGPIOx = GPIOB;
     SPIPins.GPIO_PinConfig.GPIO_PinMode = GPIO_MODE_ALTFN;
     SPIPins.GPIO_PinConfig.GPIO_PinAltFunMode = 5;
@@ -83,6 +85,8 @@ void SPI2_GPIOInit(void){
 void SPI2_Init(void){
 
     SPI_Handle_t SPI2Handle;
+
+    memset(&SPI2Handle, 0, sizeof(SPI2Handle));
 
     SPI2Handle.pSPIx = SPI2;
     SPI2Handle.SPIConfig.SPI_BusConfig = SPI_BUS_CFG_FD;

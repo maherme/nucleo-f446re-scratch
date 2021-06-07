@@ -45,11 +45,16 @@ int main(void){
     /* SPI2 configuration */
     SPI2_GPIOInit();
     SPI2_Init();
+    /* Put NSS signal internally high and avoids MODF error */
+    SPI_SSICfg(SPI2, ENABLE);
     /* Enable the SPI2 peripheral */
     SPI_Enable(SPI2, ENABLE);
 
     /* Send data */
     SPI_SendData(SPI2, (uint8_t*)user_data, strlen(user_data));
+
+    /* Disable the SPI2 peripheral */
+    SPI_Enable(SPI2, DISABLE);
 
     for(;;){
     }

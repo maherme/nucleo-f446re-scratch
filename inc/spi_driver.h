@@ -14,6 +14,7 @@
 *       void    SPI_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority)
 *       void    SPI_IRQHandling(SPI_Handle_t* pHandle)
 *       void    SPI_Enable(SPI_RegDef_t *pSPIx, uint8_t en_or_di)
+*       void    SPI_SSICfg(SPI_RegDef_t* pSPIx, uint8_t en_or_di)
 *
 **/
 
@@ -220,6 +221,18 @@ void SPI_IRQHandling(SPI_Handle_t* pHandle);
  *
  * @return void.
  */
-void SPI_Enable(SPI_RegDef_t *pSPIx, uint8_t en_or_di);
+void SPI_Enable(SPI_RegDef_t* pSPIx, uint8_t en_or_di);
+
+/**
+ * @fn SPI_Enable
+ *
+ * @brief function enable the SSI PIN of the SPI.
+ *
+ * @param[in] pSPIx the base address of the SPIx peripheral.
+ * @param[in] en_or_di for enable or disable.
+ *
+ * @return void.
+ */
+void SPI_SSICfg(SPI_RegDef_t* pSPIx, uint8_t en_or_di);
 
 #endif 
