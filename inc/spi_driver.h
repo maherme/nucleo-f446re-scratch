@@ -157,7 +157,7 @@ void SPI_PerClkCtrl(SPI_RegDef_t* pSPIx, uint8_t en_or_di);
  *
  * @return void
  *
- * @Note blocking call.
+ * @note blocking call.
  */
 void SPI_SendData(SPI_RegDef_t* pSPIx, uint8_t* pTxBuffer, uint32_t len);
 

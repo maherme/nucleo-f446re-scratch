@@ -8,10 +8,12 @@ BLD_DIR = ./build
 OBJS1 = $(OBJ_DIR)/main.o \
 		$(OBJ_DIR)/startup.o \
 		$(OBJ_DIR)/syscalls.o \
+		$(OBJ_DIR)/test.o \
 		$(OBJ_DIR)/gpio_driver.o \
 		$(OBJ_DIR)/spi_driver.o
 OBJS2 = $(OBJ_DIR)/main.o \
 		$(OBJ_DIR)/startup.o \
+		$(OBJ_DIR)/test.o \
 		$(OBJ_DIR)/gpio_driver.o \
 		$(OBJ_DIR)/spi_driver.o
 CC=arm-none-eabi-gcc

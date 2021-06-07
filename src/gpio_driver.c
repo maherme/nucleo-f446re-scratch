@@ -22,8 +22,8 @@
 *
 **/
 
-#include "gpio_driver.h"
 #include <stdint.h>
+#include "gpio_driver.h"
 
 void GPIO_Init(GPIO_Handle_t* pGPIOHandle){
 
