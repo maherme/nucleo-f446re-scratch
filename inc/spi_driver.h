@@ -79,6 +79,13 @@
 #define SPI_SSM_DI      0
 
 /**
+ * SPI related status flags definitions.
+ */
+#define SPI_TXE_FLAG    (1 << SPI_SR_TXE)
+#define SPI_RXNE_FLAG   (1 << SPI_SR_RXNE)
+#define SPI_BUSY_FLAT   (1 << SPI_SR_BSY)
+
+/**
  * Configuration structure for SPI peripheral.
  */
 typedef struct
@@ -149,6 +156,8 @@ void SPI_PerClkCtrl(SPI_RegDef_t* pSPIx, uint8_t en_or_di);
  * @param[in] len length of the data to send.
  *
  * @return void
+ *
+ * @Note blocking call.
  */
 void SPI_SendData(SPI_RegDef_t* pSPIx, uint8_t* pTxBuffer, uint32_t len);
 

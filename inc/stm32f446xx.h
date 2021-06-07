@@ -14,15 +14,17 @@
 
 #include <stdint.h>
 
-/**
- * Generic macros.
- */
+/*****************************************************************************************************/
+/*                          Generic macros                                                           */
+/*****************************************************************************************************/
 #define ENABLE              1
 #define DISABLE             0
 #define SET                 ENABLE
 #define RESET               DISABLE
 #define GPIO_PIN_SET        SET
 #define GPIO_PIN_RESET      RESET
+#define FLAG_SET            SET
+#define FLAG_RESET          RESET
 
 /*****************************************************************************************************/
 /*                          ARM Cortex M4 Processor Specific Setails                                 */
@@ -321,9 +323,9 @@ typedef struct
 #define SPI_SR_BSY          7
 #define SPI_SR_FRE          8
 
-/**
- * Peripheral definitions (peripheral base addresses typecasted to xxx_RegDef_t).
- */
+/*****************************************************************************************************/
+/*          Peripheral definitions (peripheral base addresses typecasted to xxx_RegDef_t)            */
+/*****************************************************************************************************/
 #define GPIOA   ((GPIO_RegDef_t*)GPIOA_BASEADDR)
 #define GPIOB   ((GPIO_RegDef_t*)GPIOB_BASEADDR)
 #define GPIOC   ((GPIO_RegDef_t*)GPIOC_BASEADDR)
@@ -344,6 +346,10 @@ typedef struct
 #define SPI2    ((SPI_RegDef_t*)SPI2_I2S2_BASEADDR)
 #define SPI3    ((SPI_RegDef_t*)SPI3_I2S3_BASEADDR)
 #define SPI4    ((SPI_RegDef_t*)SPI4_BASEADDR)
+
+/*****************************************************************************************************/
+/*                          Peripheral macros                                                        */
+/*****************************************************************************************************/
 
 /**
  * Clock enable macros for GPIOx peripheral.
@@ -460,6 +466,10 @@ typedef struct
 #define SPI2_REG_RESET()    do{(RCC->APB1RSTR |= (1 << 14)); (RCC->APB1RSTR &= ~(1 << 14));}while(0)
 #define SPI3_REG_RESET()    do{(RCC->APB1RSTR |= (1 << 15)); (RCC->APB1RSTR &= ~(1 << 15));}while(0)
 #define SPI4_REG_RESET()    do{(RCC->APB2RSTR |= (1 << 13)); (RCC->APB2RSTR &= ~(1 << 13));}while(0)
+
+/*****************************************************************************************************/
+/*                          IRQ definitions                                                          */
+/*****************************************************************************************************/
 
 /**
  * IRQ (Interrupt Request) number.

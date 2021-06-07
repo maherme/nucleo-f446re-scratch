@@ -22,6 +22,14 @@
 #include <stdint.h>
 #include "spi_driver.h"
 
+static uint8_t SPI_GetFlagStatus(SPI_RegDef_t* pSPIx, uint32_t flagname){
+    
+    if(pSPIx->SR & flagname){
+        return FLAG_SET;
+    }
+    return FLAG_RESET;
+}
+
 void SPI_Init(SPI_Handle_t* pSPI_Handle){
     /* Configure the SPI_CR1 register */
     uint32_t temp = 0;
@@ -118,6 +126,26 @@ void SPI_PerClkCtrl(SPI_RegDef_t* pSPIx, uint8_t en_or_di){
 }
 
 void SPI_SendData(SPI_RegDef_t* pSPIx, uint8_t* pTxBuffer, uint32_t len){
+
+    while(len > 0){
+        /* Wait until TXE is set */
+        while(SPI_GetFlagStatus(pSPIx, SPI_TXE_FLAG) == FLAG_RESET);
+        /* Check the DFF bit in CR1 */
+        if((pSPIx->CR1 & (1 << SPI_CR1_DFF))){
+            /* 16 bit DFF */
+            /* Load the data into the DR */
+            pSPIx->DR = *((uint16_t*)pTxBuffer);
+            len--;
+            len--;
+            (uint16_t*)pTxBuffer++;
+        }
+        else{
+            /* 8 bit DFF */
+            pSPIx->DR = *pTxBuffer;
+            len--;
+            pTxBuffer++;
+        }
+    }
 }
 
 void SPI_ReceiveData(SPI_RegDef_t* pSPIx, uint8_t* pRxBuffer, uint32_t len){
