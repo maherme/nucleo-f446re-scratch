@@ -31,6 +31,9 @@ void GPIO_Init(GPIO_Handle_t* pGPIOHandle){
     uint8_t temp1, temp2 = 0;
     uint8_t portcode = 0;
 
+    /* Enable the peripheral clock */
+    GPIO_PerClkCtrl(pGPIOHandle->pGPIOx, ENABLE);
+
     /* Configure the mode */
     if(pGPIOHandle->GPIO_PinConfig.GPIO_PinMode <= GPIO_MODE_ANALOG){
         /* Non-interrupt mode */

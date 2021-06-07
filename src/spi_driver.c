@@ -31,6 +31,10 @@ static uint8_t SPI_GetFlagStatus(SPI_RegDef_t* pSPIx, uint32_t flagname){
 }
 
 void SPI_Init(SPI_Handle_t* pSPI_Handle){
+
+    /* Enable the peripheral clock */
+    SPI_PerClkCtrl(pSPI_Handle->pSPIx, ENABLE);
+
     /* Configure the SPI_CR1 register */
     uint32_t temp = 0;
 
