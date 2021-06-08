@@ -331,6 +331,30 @@ uint8_t SPI_GetFlagStatus(SPI_RegDef_t* pSPIx, uint32_t flagname){
     return FLAG_RESET;
 }
 
+void SPI_ClearOVRFlag(SPI_RegDef_t* pSPIx){
+
+    uint8_t temp;
+    temp = pSPIx->DR;
+    temp = pSPIx->SR;
+    (void)temp;
+}
+
+void SPI_CloseTx(SPI_Handle_t* pSPI_Handle){
+
+    pSPI_Handle->pSPIx->CR2 &= ~(1 << SPI_CR2_TXEIE);
+    pSPI_Handle->pTxBuffer = NULL;
+    pSPI_Handle->TxLen = 0;
+    pSPI_Handle->TxState = SPI_READY;
+}
+
+void SPI_CloseRx(SPI_Handle_t* pSPI_Handle){
+
+    pSPI_Handle->pSPIx->CR2 &= ~(1 << SPI_CR2_RXNEIE);
+    pSPI_Handle->pRxBuffer = NULL;
+    pSPI_Handle->RxLen = 0;
+    pSPI_Handle->RxState = SPI_READY;
+}
+
 static void spi_txe_interrupt_handle(SPI_Handle_t* pSPI_Handle){
 
     /* Check the DFF bit in CR1 */
@@ -396,30 +420,6 @@ static void spi_ovr_err_interrupt_handle(SPI_Handle_t* pSPI_Handle){
 
     /* Inform the application */
     SPI_ApplicationEventCallback(pSPI_Handle, SPI_EVENT_OVR_ERR);
-}
-
-void SPI_ClearOVRFlag(SPI_RegDef_t* pSPIx){
-
-    uint8_t temp;
-    temp = pSPIx->DR;
-    temp = pSPIx->SR;
-    (void)temp;
-}
-
-void SPI_CloseTx(SPI_Handle_t* pSPI_Handle){
-
-    pSPI_Handle->pSPIx->CR2 &= ~(1 << SPI_CR2_TXEIE);
-    pSPI_Handle->pTxBuffer = NULL;
-    pSPI_Handle->TxLen = 0;
-    pSPI_Handle->TxState = SPI_READY;
-}
-
-void SPI_CloseRx(SPI_Handle_t* pSPI_Handle){
-
-    pSPI_Handle->pSPIx->CR2 &= ~(1 << SPI_CR2_RXNEIE);
-    pSPI_Handle->pRxBuffer = NULL;
-    pSPI_Handle->RxLen = 0;
-    pSPI_Handle->RxState = SPI_READY;
 }
 
  __attribute__((weak)) void SPI_ApplicationEventCallback(SPI_Handle_t* pSPI_Handle, uint8_t app_event){
