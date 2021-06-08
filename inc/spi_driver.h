@@ -11,12 +11,17 @@
 *       void    SPI_SendData(SPI_RegDef_t* pSPIx, uint8_t* pTxBuffer, uint32_t len)
 *       void    SPI_ReceiveData(SPI_RegDef_t* pSPIx, uint8_t* pRxBuffer, uint32_t len)
 *       uint8_t SPI_SendDataIT(SPI_Handle_t* pSPI_Handle, uint8_t* pTxBuffer, uint32_t len)
-*       void    SPI_ReceiveDataIT(SPI_Handle_t* pSPI_Handle, uint8_t* pRxBuffer, uint32_t len)
+*       uint8_t SPI_ReceiveDataIT(SPI_Handle_t* pSPI_Handle, uint8_t* pRxBuffer, uint32_t len)
 *       void    SPI_IRQConfig(uint8_t IRQNumber, uint8_t en_or_di)
 *       void    SPI_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority)
-*       void    SPI_IRQHandling(SPI_Handle_t* pHandle)
+*       void    SPI_IRQHandling(SPI_Handle_t* pSPI_Handle)
 *       void    SPI_Enable(SPI_RegDef_t *pSPIx, uint8_t en_or_di)
 *       void    SPI_SSICfg(SPI_RegDef_t* pSPIx, uint8_t en_or_di)
+*       uint8_t SPI_GetFlagStatus(SPI_RegDef_t* pSPIx, uint32_t flagname)
+*       void    SPI_ClearOVRFlag(SPI_RegDef_t* pSPIx)
+*       void    SPI_CloseTx(SPI_Handle_t* pSPI_Handle)
+*       void    SPI_CloseRx(SPI_Handle_t* pSPI_Handle)
+*       void    SPI_ApplicationEventCallback(SPI_Handle_t* pSPI_Handle, uint8_t app_event)
 *
 **/
 
@@ -96,6 +101,13 @@
 #define SPI_READY       0
 #define SPI_BUSY_IN_RX  1
 #define SPI_BUSY_IN_TX  2
+
+/**
+ * SPI possible application events
+ */
+#define SPI_EVENT_TX_CMPLT  1
+#define SPI_EVENT_RX_CMPLT  2
+#define SPI_EVENT_OVR_ERR   3
 
 /**
  * Configuration structure for SPI peripheral.
@@ -251,11 +263,11 @@ void SPI_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority);
  *
  * @brief function to handle the interrupt of the SPI peripheral.
  *
- * @param[in] pHandle handle structure to SPI peripheral.
+ * @param[in] pSPI_Handle handle structure to SPI peripheral.
  *
  * @return void.
  */
-void SPI_IRQHandling(SPI_Handle_t* pHandle);
+void SPI_IRQHandling(SPI_Handle_t* pSPI_Handle);
 
 /**
  * @fn SPI_Enable
@@ -292,5 +304,50 @@ void SPI_SSICfg(SPI_RegDef_t* pSPIx, uint8_t en_or_di);
  * @return flag status: FLAG_SET or FLAG_RESET.
  */
 uint8_t SPI_GetFlagStatus(SPI_RegDef_t* pSPIx, uint32_t flagname);
+
+/**
+ * @fn SPI_ClearOVRFlag
+ *
+ * @brief function clear the OVR flag.
+ *
+ * @param[in] pSPIx the base address of the SPIx peripheral.
+ *
+ * @return void.
+ */
+void SPI_ClearOVRFlag(SPI_RegDef_t* pSPIx);
+
+/**
+ * @fn SPI_CloseTx
+ *
+ * @brief function for closing the SPI transmission.
+ *
+ * @param[in] pSPI_Handle handle structure to SPI peripheral.
+ *
+ * @return void.
+ */
+void SPI_CloseTx(SPI_Handle_t* pSPI_Handle);
+
+/**
+ * @fn SPI_CloseRx
+ *
+ * @brief function for closing the SPI reception.
+ *
+ * @param[in] pSPI_Handle handle structure to SPI peripheral.
+ *
+ * @return void.
+ */
+void SPI_CloseRx(SPI_Handle_t* pSPI_Handle);
+
+/**
+ * @fn SPI_ApplicationEventCallback
+ *
+ * @brief function for application callback.
+ *
+ * @param[in] pSPI_Handle handle structure to SPI peripheral.
+ * @param[in] app_event application event.
+ *
+ * @return void.
+ */
+void SPI_ApplicationEventCallback(SPI_Handle_t* pSPI_Handle, uint8_t app_event);
 
 #endif 
