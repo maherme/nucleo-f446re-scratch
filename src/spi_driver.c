@@ -15,6 +15,7 @@
 *       void    SPI_IRQHandling(SPI_Handle_t* pHandle)
 *       void    SPI_Enable(SPI_RegDef_t *pSPIx, uint8_t en_or_di)
 *       void    SPI_SSICfg(SPI_RegDef_t* pSPIx, uint8_t en_or_di)
+*       uint8_t SPI_GetFlagStatus(SPI_RegDef_t* pSPIx, uint32_t flagname)
 *
 * NOTES :
 *       For further information about functions refer to the corresponding header file.
@@ -23,14 +24,6 @@
 
 #include <stdint.h>
 #include "spi_driver.h"
-
-static uint8_t SPI_GetFlagStatus(SPI_RegDef_t* pSPIx, uint32_t flagname){
-    
-    if(pSPIx->SR & flagname){
-        return FLAG_SET;
-    }
-    return FLAG_RESET;
-}
 
 void SPI_Init(SPI_Handle_t* pSPI_Handle){
 
@@ -187,4 +180,12 @@ void SPI_SSICfg(SPI_RegDef_t* pSPIx, uint8_t en_or_di){
     else{
         pSPIx->CR1 &= ~(1 << SPI_CR1_SSI);
     }
+}
+
+uint8_t SPI_GetFlagStatus(SPI_RegDef_t* pSPIx, uint32_t flagname){
+
+    if(pSPIx->SR & flagname){
+        return FLAG_SET;
+    }
+    return FLAG_RESET;
 }

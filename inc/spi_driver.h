@@ -85,7 +85,7 @@
  */
 #define SPI_TXE_FLAG    (1 << SPI_SR_TXE)
 #define SPI_RXNE_FLAG   (1 << SPI_SR_RXNE)
-#define SPI_BUSY_FLAT   (1 << SPI_SR_BSY)
+#define SPI_BUSY_FLAG   (1 << SPI_SR_BSY)
 
 /**
  * Configuration structure for SPI peripheral.
@@ -234,5 +234,17 @@ void SPI_Enable(SPI_RegDef_t* pSPIx, uint8_t en_or_di);
  * @return void.
  */
 void SPI_SSICfg(SPI_RegDef_t* pSPIx, uint8_t en_or_di);
+
+/**
+ * @fn SPI_GetFlagStatus
+ *
+ * @brief function returns the status of a given flag.
+ *
+ * @param[in] pSPIx the base address of the SPIx peripheral.
+ * @param[in] flagname the name of the flag.
+ *
+ * @return flag status: FLAG_SET or FLAG_RESET.
+ */
+uint8_t SPI_GetFlagStatus(SPI_RegDef_t* pSPIx, uint32_t flagname);
 
 #endif 

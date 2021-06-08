@@ -53,11 +53,13 @@ int main(void){
     /* Send data */
     SPI_SendData(SPI2, (uint8_t*)user_data, strlen(user_data));
 
+    /* Confirm SPI is not busy */
+    while(SPI_GetFlagStatus(SPI2, SPI_BUSY_FLAG));
+
     /* Disable the SPI2 peripheral */
     SPI_Enable(SPI2, DISABLE);
 
-    for(;;){
-    }
+    for(;;);
 
     return 0;
 }
