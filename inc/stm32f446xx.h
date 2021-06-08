@@ -481,6 +481,10 @@ typedef struct
 #define IRQ_NO_EXTI4        10
 #define IRQ_NO_EXTI9_5      23
 #define IRQ_NO_EXTI15_10    40
+#define IRQ_NO_SPI1         35
+#define IRQ_NO_SPI2         36
+#define IRQ_NO_SPI3         51
+#define IRQ_NO_SPI4         84
 
 /**
  * IRQ priority.

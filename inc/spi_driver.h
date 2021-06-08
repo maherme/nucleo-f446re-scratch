@@ -10,6 +10,8 @@
 *       void    SPI_PerClkCtrl(SPI_RegDef_t* pSPIx, uint8_t en_or_di)
 *       void    SPI_SendData(SPI_RegDef_t* pSPIx, uint8_t* pTxBuffer, uint32_t len)
 *       void    SPI_ReceiveData(SPI_RegDef_t* pSPIx, uint8_t* pRxBuffer, uint32_t len)
+*       uint8_t SPI_SendDataIT(SPI_Handle_t* pSPI_Handle, uint8_t* pTxBuffer, uint32_t len)
+*       void    SPI_ReceiveDataIT(SPI_Handle_t* pSPI_Handle, uint8_t* pRxBuffer, uint32_t len)
 *       void    SPI_IRQConfig(uint8_t IRQNumber, uint8_t en_or_di)
 *       void    SPI_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority)
 *       void    SPI_IRQHandling(SPI_Handle_t* pHandle)
@@ -88,6 +90,14 @@
 #define SPI_BUSY_FLAG   (1 << SPI_SR_BSY)
 
 /**
+ * @SPI_APP_STATE
+ * SPI possible application states
+ */
+#define SPI_READY       0
+#define SPI_BUSY_IN_RX  1
+#define SPI_BUSY_IN_TX  2
+
+/**
  * Configuration structure for SPI peripheral.
  */
 typedef struct
@@ -108,6 +118,12 @@ typedef struct
 {
     SPI_RegDef_t* pSPIx;            /* Base address of the SPIx peripheral */
     SPI_Config_t SPIConfig;         /* SPIx peripheral configuration settings */
+    uint8_t* pTxBuffer;             /* To store the app. Tx buffer address */
+    uint8_t* pRxBuffer;             /* To store the app. Rx buffer address */
+    uint32_t TxLen;                 /* To store Tx len */
+    uint32_t RxLen;                 /* To store Rx len */
+    uint8_t TxState;                /* To store Tx state */
+    uint8_t RxState;                /* To store Rx state */
 }SPI_Handle_t;
 
 /*****************************************************************************************************/
@@ -173,8 +189,38 @@ void SPI_SendData(SPI_RegDef_t* pSPIx, uint8_t* pTxBuffer, uint32_t len);
  * @param[in] len length of the data to receive.
  *
  * @return void
+ *
+ * @note blocking call.
  */
 void SPI_ReceiveData(SPI_RegDef_t* pSPIx, uint8_t* pRxBuffer, uint32_t len);
+
+/**
+ * @fn SPI_SendDataIT
+ *
+ * @brief function to send data.
+ *
+ * @param[in] pSPI_Handle handle structure for the SPI peripheral.
+ * @param[in] pTxBuffer buffer with the data to send.
+ * @param[in] len length of the data to send.
+ *
+ * @return @SPI_APP_STATE.
+ *
+ */
+uint8_t SPI_SendDataIT(SPI_Handle_t* pSPI_Handle, uint8_t* pTxBuffer, uint32_t len);
+
+/**
+ * @fn SPI_ReceiveDataIT
+ *
+ * @brief function to receive data.
+ *
+ * @param[in] pSPI_Handle handle structure for the SPI peripheral.
+ * @param[in] pRxBuffer buffer to store the received data.
+ * @param[in] len length of the data to receive.
+ *
+ * @return @SPI_APP_STATE.
+ *
+ */
+uint8_t SPI_ReceiveDataIT(SPI_Handle_t* pSPI_Handle, uint8_t* pRxBuffer, uint32_t len);
 
 /**
  * @fn SPI_IRQConfig
