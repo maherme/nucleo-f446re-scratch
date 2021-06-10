@@ -64,7 +64,7 @@ void I2C_Init(I2C_Handle_t* pI2C_Handle){
 
     /* Device own address */
     temp = 0;
-    temp |= (pI2C_Handle->I2C_Config.I2C_DeviceAddress << I2C_SR1_ADDR);
+    temp |= (pI2C_Handle->I2C_Config.I2C_DeviceAddress << 1);
     temp |= (1 << 14);
     pI2C_Handle->pI2Cx->OAR1 = temp;
 
