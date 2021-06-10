@@ -79,17 +79,17 @@ void SPI_Init(SPI_Handle_t* pSPI_Handle){
     /* Configure the bus config */
     if(pSPI_Handle->SPIConfig.SPI_BusConfig == SPI_BUS_CFG_FD){
         /* BIDI mode should be cleared */
-        temp &= ~(1 << 15);
+        temp &= ~(1 << SPI_CR1_BIDI_MODE);
     }
     else if(pSPI_Handle->SPIConfig.SPI_BusConfig == SPI_BUS_CFG_HD){
         /* BIDI mode should be set */
-        temp |= (1 << 15);
+        temp |= (1 << SPI_CR1_BIDI_MODE);
     }
     else if(pSPI_Handle->SPIConfig.SPI_BusConfig == SPI_BUS_CFG_S_RXONLY){
         /* BIDI mode should be cleared */
-        temp &= ~(1 << 15);
+        temp &= ~(1 << SPI_CR1_BIDI_MODE);
         /* RXONLY bit must be set */
-        temp |= (1 << 10);
+        temp |= (1 << SPI_CR1_RXONLY);
     }
 
     /* Configure the SPI serial clock speed (baud rate) */
