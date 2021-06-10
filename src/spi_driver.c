@@ -32,18 +32,47 @@
 #include <stddef.h>
 #include "spi_driver.h"
 
+/**
+ * @fn spi_txe_interrupt_handle
+ *
+ * @brief function to handle transmission interrupt.
+ *
+ * @param[in] pSPI_Handle handle structure for the SPI peripheral.
+ *
+ * @return void
+ */
 static void spi_txe_interrupt_handle(SPI_Handle_t* pSPI_Handle);
+
+/**
+ * @fn spi_rxne_interrupt_handle
+ *
+ * @brief function to handle reception interrupt.
+ *
+ * @param[in] pSPI_Handle handle structure for the SPI peripheral.
+ *
+ * @return void
+ */
 static void spi_rxne_interrupt_handle(SPI_Handle_t* pSPI_Handle);
+
+/**
+ * @fn spi_ovr_err_interrupt_handle
+ *
+ * @brief function to handle error interrupt.
+ *
+ * @param[in] pSPI_Handle handle structure for the SPI peripheral.
+ *
+ * @return void
+ */
 static void spi_ovr_err_interrupt_handle(SPI_Handle_t* pSPI_Handle);
 
 void SPI_Init(SPI_Handle_t* pSPI_Handle){
+
+    uint32_t temp = 0;
 
     /* Enable the peripheral clock */
     SPI_PerClkCtrl(pSPI_Handle->pSPIx, ENABLE);
 
     /* Configure the SPI_CR1 register */
-    uint32_t temp = 0;
-
     /* Configure the device mode */
     temp |= pSPI_Handle->SPIConfig.SPI_DeviceMode << SPI_CR1_MSTR;
 
@@ -355,6 +384,11 @@ void SPI_CloseRx(SPI_Handle_t* pSPI_Handle){
     pSPI_Handle->RxState = SPI_READY;
 }
 
+__attribute__((weak)) void SPI_ApplicationEventCallback(SPI_Handle_t* pSPI_Handle, uint8_t app_event){
+
+    /* This is a weak implementation. The application may override this function */
+}
+
 static void spi_txe_interrupt_handle(SPI_Handle_t* pSPI_Handle){
 
     /* Check the DFF bit in CR1 */
@@ -420,9 +454,4 @@ static void spi_ovr_err_interrupt_handle(SPI_Handle_t* pSPI_Handle){
 
     /* Inform the application */
     SPI_ApplicationEventCallback(pSPI_Handle, SPI_EVENT_OVR_ERR);
-}
-
- __attribute__((weak)) void SPI_ApplicationEventCallback(SPI_Handle_t* pSPI_Handle, uint8_t app_event){
-
-    /* This is a weak implementation. The application may override this function */
 }
