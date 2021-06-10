@@ -20,6 +20,7 @@
 **/
 
 #include <stdint.h>
+#include "stm32f446xx.h"
 #include "i2c_driver.h"
 
 #define FREQ_8MHZ    8000000
@@ -53,7 +54,7 @@ void I2C_Init(I2C_Handle_t* pI2C_Handle){
     uint16_t ccr_value = 0;
 
     /* ACK control bit */
-    temp |= (pI2C_Handle->I2C_Config.I2C_ACKControl << 10);
+    temp |= (pI2C_Handle->I2C_Config.I2C_ACKControl << I2C_CR1_ACK);
     pI2C_Handle->pI2Cx->CR1 = temp;
 
     /* FREQ field of CR2 */
@@ -63,7 +64,7 @@ void I2C_Init(I2C_Handle_t* pI2C_Handle){
 
     /* Device own address */
     temp = 0;
-    temp |= (pI2C_Handle->I2C_Config.I2C_DeviceAddress << 1);
+    temp |= (pI2C_Handle->I2C_Config.I2C_DeviceAddress << I2C_SR1_ADDR);
     temp |= (1 << 14);
     pI2C_Handle->pI2Cx->OAR1 = temp;
 
@@ -77,7 +78,7 @@ void I2C_Init(I2C_Handle_t* pI2C_Handle){
     else{
         /* fast mode */
         temp |= (1 << 15);
-        temp |= (pI2C_Handle->I2C_Config.I2C_FMDutyCycle << 14);
+        temp |= (pI2C_Handle->I2C_Config.I2C_FMDutyCycle << I2C_CCR_DUTY);
         if(pI2C_Handle->I2C_Config.I2C_FMDutyCycle == I2C_FM_DUTY_2){
             ccr_value = RCC_GetPCLK1Value()/(3*pI2C_Handle->I2C_Config.I2C_SCLSpeed);
         }
