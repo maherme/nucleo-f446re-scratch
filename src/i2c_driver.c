@@ -198,7 +198,7 @@ uint8_t I2C_GetFlagStatus(SPI_RegDef_t* pI2Cx, uint32_t flagname){
     return 0;
 }
 
- __attribute__((weak)) void I2C_ApplicationEventCallback(I2C_Handle_t* pI2C_Handle, uint8_t app_event){
+__attribute__((weak)) void I2C_ApplicationEventCallback(I2C_Handle_t* pI2C_Handle, uint8_t app_event){
 
     /* This is a weak implementation. The application may override this function */
 }
