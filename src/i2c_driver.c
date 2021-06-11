@@ -58,6 +58,29 @@ static uint32_t RCC_GetPLLOutputClock(void);
  */
 static void I2C_GenerateStartCondition(I2C_RegDef_t* pI2Cx);
 
+/**
+ * @fn I2C_GenerateStartCondition
+ *
+ * @brief function to set address of the slave for transmission.
+ *
+ * @param[in] pI2Cx the base address of the I2Cx peripheral.
+ * @param[in] slave_addr address of the slave.
+ *
+ * @return void.
+ */
+static void I2C_ExecuteAddressPhase(I2C_RegDef_t* pI2Cx, uint8_t slave_addr);
+
+/**
+ * @fn I2C_GenerateStartCondition
+ *
+ * @brief function to clear address flag.
+ *
+ * @param[in] pI2Cx the base address of the I2Cx peripheral.
+ *
+ * @return void.
+ */
+static void I2C_ClearADDRFlag(I2C_RegDef_t* pI2Cx);
+
 void I2C_Init(I2C_Handle_t* pI2C_Handle){
 
     uint8_t temp = 0;
@@ -156,6 +179,16 @@ void I2C_MasterSendData(I2C_Handle_t* pI2C_Handle, uint8_t* pTxBuffer, uint32_t 
     /* Check SB flag in SR1 */
     /* Note: until SB is cleared SCL will be stretched (pulled to LOW) */
     while(!I2C_GetFlagStatus(pI2C_Handle->pI2Cx, I2C_FLAG_SB));
+
+    /* Send address of the slave with r/w bit set to w(0) (total 8 bits) */
+    I2C_ExecuteAddressPhase(pI2C_Handle->pI2Cx, slave_addr);
+
+    /* Confirm address phase is completed by checking the ADDR flag in SR1 */
+    while(!I2C_GetFlagStatus(pI2C_Handle->pI2Cx, I2C_FLAG_ADDR));
+
+    /* Clear the ADDR flag */
+    /* Note: until ADDR is cleared SCL will be stretched (pulled in LOW) */
+    I2C_ClearADDRFlag(pI2C_Handle->pI2Cx);
 }
 
 void I2C_IRQConfig(uint8_t IRQNumber, uint8_t en_or_di){
@@ -286,4 +319,20 @@ static uint32_t RCC_GetPLLOutputClock(void){
 static void I2C_GenerateStartCondition(I2C_RegDef_t* pI2Cx){
 
     pI2Cx->CR1 |= (1 << I2C_CR1_START);
+}
+
+static void I2C_ExecuteAddressPhase(I2C_RegDef_t* pI2Cx, uint8_t slave_addr){
+
+    slave_addr = slave_addr << 1;
+    slave_addr &= ~(1); /* slave_addr is slave address + r/w bit = 0 */
+    pI2Cx->DR = slave_addr;
+}
+
+static void I2C_ClearADDRFlag(I2C_RegDef_t* pI2Cx){
+
+    uint32_t dummy_read;
+
+    dummy_read = pI2Cx->SR1;
+    dummy_read = pI2Cx->SR2;
+    (void)dummy_read;
 }
