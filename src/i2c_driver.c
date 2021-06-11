@@ -11,7 +11,7 @@
 *       void    I2C_IRQConfig(uint8_t IRQNumber, uint8_t en_or_di)
 *       void    I2C_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority)
 *       void    I2C_Enable(I2C_RegDef_t* pI2Cx, uint8_t en_or_di)
-*       uint8_t I2C_GetFlagStatus(SPI_RegDef_t* pI2Cx, uint32_t flagname)
+*       uint8_t I2C_GetFlagStatus(I2C_RegDef_t* pI2Cx, uint32_t flagname)
 *       void    I2C_ApplicationEventCallback(I2C_Handle_t* pI2C_Handle, uint8_t app_event)
 *
 * NOTES :
@@ -45,8 +45,18 @@ static uint32_t RCC_GetPCLK1Value(void);
  *
  * @return PLL clock value.
  */
-
 static uint32_t RCC_GetPLLOutputClock(void);
+
+/**
+ * @fn I2C_GenerateStartCondition
+ *
+ * @brief function to generate the start condition for transmission.
+ *
+ * @param[in] pI2Cx the base address of the I2Cx peripheral.
+ *
+ * @return void.
+ */
+static void I2C_GenerateStartCondition(I2C_RegDef_t* pI2Cx);
 
 void I2C_Init(I2C_Handle_t* pI2C_Handle){
 
@@ -138,6 +148,16 @@ void I2C_PerClkCtrl(I2C_RegDef_t* pI2Cx, uint8_t en_or_di){
     }
 }
 
+void I2C_MasterSendData(I2C_Handle_t* pI2C_Handle, uint8_t* pTxBuffer, uint32_t len, uint8_t slave_addr){
+
+    /* Generate start condition */
+    I2C_GenerateStartCondition(pI2C_Handle->pI2Cx);
+
+    /* Check SB flag in SR1 */
+    /* Note: until SB is cleared SCL will be stretched (pulled to LOW) */
+    while(!I2C_GetFlagStatus(pI2C_Handle->pI2Cx, I2C_FLAG_SB));
+}
+
 void I2C_IRQConfig(uint8_t IRQNumber, uint8_t en_or_di){
 
     if(en_or_di == ENABLE){
@@ -195,8 +215,12 @@ void I2C_Enable(I2C_RegDef_t* pI2Cx, uint8_t en_or_di){
     }
 }
 
-uint8_t I2C_GetFlagStatus(SPI_RegDef_t* pI2Cx, uint32_t flagname){
-    return 0;
+uint8_t I2C_GetFlagStatus(I2C_RegDef_t* pI2Cx, uint32_t flagname){
+
+    if(pI2Cx->SR1 & flagname){
+        return  FLAG_SET;
+    }
+    return FLAG_RESET;
 }
 
 __attribute__((weak)) void I2C_ApplicationEventCallback(I2C_Handle_t* pI2C_Handle, uint8_t app_event){
@@ -257,4 +281,9 @@ static uint32_t RCC_GetPCLK1Value(void){
 static uint32_t RCC_GetPLLOutputClock(void){
     /* TO BE DONE */
     return 0;
+}
+
+static void I2C_GenerateStartCondition(I2C_RegDef_t* pI2Cx){
+
+    pI2Cx->CR1 |= (1 << I2C_CR1_START);
 }

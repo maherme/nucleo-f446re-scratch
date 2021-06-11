@@ -8,10 +8,11 @@
 *       void    I2C_Init(I2C_Handle_t* pI2C_Handle)
 *       void    I2C_DeInit(I2C_RegDef_t* pI2Cx)
 *       void    I2C_PerClkCtrl(I2C_RegDef_t* pI2Cx, uint8_t en_or_di)
+*       void    I2C_MasterSendData(I2C_Handle_t* pI2C_Handle, uint8_t* pTxBuffer, uint32_t len, uint8_t slave_addr)
 *       void    I2C_IRQConfig(uint8_t IRQNumber, uint8_t en_or_di)
 *       void    I2C_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority)
 *       void    I2C_Enable(I2C_RegDef_t* pI2Cx, uint8_t en_or_di)
-*       uint8_t I2C_GetFlagStatus(SPI_RegDef_t* pI2Cx, uint32_t flagname)
+*       uint8_t I2C_GetFlagStatus(I2C_RegDef_t* pI2Cx, uint32_t flagname)
 *       void    I2C_ApplicationEventCallback(I2C_Handle_t* pI2C_Handle, uint8_t app_event)
 *
 **/
@@ -43,6 +44,22 @@
  */
 #define I2C_FM_DUTY_2           0
 #define I2C_FM_DUTY_16_9        1
+
+/**
+ * I2C related status flags definitions.
+ */
+#define I2C_FLAG_TXE        (1 << I2C_SR1_TXE)
+#define I2C_FLAG_RXNE       (1 << I2C_SR1_RXNE)
+#define I2C_FLAG_SB         (1 << I2C_SR1_SB)
+#define I2C_FLAG_OVR        (1 << I2C_SR1_OVR)
+#define I2C_FLAG_AF         (1 << I2C_SR1_AF)
+#define I2C_FLAG_ARLO       (1 << I2C_SR1_ARLO)
+#define I2C_FLAG_BERR       (1 << I2C_SR1_BERR)
+#define I2C_FLAG_STOPF      (1 << I2C_SR1_STOPF)
+#define I2C_FLAG_ADD10      (1 << I2C_SR1_ADD10)
+#define I2C_FLAG_BTF        (1 << I2C_SR1_BTF)
+#define I2C_FLAG_ADDR       (1 << I2C_SR1_ADDR)
+#define I2C_FLAG_TIMEOUT    (1 << I2C_SR1_TIMEOUT)
 
 /**
  * Configuration structure for I2C peripheral.
@@ -103,6 +120,20 @@ void I2C_DeInit(I2C_RegDef_t* pI2Cx);
 void I2C_PerClkCtrl(I2C_RegDef_t* pI2Cx, uint8_t en_or_di);
 
 /**
+ * @fn I2C_MasterSendData
+ *
+ * @brief function to send data through I2C peripheral.
+ *
+ * @param[in] pI2C_Handle handle structure for the I2C peripheral.
+ * @param[in] pTxBuffer buffer to store data to be transmitted.
+ * @param[in] len length of the transmission buffer.
+ * @param[in] slave_addr slave address.
+ *
+ * @return void
+ */
+void I2C_MasterSendData(I2C_Handle_t* pI2C_Handle, uint8_t* pTxBuffer, uint32_t len, uint8_t slave_addr);
+
+/**
  * @fn I2C_IRQConfig
  *
  * @brief function to configure the IRQ number of the I2C peripheral.
@@ -148,7 +179,7 @@ void I2C_Enable(I2C_RegDef_t* pI2Cx, uint8_t en_or_di);
  *
  * @return flag status: FLAG_SET or FLAG_RESET.
  */
-uint8_t I2C_GetFlagStatus(SPI_RegDef_t* pI2Cx, uint32_t flagname);
+uint8_t I2C_GetFlagStatus(I2C_RegDef_t* pI2Cx, uint32_t flagname);
 
 /**
  * @fn I2C_ApplicationEventCallback
