@@ -132,6 +132,17 @@ void I2C_Init(I2C_Handle_t* pI2C_Handle){
         temp |= (ccr_value & 0xFFF);
     }
     pI2C_Handle->pI2Cx->CCR = temp;
+
+    /* TRISE configuration */
+    if(pI2C_Handle->I2C_Config.I2C_SCLSpeed <= I2C_SCL_SPEED_SM){
+        /* standard mode */
+        temp = (RCC_GetPCLK1Value()/1000000U) + 1;
+    }
+    else{
+        /* fast mode */
+        temp = ((RCC_GetPCLK1Value()*300)/1000000000U) + 1;
+    }
+    pI2C_Handle->pI2Cx->TRISE = (temp & 0x3F);
 }
 
 void I2C_DeInit(I2C_RegDef_t* pI2Cx){
