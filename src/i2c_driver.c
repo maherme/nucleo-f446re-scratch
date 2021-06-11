@@ -81,6 +81,17 @@ static void I2C_ExecuteAddressPhase(I2C_RegDef_t* pI2Cx, uint8_t slave_addr);
  */
 static void I2C_ClearADDRFlag(I2C_RegDef_t* pI2Cx);
 
+/**
+ * @fn I2C_GenerateStopCondition
+ *
+ * @brief function to generate stop condition.
+ *
+ * @param[in] pI2Cx the base address of the I2Cx peripheral.
+ *
+ * @return void.
+ */
+static void I2C_GenerateStopCondition(I2C_RegDef_t* pI2Cx);
+
 void I2C_Init(I2C_Handle_t* pI2C_Handle){
 
     uint8_t temp = 0;
@@ -189,6 +200,24 @@ void I2C_MasterSendData(I2C_Handle_t* pI2C_Handle, uint8_t* pTxBuffer, uint32_t 
     /* Clear the ADDR flag */
     /* Note: until ADDR is cleared SCL will be stretched (pulled in LOW) */
     I2C_ClearADDRFlag(pI2C_Handle->pI2Cx);
+
+    /* Send data until len becomes 0 */
+    while(len > 0){
+        while(!I2C_GetFlagStatus(pI2C_Handle->pI2Cx, I2C_FLAG_TXE));
+        pI2C_Handle->pI2Cx->DR = *pTxBuffer;
+        pTxBuffer++;
+        len--;
+    }
+
+    /* Wait for TXE=1 and BTF=1 before generating STOP condition */
+    /* Note: TXE=1, BTF=1, means that both SR and DR are empty and next transmission should begin */
+    /* when BTF=1 SCL will be stretched (pulled to LOW) */
+    while(!I2C_GetFlagStatus(pI2C_Handle->pI2Cx, I2C_FLAG_TXE));
+    while(!I2C_GetFlagStatus(pI2C_Handle->pI2Cx, I2C_FLAG_BTF));
+
+    /* Generate STOP condition */
+    /* Note: generating STOP, automatically clears the BTF */
+    I2C_GenerateStopCondition(pI2C_Handle->pI2Cx);
 }
 
 void I2C_IRQConfig(uint8_t IRQNumber, uint8_t en_or_di){
@@ -335,4 +364,9 @@ static void I2C_ClearADDRFlag(I2C_RegDef_t* pI2Cx){
     dummy_read = pI2Cx->SR1;
     dummy_read = pI2Cx->SR2;
     (void)dummy_read;
+}
+
+static void I2C_GenerateStopCondition(I2C_RegDef_t* pI2Cx){
+
+    pI2Cx->CR1 |= (1 << I2C_CR1_STOP);
 }
