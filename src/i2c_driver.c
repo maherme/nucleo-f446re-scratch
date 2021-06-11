@@ -97,6 +97,9 @@ void I2C_Init(I2C_Handle_t* pI2C_Handle){
     uint8_t temp = 0;
     uint16_t ccr_value = 0;
 
+    /* Enable the peripheral clock */
+    I2C_PerClkCtrl(pI2C_Handle->pI2Cx, ENABLE);
+
     /* ACK control bit */
     temp |= (pI2C_Handle->I2C_Config.I2C_ACKControl << I2C_CR1_ACK);
     pI2C_Handle->pI2Cx->CR1 = temp;
