@@ -10,6 +10,8 @@
 *       void    I2C_PerClkCtrl(I2C_RegDef_t* pI2Cx, uint8_t en_or_di)
 *       void    I2C_MasterSendData(I2C_Handle_t* pI2C_Handle, uint8_t* pTxBuffer, uint32_t len, uint8_t slave_addr, sr_t sr)
 *       void    I2C_MasterReceiveData(I2C_Handle_t* pI2C_Handle, uint8_t* pRxBuffer, uint8_t len, uint8_t slave_addr, sr_t sr)
+*       uint8_t I2C_MasterSendDataIT(I2C_Handle_t* pI2C_Handle, uint8_t* pTxBuffer, uint32_t len, uint8_t slave_addr, sr_t sr)
+*       uint8_t I2C_MasterReceiveDataIT(I2C_Handle_t* pI2C_Handle, uint8_t* pRxBuffer, uint8_t len, uint8_t slave_addr, sr_t sr)
 *       void    I2C_IRQConfig(uint8_t IRQNumber, uint8_t en_or_di)
 *       void    I2C_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority)
 *       void    I2C_Enable(I2C_RegDef_t* pI2Cx, uint8_t en_or_di)
@@ -113,7 +115,7 @@ typedef struct
     uint8_t TxRxState;          /* To store communication state */
     uint8_t DevAddr;            /* To store slave / device address */
     uint32_t RxSize;            /* To store Rx size */
-    uint8_t Sr;                 /* To store repeated start value */
+    sr_t Sr;                    /* To store repeated start value */
 }I2C_Handle_t;
 
 /*****************************************************************************************************/
@@ -187,6 +189,36 @@ void I2C_MasterSendData(I2C_Handle_t* pI2C_Handle, uint8_t* pTxBuffer, uint32_t 
  * @note blocking call.
  */
 void I2C_MasterReceiveData(I2C_Handle_t* pI2C_Handle, uint8_t* pRxBuffer, uint8_t len, uint8_t slave_addr, sr_t sr);
+
+/**
+ * @fn I2C_MasterSendDataIT
+ *
+ * @brief function to send data through I2C peripheral using insterrupt.
+ *
+ * @param[in] pI2C_Handle handle structure for the I2C peripheral.
+ * @param[in] pTxBuffer buffer to store data to be transmitted.
+ * @param[in] len length of the transmission buffer.
+ * @param[in] slave_addr slave address.
+ * @param[in] sr for enabling start repeating, possible values @I2C_SR.
+ *
+ * @return application state.
+ */
+uint8_t I2C_MasterSendDataIT(I2C_Handle_t* pI2C_Handle, uint8_t* pTxBuffer, uint32_t len, uint8_t slave_addr, sr_t sr);
+
+/**
+ * @fn I2C_MasterReceiveDataIT
+ *
+ * @brief function to receive data through I2C peripheral using insterrupt.
+ *
+ * @param[in] pI2C_Handle handle structure for the I2C peripheral.
+ * @param[out] pRxBuffer buffer to store received data.
+ * @param[in] len length of the transmission buffer.
+ * @param[in] slave_addr slave address.
+ * @param[in] sr for enabling start repeating, possible values @I2C_SR.
+ *
+ * @return application state.
+ */
+uint8_t I2C_MasterReceiveDataIT(I2C_Handle_t* pI2C_Handle, uint8_t* pRxBuffer, uint8_t len, uint8_t slave_addr, sr_t sr);
 
 /**
  * @fn I2C_IRQConfig

@@ -321,6 +321,61 @@ void I2C_MasterReceiveData(I2C_Handle_t* pI2C_Handle, uint8_t* pRxBuffer, uint8_
     }
 }
 
+uint8_t I2C_MasterSendDataIT(I2C_Handle_t* pI2C_Handle, uint8_t* pTxBuffer, uint32_t len, uint8_t slave_addr, sr_t sr){
+
+    uint8_t busystate = pI2C_Handle->TxRxState;
+
+    if((busystate != I2C_BUSY_IN_TX) && (busystate != I2C_BUSY_IN_RX)){
+        pI2C_Handle->pTxBuffer = pTxBuffer;
+        pI2C_Handle->TxLen = len;
+        pI2C_Handle->TxRxState = I2C_BUSY_IN_TX;
+        pI2C_Handle->DevAddr = slave_addr;
+        pI2C_Handle->Sr = sr;
+
+        /* Generate START condition */
+        I2C_GenerateStartCondition(pI2C_Handle->pI2Cx);
+
+        /* Enable ITBUFEN control bit */
+        pI2C_Handle->pI2Cx->CR2 |= (1 << I2C_CR2_ITBUFEN);
+
+        /* Enable ITEVTEN control bit */
+        pI2C_Handle->pI2Cx->CR2 |= (1 << I2C_CR2_ITEVTEN);
+
+        /* Enable ITERREN control bit */
+        pI2C_Handle->pI2Cx->CR2 |= (1 << I2C_CR2_ITERREN);
+    }
+
+    return busystate;
+}
+
+uint8_t I2C_MasterReceiveDataIT(I2C_Handle_t* pI2C_Handle, uint8_t* pRxBuffer, uint8_t len, uint8_t slave_addr, sr_t sr){
+
+    uint8_t busystate = pI2C_Handle->TxRxState;
+
+    if((busystate != I2C_BUSY_IN_TX) && (busystate != I2C_BUSY_IN_RX)){
+        pI2C_Handle->pRxBuffer = pRxBuffer;
+        pI2C_Handle->RxLen = len;
+        pI2C_Handle->TxRxState = I2C_BUSY_IN_RX;
+        pI2C_Handle->RxSize = len;
+        pI2C_Handle->DevAddr = slave_addr;
+        pI2C_Handle->Sr = sr;
+
+        /* Generate START condition */
+        I2C_GenerateStartCondition(pI2C_Handle->pI2Cx);
+
+        /* Enable ITBUFEN control bit */
+        pI2C_Handle->pI2Cx->CR2 |= (1 << I2C_CR2_ITBUFEN);
+
+        /* Enable ITEVTEN control bit */
+        pI2C_Handle->pI2Cx->CR2 |= (1 << I2C_CR2_ITEVTEN);
+
+        /* Enable ITERREN control bit */
+        pI2C_Handle->pI2Cx->CR2 |= (1 << I2C_CR2_ITERREN);
+    }
+
+    return busystate;
+}
+
 void I2C_IRQConfig(uint8_t IRQNumber, uint8_t en_or_di){
 
     if(en_or_di == ENABLE){
