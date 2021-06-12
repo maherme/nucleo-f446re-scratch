@@ -9,6 +9,7 @@
 *       void    I2C_DeInit(I2C_RegDef_t* pI2Cx)
 *       void    I2C_PerClkCtrl(I2C_RegDef_t* pI2Cx, uint8_t en_or_di)
 *       void    I2C_MasterSendData(I2C_Handle_t* pI2C_Handle, uint8_t* pTxBuffer, uint32_t len, uint8_t slave_addr)
+*       void    I2C_MasterReceiveData(I2C_Handle_t* pI2C_Handle, uint8_t* pRxBuffer, uint8_t len, uint8_t slave_addr)
 *       void    I2C_IRQConfig(uint8_t IRQNumber, uint8_t en_or_di)
 *       void    I2C_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority)
 *       void    I2C_Enable(I2C_RegDef_t* pI2Cx, uint8_t en_or_di)
@@ -36,7 +37,7 @@
  * I2C possible ack control values.
  */
 #define I2C_ACK_ENABLE          1
-#define I2C_ACL_DISABLE         0
+#define I2C_ACK_DISABLE         0
 
 /**
  * @I2C_FMDUTYCYCLE
@@ -60,6 +61,15 @@
 #define I2C_FLAG_BTF        (1 << I2C_SR1_BTF)
 #define I2C_FLAG_ADDR       (1 << I2C_SR1_ADDR)
 #define I2C_FLAG_TIMEOUT    (1 << I2C_SR1_TIMEOUT)
+
+/**
+ * @I2C_RW
+ * Possible options for rw in I2C_ExecuteAddressPhase()
+ */
+typedef enum{
+    READ,
+    WRITE
+}rw_t;
 
 /**
  * Configuration structure for I2C peripheral.
@@ -132,6 +142,20 @@ void I2C_PerClkCtrl(I2C_RegDef_t* pI2Cx, uint8_t en_or_di);
  * @return void
  */
 void I2C_MasterSendData(I2C_Handle_t* pI2C_Handle, uint8_t* pTxBuffer, uint32_t len, uint8_t slave_addr);
+
+/**
+ * @fn I2C_MasterReceiveData
+ *
+ * @brief function to receive data through I2C peripheral.
+ *
+ * @param[in] pI2C_Handle handle structure for the I2C peripheral.
+ * @param[out] pRxBuffer buffer to store received data.
+ * @param[in] len length of the transmission buffer.
+ * @param[in] slave_addr slave address.
+ *
+ * @return void
+ */
+void I2C_MasterReceiveData(I2C_Handle_t* pI2C_Handle, uint8_t* pRxBuffer, uint8_t len, uint8_t slave_addr);
 
 /**
  * @fn I2C_IRQConfig

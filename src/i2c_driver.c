@@ -8,6 +8,8 @@
 *       void    I2C_Init(I2C_Handle_t* pI2C_Handle)
 *       void    I2C_DeInit(I2C_RegDef_t* pI2Cx)
 *       void    I2C_PerClkCtrl(I2C_RegDef_t* pI2Cx, uint8_t en_or_di)
+*       void    I2C_MasterSendData(I2C_Handle_t* pI2C_Handle, uint8_t* pTxBuffer, uint32_t len, uint8_t slave_addr)
+*       void    I2C_MasterReceiveData(I2C_Handle_t* pI2C_Handle, uint8_t* pRxBuffer, uint8_t len, uint8_t slave_addr)
 *       void    I2C_IRQConfig(uint8_t IRQNumber, uint8_t en_or_di)
 *       void    I2C_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority)
 *       void    I2C_Enable(I2C_RegDef_t* pI2Cx, uint8_t en_or_di)
@@ -65,10 +67,11 @@ static void I2C_GenerateStartCondition(I2C_RegDef_t* pI2Cx);
  *
  * @param[in] pI2Cx the base address of the I2Cx peripheral.
  * @param[in] slave_addr address of the slave.
+ * @param[in] rw selection to read or write, @I2C_RW.
  *
  * @return void.
  */
-static void I2C_ExecuteAddressPhase(I2C_RegDef_t* pI2Cx, uint8_t slave_addr);
+static void I2C_ExecuteAddressPhase(I2C_RegDef_t* pI2Cx, uint8_t slave_addr, rw_t rw);
 
 /**
  * @fn I2C_GenerateStartCondition
@@ -91,6 +94,18 @@ static void I2C_ClearADDRFlag(I2C_RegDef_t* pI2Cx);
  * @return void.
  */
 static void I2C_GenerateStopCondition(I2C_RegDef_t* pI2Cx);
+
+/**
+ * @fn I2C_ManageAcking
+ *
+ * @brief function to enable or disable the acking.
+ *
+ * @param[in] pI2Cx the base address of the I2Cx peripheral.
+ * @param[in] en_or_di to enable or disable @I2C_ACKCONTROL@
+ *
+ * @return void.
+ */
+static void I2C_ManageAcking(I2C_RegDef_t* pI2Cx, uint8_t en_or_di);
 
 void I2C_Init(I2C_Handle_t* pI2C_Handle){
 
@@ -206,7 +221,7 @@ void I2C_MasterSendData(I2C_Handle_t* pI2C_Handle, uint8_t* pTxBuffer, uint32_t 
     while(!I2C_GetFlagStatus(pI2C_Handle->pI2Cx, I2C_FLAG_SB));
 
     /* Send address of the slave with r/w bit set to w(0) (total 8 bits) */
-    I2C_ExecuteAddressPhase(pI2C_Handle->pI2Cx, slave_addr);
+    I2C_ExecuteAddressPhase(pI2C_Handle->pI2Cx, slave_addr, WRITE);
 
     /* Confirm address phase is completed by checking the ADDR flag in SR1 */
     while(!I2C_GetFlagStatus(pI2C_Handle->pI2Cx, I2C_FLAG_ADDR));
@@ -232,6 +247,74 @@ void I2C_MasterSendData(I2C_Handle_t* pI2C_Handle, uint8_t* pTxBuffer, uint32_t 
     /* Generate STOP condition */
     /* Note: generating STOP, automatically clears the BTF */
     I2C_GenerateStopCondition(pI2C_Handle->pI2Cx);
+}
+
+void I2C_MasterReceiveData(I2C_Handle_t* pI2C_Handle, uint8_t* pRxBuffer, uint8_t len, uint8_t slave_addr){
+
+    uint32_t i = 0;
+
+    /* Generate start condition */
+    I2C_GenerateStartCondition(pI2C_Handle->pI2Cx);
+
+    /* Check SB flag in SR1 */
+    /* Note: until SB is cleared SCL will be stretched (pulled to LOW) */
+    while(!I2C_GetFlagStatus(pI2C_Handle->pI2Cx, I2C_FLAG_SB));
+
+    /* Send address of the slave with r/w bit set to R(1) (total 8 bits) */
+    I2C_ExecuteAddressPhase(pI2C_Handle->pI2Cx, slave_addr, READ);
+
+    /* Wait until address phase is completed by checking the ADDR flag in SR1 */
+    while(!I2C_GetFlagStatus(pI2C_Handle->pI2Cx, I2C_FLAG_ADDR));
+
+    /* Procedure to read only 1 byte from slave */
+    if(len == 1){
+        /* Disable Acking */
+        I2C_ManageAcking(pI2C_Handle->pI2Cx, I2C_ACK_DISABLE);
+
+        /* Generate stop condition */
+        I2C_GenerateStopCondition(pI2C_Handle->pI2Cx);
+
+        /* Clear ADDR flag */
+        I2C_ClearADDRFlag(pI2C_Handle->pI2Cx);
+
+        /* Wait until RXNE=1 */
+        while(!I2C_GetFlagStatus(pI2C_Handle->pI2Cx, I2C_FLAG_RXNE));
+
+        /* Read data into buffer */
+        *pRxBuffer = pI2C_Handle->pI2Cx->DR;
+
+        return;
+    }
+
+    /* Procedure to read data from slave when len > 1 */
+    if(len > 1){
+        /* Clear ADDR flag */
+        I2C_ClearADDRFlag(pI2C_Handle->pI2Cx);
+
+        /* Read datas until len becomes zero */
+        for(i = len; i > 0; i--){
+            /* Wait until RXNE becomes 1 */
+            while(!I2C_GetFlagStatus(pI2C_Handle->pI2Cx, I2C_FLAG_RXNE));
+
+            if(i == 2){ /* If last 2 bytes are remaining */
+                /* Disable Acking */
+                I2C_ManageAcking(pI2C_Handle->pI2Cx, I2C_ACK_DISABLE);
+
+                /* Generate stop condition */
+                I2C_GenerateStopCondition(pI2C_Handle->pI2Cx);
+            }
+            /* Read the data from data register into the buffer */
+            *pRxBuffer = pI2C_Handle->pI2Cx->DR;
+
+            /* Increment the buffer address */
+            pRxBuffer++;
+        }
+    }
+
+    /* Re-enable Acking */
+    if(pI2C_Handle->I2C_Config.I2C_ACKControl == I2C_ACK_ENABLE){
+        I2C_ManageAcking(pI2C_Handle->pI2Cx, I2C_ACK_ENABLE);
+    }
 }
 
 void I2C_IRQConfig(uint8_t IRQNumber, uint8_t en_or_di){
@@ -364,10 +447,18 @@ static void I2C_GenerateStartCondition(I2C_RegDef_t* pI2Cx){
     pI2Cx->CR1 |= (1 << I2C_CR1_START);
 }
 
-static void I2C_ExecuteAddressPhase(I2C_RegDef_t* pI2Cx, uint8_t slave_addr){
+static void I2C_ExecuteAddressPhase(I2C_RegDef_t* pI2Cx, uint8_t slave_addr, rw_t rw){
 
     slave_addr = slave_addr << 1;
-    slave_addr &= ~(1); /* slave_addr is slave address + r/w bit = 0 */
+    if(rw == WRITE){
+        slave_addr &= ~(1); /* slave_addr is slave address + r/w bit = 0 */
+    }
+    else if(rw == READ){
+        slave_addr |= 1; /* slave_addr is slave address + r/w bit = 1 */
+    }
+    else{
+        /* do nothing */
+    }
     pI2Cx->DR = slave_addr;
 }
 
@@ -383,4 +474,16 @@ static void I2C_ClearADDRFlag(I2C_RegDef_t* pI2Cx){
 static void I2C_GenerateStopCondition(I2C_RegDef_t* pI2Cx){
 
     pI2Cx->CR1 |= (1 << I2C_CR1_STOP);
+}
+
+static void I2C_ManageAcking(I2C_RegDef_t* pI2Cx, uint8_t en_or_di){
+
+    if(en_or_di == I2C_ACK_ENABLE){
+        /* enable the ack */
+        pI2Cx->CR1 |= (1 << I2C_CR1_ACK);
+    }
+    else{
+        /* disable the ack */
+        pI2Cx->CR1 &= ~(1 << I2C_CR1_ACK);
+    }
 }
