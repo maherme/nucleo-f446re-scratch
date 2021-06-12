@@ -150,6 +150,8 @@ void I2C_PerClkCtrl(I2C_RegDef_t* pI2Cx, uint8_t en_or_di);
  * @param[in] sr for enabling start repeating, possible values @I2C_SR.
  *
  * @return void
+ *
+ * @note blocking call.
  */
 void I2C_MasterSendData(I2C_Handle_t* pI2C_Handle, uint8_t* pTxBuffer, uint32_t len, uint8_t slave_addr, sr_t sr);
 
@@ -165,6 +167,8 @@ void I2C_MasterSendData(I2C_Handle_t* pI2C_Handle, uint8_t* pTxBuffer, uint32_t 
  * @param[in] sr for enabling start repeating, possible values @I2C_SR.
  *
  * @return void
+ *
+ * @note blocking call.
  */
 void I2C_MasterReceiveData(I2C_Handle_t* pI2C_Handle, uint8_t* pRxBuffer, uint8_t len, uint8_t slave_addr, sr_t sr);
 
