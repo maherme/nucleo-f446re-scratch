@@ -108,12 +108,12 @@ typedef struct
     I2C_Config_t I2C_Config;    /* I2Cx peripheral configuration settings */
     uint8_t* pTxBuffer;         /* To store the app. Tx buffer address */
     uint8_t* pRxBuffer;         /* To store the app. Rx buffer address */
-    uint32_t tx_len;            /* To store Tx len */
-    uint32_t rx_len;            /* To store Rx len */
-    uint8_t tx_rx_state;        /* To store communication state */
-    uint8_t dev_addr;           /* To store slave / device address */
-    uint32_t rx_size;           /* To store Rx size */
-    uint8_t sr;                 /* To store repeated start value */
+    uint32_t TxLen;             /* To store Tx len */
+    uint32_t RxLen;             /* To store Rx len */
+    uint8_t TxRxState;          /* To store communication state */
+    uint8_t DevAddr;            /* To store slave / device address */
+    uint32_t RxSize;            /* To store Rx size */
+    uint8_t Sr;                 /* To store repeated start value */
 }I2C_Handle_t;
 
 /*****************************************************************************************************/
