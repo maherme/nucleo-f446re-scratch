@@ -8,8 +8,8 @@
 *       void    I2C_Init(I2C_Handle_t* pI2C_Handle)
 *       void    I2C_DeInit(I2C_RegDef_t* pI2Cx)
 *       void    I2C_PerClkCtrl(I2C_RegDef_t* pI2Cx, uint8_t en_or_di)
-*       void    I2C_MasterSendData(I2C_Handle_t* pI2C_Handle, uint8_t* pTxBuffer, uint32_t len, uint8_t slave_addr)
-*       void    I2C_MasterReceiveData(I2C_Handle_t* pI2C_Handle, uint8_t* pRxBuffer, uint8_t len, uint8_t slave_addr)
+*       void    I2C_MasterSendData(I2C_Handle_t* pI2C_Handle, uint8_t* pTxBuffer, uint32_t len, uint8_t slave_addr, sr_t sr)
+*       void    I2C_MasterReceiveData(I2C_Handle_t* pI2C_Handle, uint8_t* pRxBuffer, uint8_t len, uint8_t slave_addr, sr_t sr)
 *       void    I2C_IRQConfig(uint8_t IRQNumber, uint8_t en_or_di)
 *       void    I2C_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority)
 *       void    I2C_Enable(I2C_RegDef_t* pI2Cx, uint8_t en_or_di)
@@ -64,12 +64,21 @@
 
 /**
  * @I2C_RW
- * Possible options for rw in I2C_ExecuteAddressPhase()
+ * Possible options for rw in I2C_ExecuteAddressPhase().
  */
 typedef enum{
     READ,
     WRITE
 }rw_t;
+
+/**
+ * @I2C_SR
+ * Possible options for enable / disable for start repeating.
+ */
+typedef enum{
+    I2C_DISABLE_SR,
+    I2C_ENABLE_SR
+}sr_t;
 
 /**
  * Configuration structure for I2C peripheral.
@@ -138,10 +147,11 @@ void I2C_PerClkCtrl(I2C_RegDef_t* pI2Cx, uint8_t en_or_di);
  * @param[in] pTxBuffer buffer to store data to be transmitted.
  * @param[in] len length of the transmission buffer.
  * @param[in] slave_addr slave address.
+ * @param[in] sr for enabling start repeating, possible values @I2C_SR.
  *
  * @return void
  */
-void I2C_MasterSendData(I2C_Handle_t* pI2C_Handle, uint8_t* pTxBuffer, uint32_t len, uint8_t slave_addr);
+void I2C_MasterSendData(I2C_Handle_t* pI2C_Handle, uint8_t* pTxBuffer, uint32_t len, uint8_t slave_addr, sr_t sr);
 
 /**
  * @fn I2C_MasterReceiveData
@@ -152,10 +162,11 @@ void I2C_MasterSendData(I2C_Handle_t* pI2C_Handle, uint8_t* pTxBuffer, uint32_t 
  * @param[out] pRxBuffer buffer to store received data.
  * @param[in] len length of the transmission buffer.
  * @param[in] slave_addr slave address.
+ * @param[in] sr for enabling start repeating, possible values @I2C_SR.
  *
  * @return void
  */
-void I2C_MasterReceiveData(I2C_Handle_t* pI2C_Handle, uint8_t* pRxBuffer, uint8_t len, uint8_t slave_addr);
+void I2C_MasterReceiveData(I2C_Handle_t* pI2C_Handle, uint8_t* pRxBuffer, uint8_t len, uint8_t slave_addr, sr_t sr);
 
 /**
  * @fn I2C_IRQConfig
