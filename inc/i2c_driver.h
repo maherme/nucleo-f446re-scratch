@@ -47,6 +47,14 @@
 #define I2C_FM_DUTY_16_9        1
 
 /**
+ * @I2C_APP_STATE
+ * I2C possible application states.
+ */
+#define I2C_READY               0
+#define I2C_BUSY_IN_RX          1
+#define I2C_BUSY_IN_TX          2
+
+/**
  * I2C related status flags definitions.
  */
 #define I2C_FLAG_TXE        (1 << I2C_SR1_TXE)
@@ -98,6 +106,14 @@ typedef struct
 {
     I2C_RegDef_t* pI2Cx;        /* Base address of the I2Cx peripheral */
     I2C_Config_t I2C_Config;    /* I2Cx peripheral configuration settings */
+    uint8_t* pTxBuffer;         /* To store the app. Tx buffer address */
+    uint8_t* pRxBuffer;         /* To store the app. Rx buffer address */
+    uint32_t tx_len;            /* To store Tx len */
+    uint32_t rx_len;            /* To store Rx len */
+    uint8_t tx_rx_state;        /* To store communication state */
+    uint8_t dev_addr;           /* To store slave / device address */
+    uint32_t rx_size;           /* To store Rx size */
+    uint8_t sr;                 /* To store repeated start value */
 }I2C_Handle_t;
 
 /*****************************************************************************************************/
