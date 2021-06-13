@@ -14,8 +14,12 @@
 *       uint8_t I2C_MasterReceiveDataIT(I2C_Handle_t* pI2C_Handle, uint8_t* pRxBuffer, uint8_t len, uint8_t slave_addr, sr_t sr)
 *       void    I2C_IRQConfig(uint8_t IRQNumber, uint8_t en_or_di)
 *       void    I2C_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority)
+*       void    I2C_EV_IRQHandling(I2C_Handle_t* pI2C_Handle)
+*       void    I2C_ER_IRQHandling(I2C_Handle_t* pI2C_Handle)
 *       void    I2C_Enable(I2C_RegDef_t* pI2Cx, uint8_t en_or_di)
 *       uint8_t I2C_GetFlagStatus(I2C_RegDef_t* pI2Cx, uint32_t flagname)
+*       void    I2C_CloseReceiveData(I2C_Handle_t* pI2C_Handle)
+*       void    I2C_CloseSendData(I2C_Handle_t* pI2C_Handle)
 *       void    I2C_ApplicationEventCallback(I2C_Handle_t* pI2C_Handle, uint8_t app_event)
 *
 **/
@@ -89,6 +93,13 @@ typedef enum{
     I2C_DISABLE_SR,
     I2C_ENABLE_SR
 }sr_t;
+
+/**
+ * I2C possible application events
+ */
+#define I2C_EVENT_TX_CMPLT  1
+#define I2C_EVENT_RX_CMPLT  2
+#define I2C_EVENT_STOP      3
 
 /**
  * Configuration structure for I2C peripheral.
@@ -245,6 +256,28 @@ void I2C_IRQConfig(uint8_t IRQNumber, uint8_t en_or_di);
 void I2C_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority);
 
 /**
+ * @fn I2C_EV_IRQHandling
+ *
+ * @brief function to manage event interrupt of the I2C peripheral.
+ *
+ * @param[in] pI2C_Handle handle structure for the I2C peripheral.
+ *
+ * @return void
+ */
+void I2C_EV_IRQHandling(I2C_Handle_t* pI2C_Handle);
+
+/**
+ * @fn I2C_ER_IRQHandling
+ *
+ * @brief function to manage error interrupt of the I2C peripheral.
+ *
+ * @param[in] pI2C_Handle handle structure for the I2C peripheral.
+ *
+ * @return void
+ */
+void I2C_ER_IRQHandling(I2C_Handle_t* pI2C_Handle);
+
+/**
  * @fn I2C_Enable
  *
  * @brief function enable the I2C peripheral.
@@ -267,6 +300,28 @@ void I2C_Enable(I2C_RegDef_t* pI2Cx, uint8_t en_or_di);
  * @return flag status: FLAG_SET or FLAG_RESET.
  */
 uint8_t I2C_GetFlagStatus(I2C_RegDef_t* pI2Cx, uint32_t flagname);
+
+/**
+ * @fn I2C_CloseReceiveData
+ *
+ * @brief function to close reception of data.
+ *
+ * @param[in] pI2C_Handle handle structure for the I2C peripheral.
+ *
+ * @return void
+ */
+void I2C_CloseReceiveData(I2C_Handle_t* pI2C_Handle);
+
+/**
+ * @fn I2C_CloseSendData
+ *
+ * @brief function to close transmission of data.
+ *
+ * @param[in] pI2C_Handle handle structure for the I2C peripheral.
+ *
+ * @return void
+ */
+void I2C_CloseSendData(I2C_Handle_t* pI2C_Handle);
 
 /**
  * @fn I2C_ApplicationEventCallback
