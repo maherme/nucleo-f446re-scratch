@@ -552,6 +552,60 @@ void I2C_EV_IRQHandling(I2C_Handle_t* pI2C_Handle){
 }
 
 void I2C_ER_IRQHandling(I2C_Handle_t* pI2C_Handle){
+
+    uint32_t temp1, temp2;
+
+    temp2 = (pI2C_Handle->pI2Cx->CR2) & (1 << I2C_CR2_ITERREN);
+
+    /* Check for bus error */
+    temp1 = (pI2C_Handle->pI2Cx->SR1) & (1 << I2C_SR1_BERR);
+    if(temp1 && temp2){
+        /* Clear the bus error flag */
+        pI2C_Handle->pI2Cx->SR1 &= ~(1 << I2C_SR1_BERR);
+
+        /*Notify application about the error */
+        I2C_ApplicationEventCallback(pI2C_Handle, I2C_ERROR_BERR);
+    }
+
+    /* Check for arbitration lost error */
+    temp1 = (pI2C_Handle->pI2Cx->SR1) & (1 << I2C_SR1_ARLO);
+    if(temp1 && temp2){
+        /* Clear arbitration lost error flag */
+        pI2C_Handle->pI2Cx->SR1 &= ~(1 << I2C_SR1_ARLO);
+
+        /* Notify application about the error */
+        I2C_ApplicationEventCallback(pI2C_Handle, I2C_ERROR_ARLO);
+    }
+
+    /* Check for ACK failure */
+    temp1 = (pI2C_Handle->pI2Cx->SR1) & (1 << I2C_SR1_AF);
+    if(temp1 && temp2){
+        /* Clear ACK error flag */
+        pI2C_Handle->pI2Cx->SR1 &= ~(1 << I2C_SR1_AF);
+
+        /* Notify application about the error */
+        I2C_ApplicationEventCallback(pI2C_Handle, I2C_ERROR_AF);
+    }
+
+    /* Check for overrun / underrun error */
+    temp1 = (pI2C_Handle->pI2Cx->SR1) & (1 << I2C_SR1_OVR);
+    if(temp1 && temp2){
+        /* Clear the overrun / underrun error flag */
+        pI2C_Handle->pI2Cx->SR1 &= ~(1 << I2C_SR1_OVR);
+
+        /* Notify application about the error */
+        I2C_ApplicationEventCallback(pI2C_Handle, I2C_ERROR_OVR);
+    }
+
+    /* Check for time out error */
+    temp1 = (pI2C_Handle->pI2Cx->SR1) & (1 << I2C_SR1_TIMEOUT);
+    if(temp1 && temp2){
+        /* Clear the time out error flag */
+        pI2C_Handle->pI2Cx->SR1 &= ~(1 << I2C_SR1_TIMEOUT);
+
+        /* Notify application about the error */
+        I2C_ApplicationEventCallback(pI2C_Handle, I2C_ERROR_TIMEOUT);
+    }
 }
 
 void I2C_Enable(I2C_RegDef_t* pI2Cx, uint8_t en_or_di){

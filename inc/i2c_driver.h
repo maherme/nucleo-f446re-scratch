@@ -100,6 +100,11 @@ typedef enum{
 #define I2C_EVENT_TX_CMPLT  1
 #define I2C_EVENT_RX_CMPLT  2
 #define I2C_EVENT_STOP      3
+#define I2C_ERROR_BERR      4
+#define I2C_ERROR_ARLO      5
+#define I2C_ERROR_AF        6
+#define I2C_ERROR_OVR       7
+#define I2C_ERROR_TIMEOUT   8
 
 /**
  * Configuration structure for I2C peripheral.
