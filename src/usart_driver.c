@@ -61,6 +61,53 @@ void USART_DeInit(USART_RegDef_t* pUSARTx){
 }
 
 void USART_PerClkCtrl(USART_RegDef_t* pUSARTx, uint8_t en_or_di){
+
+    if(en_or_di == ENABLE){
+        if(pUSARTx == USART1){
+            USART1_PCLK_EN();
+        }
+        else if(pUSARTx == USART2){
+            USART2_PCLK_EN();
+        }
+        else if(pUSARTx == USART3){
+            USART3_PCLK_EN();
+        }
+        else if(pUSARTx == UART4){
+            UART4_PCLK_EN();
+        }
+        else if(pUSARTx == UART5){
+            UART5_PCLK_EN();
+        }
+        else if(pUSARTx == USART6){
+            USART6_PCLK_EN();
+        }
+        else{
+            /* do nothing */
+        }
+    }
+    else{
+        if(pUSARTx == USART1){
+            USART1_PCLK_DI();
+        }
+        else if(pUSARTx == USART2){
+            USART2_PCLK_DI();
+        }
+        else if(pUSARTx == USART3){
+            USART3_PCLK_DI();
+        }
+        else if(pUSARTx == UART4){
+            UART4_PCLK_DI();
+        }
+        else if(pUSARTx == UART5){
+            UART5_PCLK_DI();
+        }
+        else if(pUSARTx == USART6){
+            USART6_PCLK_DI();
+        }
+        else{
+            /* do nothing */
+        }
+    }
 }
 
 void USART_SendData(USART_RegDef_t* pUSARTx, uint8_t* pTxBuffer, uint32_t len){

@@ -495,7 +495,7 @@ typedef struct
 #define USART3_PCLK_EN()    (RCC->APB1ENR |= (1 << 18))
 #define UART4_PCLK_EN()     (RCC->APB1ENR |= (1 << 19))
 #define UART5_PCLK_EN()     (RCC->APB1ENR |= (1 << 20))
-#define USART6_PCLK_EN()    (RCC->APB2ENR != (1 << 5))
+#define USART6_PCLK_EN()    (RCC->APB2ENR |= (1 << 5))
 
 /**
  * Clock enable macros for SYSCFG peripheral.
