@@ -40,6 +40,10 @@
 static uint16_t AHB_PreScaler[8] = {2, 4, 8, 16, 64, 128, 256, 512};
 static uint8_t APB1_PreScaler[4] = {2, 4, 8, 16};
 
+/*****************************************************************************************************/
+/*                                       Static Function Prototypes                                  */
+/*****************************************************************************************************/
+
 /**
  * @fn RCC_GetPCLK1Value
  *
@@ -137,6 +141,10 @@ static void I2C_MasterHandleTXEInterrupt(I2C_Handle_t* pI2C_Handle);
  * @return void.
  */
 static void I2C_MasterHandleRXNEInterrupt(I2C_Handle_t* pI2C_Handle);
+
+/*****************************************************************************************************/
+/*                                       Public API Definitions                                      */
+/*****************************************************************************************************/
 
 void I2C_Init(I2C_Handle_t* pI2C_Handle){
 
@@ -682,6 +690,10 @@ __attribute__((weak)) void I2C_ApplicationEventCallback(I2C_Handle_t* pI2C_Handl
 
     /* This is a weak implementation. The application may override this function */
 }
+
+/*****************************************************************************************************/
+/*                                       Static Function Definitions                                 */
+/*****************************************************************************************************/
 
 static uint32_t RCC_GetPCLK1Value(void){
 

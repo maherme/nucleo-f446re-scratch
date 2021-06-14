@@ -32,6 +32,10 @@
 #include <stddef.h>
 #include "spi_driver.h"
 
+/*****************************************************************************************************/
+/*                                       Static Function Prototypes                                  */
+/*****************************************************************************************************/
+
 /**
  * @fn spi_txe_interrupt_handle
  *
@@ -64,6 +68,10 @@ static void spi_rxne_interrupt_handle(SPI_Handle_t* pSPI_Handle);
  * @return void
  */
 static void spi_ovr_err_interrupt_handle(SPI_Handle_t* pSPI_Handle);
+
+/*****************************************************************************************************/
+/*                                       Public API Definitions                                      */
+/*****************************************************************************************************/
 
 void SPI_Init(SPI_Handle_t* pSPI_Handle){
 
@@ -388,6 +396,10 @@ __attribute__((weak)) void SPI_ApplicationEventCallback(SPI_Handle_t* pSPI_Handl
 
     /* This is a weak implementation. The application may override this function */
 }
+
+/*****************************************************************************************************/
+/*                                       Static Function Definitions                                 */
+/*****************************************************************************************************/
 
 static void spi_txe_interrupt_handle(SPI_Handle_t* pSPI_Handle){
 
