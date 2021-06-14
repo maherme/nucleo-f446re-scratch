@@ -36,6 +36,28 @@ void USART_Init(USART_Handle_t* pUSART_Handle){
 }
 
 void USART_DeInit(USART_RegDef_t* pUSARTx){
+
+    if(pUSARTx == USART1){
+        USART1_REG_RESET();
+    }
+    else if(pUSARTx == USART2){
+        USART2_REG_RESET();
+    }
+    else if(pUSARTx == USART3){
+        USART3_REG_RESET();
+    }
+    else if(pUSARTx == UART4){
+        UART4_REG_RESET();
+    }
+    else if(pUSARTx == UART5){
+        UART5_REG_RESET();
+    }
+    else if(pUSARTx == USART6){
+        USART6_REG_RESET();
+    }
+    else{
+        /* do nothing */
+    }
 }
 
 void USART_PerClkCtrl(USART_RegDef_t* pUSARTx, uint8_t en_or_di){
