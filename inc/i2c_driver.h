@@ -12,6 +12,8 @@
 *       void    I2C_MasterReceiveData(I2C_Handle_t* pI2C_Handle, uint8_t* pRxBuffer, uint8_t len, uint8_t slave_addr, sr_t sr)
 *       uint8_t I2C_MasterSendDataIT(I2C_Handle_t* pI2C_Handle, uint8_t* pTxBuffer, uint32_t len, uint8_t slave_addr, sr_t sr)
 *       uint8_t I2C_MasterReceiveDataIT(I2C_Handle_t* pI2C_Handle, uint8_t* pRxBuffer, uint8_t len, uint8_t slave_addr, sr_t sr)
+*       void    I2C_SlaveSendData(I2C_RegDef_t* pI2Cx, uint8_t data)
+*       uint8_t I2C_SlaveReceiveData(I2C_RegDef_t* pI2Cx)
 *       void    I2C_IRQConfig(uint8_t IRQNumber, uint8_t en_or_di)
 *       void    I2C_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority)
 *       void    I2C_EV_IRQHandling(I2C_Handle_t* pI2C_Handle)
@@ -105,6 +107,8 @@ typedef enum{
 #define I2C_ERROR_AF        6
 #define I2C_ERROR_OVR       7
 #define I2C_ERROR_TIMEOUT   8
+#define I2C_EVENT_DATA_REQ  9
+#define I2C_EVENT_DATA_RCV  10
 
 /**
  * Configuration structure for I2C peripheral.
@@ -235,6 +239,29 @@ uint8_t I2C_MasterSendDataIT(I2C_Handle_t* pI2C_Handle, uint8_t* pTxBuffer, uint
  * @return application state.
  */
 uint8_t I2C_MasterReceiveDataIT(I2C_Handle_t* pI2C_Handle, uint8_t* pRxBuffer, uint8_t len, uint8_t slave_addr, sr_t sr);
+
+/**
+ * @fn I2C_SlaveSendData
+ *
+ * @brief function for sending data in slave mode using the I2C peripheral.
+ *
+ * @param[in] pI2Cx the base address of the I2Cx peripheral.
+ * @param[in] data to be sent.
+ *
+ * @return void.
+ */
+void I2C_SlaveSendData(I2C_RegDef_t* pI2Cx, uint8_t data);
+
+/**
+ * @fn I2C_SlaveReceiveData
+ *
+ * @brief function for receiving data in slave mode using the I2C peripheral.
+ *
+ * @param[in] pI2Cx the base address of the I2Cx peripheral.
+ *
+ * @return received data.
+ */
+uint8_t I2C_SlaveReceiveData(I2C_RegDef_t* pI2Cx);
 
 /**
  * @fn I2C_IRQConfig

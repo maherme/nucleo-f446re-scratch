@@ -12,6 +12,8 @@
 *       void    I2C_MasterReceiveData(I2C_Handle_t* pI2C_Handle, uint8_t* pRxBuffer, uint8_t len, uint8_t slave_addr, sr_t sr)
 *       uint8_t I2C_MasterSendDataIT(I2C_Handle_t* pI2C_Handle, uint8_t* pTxBuffer, uint32_t len, uint8_t slave_addr, sr_t sr)
 *       uint8_t I2C_MasterReceiveDataIT(I2C_Handle_t* pI2C_Handle, uint8_t* pRxBuffer, uint8_t len, uint8_t slave_addr, sr_t sr)
+*       void    I2C_SlaveSendData(I2C_RegDef_t* pI2Cx, uint8_t data)
+*       uint8_t I2C_SlaveReceiveData(I2C_RegDef_t* pI2Cx)
 *       void    I2C_IRQConfig(uint8_t IRQNumber, uint8_t en_or_di)
 *       void    I2C_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority)
 *       void    I2C_EV_IRQHandling(I2C_Handle_t* pI2C_Handle)
@@ -405,6 +407,16 @@ uint8_t I2C_MasterReceiveDataIT(I2C_Handle_t* pI2C_Handle, uint8_t* pRxBuffer, u
     return busystate;
 }
 
+void I2C_SlaveSendData(I2C_RegDef_t* pI2Cx, uint8_t data){
+
+    pI2Cx->DR = data;
+}
+
+uint8_t I2C_SlaveReceiveData(I2C_RegDef_t* pI2Cx){
+
+    return pI2Cx->DR;
+}
+
 void I2C_IRQConfig(uint8_t IRQNumber, uint8_t en_or_di){
 
     if(en_or_di == ENABLE){
@@ -530,10 +542,16 @@ void I2C_EV_IRQHandling(I2C_Handle_t* pI2C_Handle){
     if(temp1 && temp2 && temp3){
         /* Check for device mode */
         if(pI2C_Handle->pI2Cx->SR2 & (1 << I2C_SR2_MSL)){
+            /* The device is master */
             /* TXE flag is set */
-            if(pI2C_Handle->TxRxState == I2C_BUSY_IN_TX){
+            if(pI2C_Handle->TxRxState == I2C_BUSY_IN_TX)
                 I2C_MasterHandleTXEInterrupt(pI2C_Handle);
-            }
+        }
+        else{
+            /* The device is slave */
+            /* Check slave is in transmitter mode */
+            if(pI2C_Handle->pI2Cx->SR2 & (1 << I2C_SR2_TRA))
+                I2C_ApplicationEventCallback(pI2C_Handle, I2C_EVENT_DATA_REQ);
         }
     }
 
@@ -544,9 +562,14 @@ void I2C_EV_IRQHandling(I2C_Handle_t* pI2C_Handle){
         if(pI2C_Handle->pI2Cx->SR2 & (1 << I2C_SR2_MSL)){
             /* The device is master */
             /* RXNE flag is set */
-            if(pI2C_Handle->TxRxState == I2C_BUSY_IN_RX){
+            if(pI2C_Handle->TxRxState == I2C_BUSY_IN_RX)
                 I2C_MasterHandleRXNEInterrupt(pI2C_Handle);
-            }
+        }
+        else{
+            /* The device is slave */
+            /* Check slave is in receiver mode */
+            if(!(pI2C_Handle->pI2Cx->SR2 & (1 << I2C_SR2_TRA)))
+                I2C_ApplicationEventCallback(pI2C_Handle, I2C_EVENT_DATA_RCV);
         }
     }
 }
