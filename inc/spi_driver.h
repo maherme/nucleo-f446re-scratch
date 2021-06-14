@@ -154,7 +154,7 @@ typedef struct
 void SPI_Init(SPI_Handle_t* pSPI_Handle);
 
 /**
- *@fn SPI_DeInit
+ * @fn SPI_DeInit
  *
  * @brief function to reset all register of a SPI peripheral.
  *
@@ -197,7 +197,7 @@ void SPI_SendData(SPI_RegDef_t* pSPIx, uint8_t* pTxBuffer, uint32_t len);
  * @brief function to receive data.
  *
  * @param[in] pSPIx the base address of the SPIx peripheral.
- * @param[in] pRxBuffer buffer to store the received data.
+ * @param[out] pRxBuffer buffer to store the received data.
  * @param[in] len length of the data to receive.
  *
  * @return void
@@ -216,7 +216,6 @@ void SPI_ReceiveData(SPI_RegDef_t* pSPIx, uint8_t* pRxBuffer, uint32_t len);
  * @param[in] len length of the data to send.
  *
  * @return @SPI_APP_STATE.
- *
  */
 uint8_t SPI_SendDataIT(SPI_Handle_t* pSPI_Handle, uint8_t* pTxBuffer, uint32_t len);
 
@@ -226,11 +225,10 @@ uint8_t SPI_SendDataIT(SPI_Handle_t* pSPI_Handle, uint8_t* pTxBuffer, uint32_t l
  * @brief function to receive data.
  *
  * @param[in] pSPI_Handle handle structure for the SPI peripheral.
- * @param[in] pRxBuffer buffer to store the received data.
+ * @param[out] pRxBuffer buffer to store the received data.
  * @param[in] len length of the data to receive.
  *
  * @return @SPI_APP_STATE.
- *
  */
 uint8_t SPI_ReceiveDataIT(SPI_Handle_t* pSPI_Handle, uint8_t* pRxBuffer, uint32_t len);
 
@@ -247,7 +245,7 @@ uint8_t SPI_ReceiveDataIT(SPI_Handle_t* pSPI_Handle, uint8_t* pRxBuffer, uint32_
 void SPI_IRQConfig(uint8_t IRQNumber, uint8_t en_or_di);
 
 /**
- * @fn SPI_IRQConfig
+ * @fn SPI_IRQPriorityConfig
  *
  * @brief function to configure the IRQ number of the SPI peripheral.
  *
