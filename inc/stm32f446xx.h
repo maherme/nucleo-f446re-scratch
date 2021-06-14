@@ -167,6 +167,7 @@
 /*****************************************************************************************************/
 /*                          Peripheral Register Definition Structures                                */
 /*****************************************************************************************************/
+
 /**
  * Peripheral register definition structure for GPIO.
  */
@@ -294,9 +295,24 @@ typedef struct
     volatile uint32_t FLTR;         /* I2C FLTR register                    Address offset 0x24 */
 }I2C_RegDef_t;
 
+/**
+ * Peripheral register definition structure for USART.
+ */
+typedef struct
+{
+    volatile uint32_t SR;           /* USART status register                Address offset 0x00 */
+    volatile uint32_t DR;           /* USART data register                  Address offset 0x04 */
+    volatile uint32_t BRR;          /* USART baud rate register             Address offset 0x08 */
+    volatile uint32_t CR1;          /* USART control register 1             Address offset 0x0C */
+    volatile uint32_t CR2;          /* USART control register 2             Address offset 0x10 */
+    volatile uint32_t CR3;          /* USART control register 3             Address offset 0x14 */
+    volatile uint32_t GTPR;         /* USART guard time and prescaler reg   Address offset 0x18 */
+}USART_RegDef_t;
+
 /*****************************************************************************************************/
 /*                          Bit Position Definition of Peripheral Register                           */
 /*****************************************************************************************************/
+
 /**
  * Bit position definitions SPI_CR1.
  */
@@ -407,6 +423,7 @@ typedef struct
 /*****************************************************************************************************/
 /*          Peripheral definitions (peripheral base addresses typecasted to xxx_RegDef_t)            */
 /*****************************************************************************************************/
+
 #define GPIOA   ((GPIO_RegDef_t*)GPIOA_BASEADDR)
 #define GPIOB   ((GPIO_RegDef_t*)GPIOB_BASEADDR)
 #define GPIOC   ((GPIO_RegDef_t*)GPIOC_BASEADDR)
@@ -431,6 +448,13 @@ typedef struct
 #define I2C1    ((I2C_RegDef_t*)I2C1_BASEADDR)
 #define I2C2    ((I2C_RegDef_t*)I2C2_BASEADDR)
 #define I2C3    ((I2C_RegDef_t*)I2C3_BASEADDR)
+
+#define USART1  ((USART_RegDef_t*)USART1_BASEADDR)
+#define USART2  ((USART_RegDef_t*)USART2_BASEADDR)
+#define USART3  ((USART_RegDef_t*)USART3_BASEADDR)
+#define UART4   ((USART_RegDef_t*)UART4_BASEADDR)
+#define UART5   ((USART_RegDef_t*)UART5_BASEADDR)
+#define USART6  ((USART_RegDef_t*)USART6_BASEADDR)
 
 /*****************************************************************************************************/
 /*                          Peripheral macros                                                        */
@@ -558,6 +582,16 @@ typedef struct
 #define I2C1_REG_RESET()    do{(RCC->APB1RSTR |= (1 << 21)); (RCC->APB1RSTR &= ~(1 << 21));}while(0)
 #define I2C2_REG_RESET()    do{(RCC->APB1RSTR |= (1 << 22)); (RCC->APB1RSTR &= ~(1 << 22));}while(0)
 #define I2C3_REG_RESET()    do{(RCC->APB1RSTR |= (1 << 23)); (RCC->APB1RSTR &= ~(1 << 23));}while(0)
+
+/**
+ * Reset macros USARTx peripheral.
+ */
+#define USART1_REG_RESET()  do{(RCC->APB2RSTR |= (1 << 4)); (RCC->APB2RSTR &= ~(1 << 4));}while(0)
+#define USART2_REG_RESET()  do{(RCC->APB1RSTR |= (1 << 17)); (RCC->APB1RSTR &= ~(1 << 17));}while(0)
+#define USART3_REG_RESET()  do{(RCC->APB1RSTR |= (1 << 18)); (RCC->APB1RSTR &= ~(1 << 18));}while(0)
+#define UART4_REG_RESET()   do{(RCC->APB1RSTR |= (1 << 19)); (RCC->APB1RSTR &= ~(1 << 19));}while(0)
+#define UART5_REG_RESET()   do{(RCC->APB1RSTR |= (1 << 20)); (RCC->APB1RSTR &= ~(1 << 20));}while(0)
+#define USART6_REG_RESET()  do{(RCC->APB2RSTR |= (1 << 5)); (RCC->APB2RSTR &= ~(1 << 5));}while(0)
 
 /*****************************************************************************************************/
 /*                          IRQ definitions                                                          */
