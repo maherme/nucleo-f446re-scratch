@@ -29,16 +29,71 @@
 #include "stm32f446xx.h"
 
 /**
+ * @USART_DEVICE_MODE
+ * USART possible device mode.
+ */
+#define USART_MODE_ONLY_TX      0
+#define USART_MODE_ONLY_RX      1
+#define USART_MODE_TXRX         2
+
+/**
+ * @USART_BAUD
+ * USART possible options for baudrate.
+ */
+#define USART_STD_BAUD_1200     1200
+#define USART_STD_BAUD_2400     2400
+#define USART_STD_BAUD_9600     9600
+#define USART_STD_BAUD_19200    19200
+#define USART_STD_BAUD_38400    38400
+#define USART_STD_BAUD_57600    57600
+#define USART_STD_BAUD_115200   115200
+#define USART_STD_BAUD_230400   230400
+#define USART_STD_BAUD_460800   460800
+
+/**
+ * @USART_PARITY_CTL
+ * USART possible options for parity control.
+ */
+#define USART_PARITY_DISABLE    0
+#define USART_PARITY_EN_EVEN    1
+#define USART_PARITY_EN_ODD     2
+
+/**
+ * @USART_WORD_LENGTH
+ * USART possible options for word length.
+ */
+#define USART_WORDLEN_8BITS     0
+#define USART_WORDLEN_9BITS     1
+
+/**
+ * @USART_NUM_STOP_BITS
+ * USART possible options for number of stop bits.
+ */
+#define USART_STOPBITS_1        0
+#define USART_STOPBITS_0_5      1
+#define USART_STOPBITS_2        2
+#define USART_STOPBITS_1_5      3
+
+/**
+ * @USART_HW_FLOW_CTL
+ * USART possible options for hardware flow control.
+ */
+#define USART_HW_FLOW_CTRL_NONE     0
+#define USART_HW_FLOW_CTRL_CTS      1
+#define USART_HW_FLOW_CTRL_RTS      2
+#define USART_HW_FLOW_CTRL_CTS_RTS  3
+
+/**
  * Configuration structure for USARTx peripheral.
  */
 typedef struct
 {
-    uint8_t USART_Mode;
-    uint32_t USART_Baud;
-    uint8_t USART_NoOfStopBits;
-    uint8_t USART_WordLength;
-    uint8_t USART_ParityControl;
-    uint8_t USART_HWFlowControl;
+    uint8_t USART_Mode;             /* Possible values from @USART_DEVICE_MODE */
+    uint32_t USART_Baud;            /* Possible values from @USART_BAUD */
+    uint8_t USART_NoOfStopBits;     /* Possible values from @USART_NUM_STOP_BITS */
+    uint8_t USART_WordLength;       /* Possible values from @USART_WORD_LENGTH */
+    uint8_t USART_ParityControl;    /* Possible values from @USART_PARITY_CTL */
+    uint8_t USART_HWFlowControl;    /* Possible values from @USART_HW_FLOW_CTL */
 }USART_Config_t;
 
 /**
@@ -46,8 +101,8 @@ typedef struct
  */
 typedef struct
 {
-    USART_RegDef_t* pUSARTx;
-    USART_Config_t USART_Config;
+    USART_RegDef_t* pUSARTx;        /* Base address of the USARTx peripheral */
+    USART_Config_t USART_Config;    /* USARTx peripheral configuration settings */
 }USART_Handle_t;
 
 /*****************************************************************************************************/
