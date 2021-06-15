@@ -178,7 +178,12 @@ void USART_Enable(USART_RegDef_t* pUSARTx, uint8_t en_or_di){
 }
 
 uint8_t USART_GetFlagStatus(USART_RegDef_t* pUSARTx, uint32_t flagname){
-    return 0;
+
+    if(pUSARTx->SR & flagname){
+        return SET;
+    }
+
+    return RESET;
 }
 
 void USART_ClearFlag(USART_RegDef_t* pUSARTx, uint16_t status_flagname){
