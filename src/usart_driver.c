@@ -33,6 +33,45 @@
 /*****************************************************************************************************/
 
 void USART_Init(USART_Handle_t* pUSART_Handle){
+
+    uint32_t temp = 0;
+
+    /* Enable the peripheral clock */
+    USART_PerClkCtrl(pUSART_Handle->pUSARTx, ENABLE);
+
+    /* Enable USART TX and RX engines */
+    if(pUSART_Handle->USART_Config.USART_Mode == USART_MODE_ONLY_RX){
+        /* Enable receiver bit field */
+        temp |= (1 << USART_CR1_RE);
+    }
+    else if(pUSART_Handle->USART_Config.USART_Mode == USART_MODE_ONLY_TX){
+        /* Enable transmitter bit field */
+        temp |= (1 << USART_CR1_TE);
+    }
+    else if(pUSART_Handle->USART_Config.USART_Mode == USART_MODE_TXRX){
+        /* Enable both transmitter and receiver bit field */
+        temp |= ((1 << USART_CR1_TE) | (1 << USART_CR1_RE));
+    }
+
+    /* Configure the word length */
+    temp |= pUSART_Handle->USART_Config.USART_WordLength << USART_CR1_M;
+
+    /* Configure parity control bit field */
+    if(pUSART_Handle->USART_Config.USART_ParityControl == USART_PARITY_EN_EVEN){
+        /* Enable parity control */
+        /* EVEN parity set by default, so no need to implement */
+        temp |= (1 << USART_CR1_PCE);
+    }
+    else if(pUSART_Handle->USART_Config.USART_ParityControl == USART_PARITY_EN_ODD){
+        /* Enable parity control */
+        temp |= (1 << USART_CR1_PCE);
+
+        /* Enable ODD parity */
+        temp |= (1 << USART_CR1_PS);
+    }
+
+    /* Program CR1 register */
+    pUSART_Handle->pUSARTx->CR1 = temp;
 }
 
 void USART_DeInit(USART_RegDef_t* pUSARTx){
