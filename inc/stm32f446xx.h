@@ -468,6 +468,20 @@ typedef struct
 #define USART_CR3_CTSIE     10
 #define USART_CR3_ONEBIT    11
 
+/**
+ * Bit position definition USART_SR.
+ */
+#define USART_SR_PE         0
+#define USART_SR_FE         1
+#define USART_SR_NF         2
+#define USART_SR_ORE        3
+#define USART_SR_IDLE       4
+#define USART_SR_RXNE       5
+#define USART_SR_TC         6
+#define USART_SR_TXE        7
+#define USART_SR_LBD        8
+#define USART_SR_CTS        9
+
 /*****************************************************************************************************/
 /*          Peripheral definitions (peripheral base addresses typecasted to xxx_RegDef_t)            */
 /*****************************************************************************************************/

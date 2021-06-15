@@ -8,8 +8,8 @@
 *       void    USART_Init(USART_Handle_t* pUSART_Handle)
 *       void    USART_DeInit(USART_RegDef_t* pUSARTx)
 *       void    USART_PerClkCtrl(USART_RegDef_t* pUSARTx, uint8_t en_or_di)
-*       void    USART_SendData(USART_RegDef_t* pUSARTx, uint8_t* pTxBuffer, uint32_t len)
-*       void    USART_ReceiveData(USART_RegDef_t* pUSARTx, uint8_t* pRxBuffer, uint32_t len)
+*       void    USART_SendData(USART_Handle_t* pUSART_Handle, uint8_t* pTxBuffer, uint32_t len)
+*       void    USART_ReceiveData(USART_Handle_t* pUSART_Handle, uint8_t* pRxBuffer, uint32_t len)
 *       uint8_t USART_SendDataIT(USART_Handle_t* pUSART_Handle, uint8_t* pTxBuffer, uint32_t len)
 *       uint8_t USART_ReceiveDataIT(USART_Handle_t* pUSART_Handle, uint8_t* pRxBuffer, uint32_t len)
 *       void    USART_IRQConfig(uint8_t IRQNumber, uint8_t en_or_di)
@@ -149,18 +149,121 @@ void USART_PerClkCtrl(USART_RegDef_t* pUSARTx, uint8_t en_or_di){
     }
 }
 
-void USART_SendData(USART_RegDef_t* pUSARTx, uint8_t* pTxBuffer, uint32_t len){
+void USART_SendData(USART_Handle_t* pUSART_Handle, uint8_t* pTxBuffer, uint32_t len){
+
+    uint32_t i;
+    uint16_t* pdata;
+
+    /* Loop for transmitting len bytes */
+    for(i = 0; i < len; i++){
+        /* Wait until TXE flag is set in SR */
+        while(!USART_GetFlagStatus(pUSART_Handle->pUSARTx, USART_FLAG_TXE));
+
+        /* Check USART word length for 9 bits or 8 bits in a frame */
+        if(pUSART_Handle->USART_Config.USART_WordLength == USART_WORDLEN_9BITS){
+            /* If 9 bits load the DR with 2 bytes masking the bits other than first 9 bits */
+            pdata = (uint16_t*)pTxBuffer;
+            pUSART_Handle->pUSARTx->DR = (*pdata & (uint16_t)0x1FF);
+
+            /* Check for USART parity control */
+            if(pUSART_Handle->USART_Config.USART_ParityControl == USART_PARITY_DISABLE){
+                /* 9 bits of user data will be sent */
+                pTxBuffer++;
+                pTxBuffer++;
+            }
+            else{
+                /* 8 bits of user data will be sent */
+                /* 9th bit will be replaced by parity bit by hardware */
+                pTxBuffer++;
+            }
+        }
+        else{
+            /* 8 bits data transfer */
+            pUSART_Handle->pUSARTx->DR = (*pTxBuffer & (uint8_t)0xFF);
+
+            /* Increment buffer adddress */
+            pTxBuffer++;
+        }
+    }
+
+    /* Wait until TC flag is set in SR */
+    while(!USART_GetFlagStatus(pUSART_Handle->pUSARTx, USART_FLAG_TC));
 }
 
-void USART_ReceiveData(USART_RegDef_t* pUSARTx, uint8_t* pRxBuffer, uint32_t len){
+void USART_ReceiveData(USART_Handle_t* pUSART_Handle, uint8_t* pRxBuffer, uint32_t len){
+
+    uint32_t i;
+
+    for(i = 0; i < len; i++){
+        /* Wait until RXNE flag is set in SR */
+        while(!USART_GetFlagStatus(pUSART_Handle->pUSARTx, USART_FLAG_RXNE));
+
+        /* Check USART word length for 9 bits or 8 bits in a frame */
+        if(pUSART_Handle->USART_Config.USART_WordLength == USART_WORDLEN_9BITS){
+            /* Reception of 9 bits data frame */
+            /* Check for USART parity control */
+            if(pUSART_Handle->USART_Config.USART_ParityControl == USART_PARITY_DISABLE){
+                /* 9 bits are user data */
+                *((uint16_t*)pRxBuffer) = (pUSART_Handle->pUSARTx->DR & (uint16_t)0x01FF);
+                /* Increment the pRxBuffer two times, once per byte */
+                pRxBuffer++;
+                pRxBuffer++;
+            }
+            else{
+                /* 8 bits are user data and 1 bit is parity */
+                *pRxBuffer = (pUSART_Handle->pUSARTx->DR & (uint8_t)0xFF);
+                pRxBuffer++;
+            }
+        }
+        else{
+            /* Reception of 8 bits data frame */
+            /* Check for USART parity control */
+            if(pUSART_Handle->USART_Config.USART_ParityControl == USART_PARITY_DISABLE){
+                /* 8 bits are user data */
+                *pRxBuffer = (uint8_t)(pUSART_Handle->pUSARTx->DR & (uint8_t)0xFF);
+            }
+            else{
+                /* 7 bits are user data and 1 bit is parity */
+                *pRxBuffer = (uint8_t)(pUSART_Handle->pUSARTx->DR & (uint8_t)0x7F);
+            }
+            pRxBuffer++;
+        }
+    }
 }
 
 uint8_t USART_SendDataIT(USART_Handle_t* pUSART_Handle, uint8_t* pTxBuffer, uint32_t len){
-    return 0;
+
+    uint8_t txstate = pUSART_Handle->TxBusyState;
+
+    if(txstate != USART_BUSY_IN_TX){
+        pUSART_Handle->TxLen = len;
+        pUSART_Handle->pTxBuffer = pTxBuffer;
+        pUSART_Handle->TxBusyState = USART_BUSY_IN_TX;
+
+        /* Enable interrupt for TXE */
+        pUSART_Handle->pUSARTx->CR1 |= (1 << USART_CR1_TXEIE);
+
+        /* Enable interrupt for TC */
+        pUSART_Handle->pUSARTx->CR1 |= (1 << USART_CR1_TCIE);
+    }
+
+    return txstate;
 }
 
 uint8_t USART_ReceiveDataIT(USART_Handle_t* pUSART_Handle, uint8_t* pRxBuffer, uint32_t len){
-    return 0;
+
+    uint8_t rxstate = pUSART_Handle->RxBusyState;
+
+    if(rxstate != USART_BUSY_IN_RX){
+        pUSART_Handle->RxLen = len;
+        pUSART_Handle->pRxBuffer = pRxBuffer;
+        pUSART_Handle->RxBusyState = USART_BUSY_IN_RX;
+
+        /* Enable interrupt for RXNE */
+        pUSART_Handle->pUSARTx->CR1 |= (1 << USART_CR1_RXNEIE);
+    }
+
+    return rxstate;
 }
 
 void USART_IRQConfig(uint8_t IRQNumber, uint8_t en_or_di){

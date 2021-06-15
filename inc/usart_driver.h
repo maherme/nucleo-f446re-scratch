@@ -8,8 +8,8 @@
 *       void    USART_Init(USART_Handle_t* pUSART_Handle)
 *       void    USART_DeInit(USART_RegDef_t* pUSARTx)
 *       void    USART_PerClkCtrl(USART_RegDef_t* pUSARTx, uint8_t en_or_di)
-*       void    USART_SendData(USART_RegDef_t* pUSARTx, uint8_t* pTxBuffer, uint32_t len)
-*       void    USART_ReceiveData(USART_RegDef_t* pUSARTx, uint8_t* pRxBuffer, uint32_t len)
+*       void    USART_SendData(USART_Handle_t* pUSART_Handle, uint8_t* pTxBuffer, uint32_t len)
+*       void    USART_ReceiveData(USART_Handle_t* pUSART_Handle, uint8_t* pRxBuffer, uint32_t len)
 *       uint8_t USART_SendDataIT(USART_Handle_t* pUSART_Handle, uint8_t* pTxBuffer, uint32_t len)
 *       uint8_t USART_ReceiveDataIT(USART_Handle_t* pUSART_Handle, uint8_t* pRxBuffer, uint32_t len)
 *       void    USART_IRQConfig(uint8_t IRQNumber, uint8_t en_or_di)
@@ -87,6 +87,22 @@
 #define USART_HW_FLOW_CTRL_CTS_RTS  3
 
 /**
+ * USART related status flags definitions.
+ */
+#define USART_FLAG_TXE      (1 << USART_SR_TXE)
+#define USART_FLAG_TC       (1 << USART_SR_TC)
+#define USART_FLAG_RXNE     (1 << USART_SR_RXNE)
+
+/**
+ * @USART_APP_STATE
+ * USART possible application states.
+ */
+#define USART_READY         0
+#define USART_BUSY_IN_RX    1
+#define USART_BUSY_IN_TX    2
+
+
+/**
  * Configuration structure for USARTx peripheral.
  */
 typedef struct
@@ -106,6 +122,12 @@ typedef struct
 {
     USART_RegDef_t* pUSARTx;        /* Base address of the USARTx peripheral */
     USART_Config_t USART_Config;    /* USARTx peripheral configuration settings */
+    uint8_t* pTxBuffer;             /* To store the app. Tx buffer address */
+    uint8_t* pRxBuffer;             /* To store the app. Rx buffer address */
+    uint32_t TxLen;                 /* To store Tx len */
+    uint32_t RxLen;                 /* To store Rx len */
+    uint8_t TxBusyState;            /* To store busy state in transmission */
+    uint8_t RxBusyState;            /* To store busy state in reception */
 }USART_Handle_t;
 
 /*****************************************************************************************************/
@@ -151,7 +173,7 @@ void USART_PerClkCtrl(USART_RegDef_t* pUSARTx, uint8_t en_or_di);
  *
  * @brief function to send data.
  *
- * @param[in] pUSARTx the base address of the USARTx peripheral.
+ * @param[in] pUSART_Handle handle structure for the USART peripheral.
  * @param[in] pTxBuffer buffer with the data to send.
  * @param[in] len length of the data to send.
  *
@@ -159,14 +181,14 @@ void USART_PerClkCtrl(USART_RegDef_t* pUSARTx, uint8_t en_or_di);
  *
  * @note blocking call.
  */
-void USART_SendData(USART_RegDef_t* pUSARTx, uint8_t* pTxBuffer, uint32_t len);
+void USART_SendData(USART_Handle_t* pUSART_Handle, uint8_t* pTxBuffer, uint32_t len);
 
 /**
  * @fn USART_ReceiveData
  *
  * @brief function to receive data.
  *
- * @param[in] pUSARTx the base address of the USARTx peripheral.
+ * @param[in] pUSART_Handle handle structure for the USART peripheral.
  * @param[out] pRxBuffer buffer to store the received data.
  * @param[in] len length of the data to receive.
  *
@@ -174,7 +196,7 @@ void USART_SendData(USART_RegDef_t* pUSARTx, uint8_t* pTxBuffer, uint32_t len);
  *
  * @note blocking call.
  */
-void USART_ReceiveData(USART_RegDef_t* pUSARTx, uint8_t* pRxBuffer, uint32_t len);
+void USART_ReceiveData(USART_Handle_t* pUSART_Handle, uint8_t* pRxBuffer, uint32_t len);
 
 /**
  * @fn USART_SendDataIT
