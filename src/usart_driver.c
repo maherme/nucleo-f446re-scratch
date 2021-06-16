@@ -12,6 +12,7 @@
 *       void    USART_ReceiveData(USART_Handle_t* pUSART_Handle, uint8_t* pRxBuffer, uint32_t len)
 *       uint8_t USART_SendDataIT(USART_Handle_t* pUSART_Handle, uint8_t* pTxBuffer, uint32_t len)
 *       uint8_t USART_ReceiveDataIT(USART_Handle_t* pUSART_Handle, uint8_t* pRxBuffer, uint32_t len)
+*       void    USART_SetBaudRate(USART_RegDef_t* pUSARTx, uint32_t baudrate)
 *       void    USART_IRQConfig(uint8_t IRQNumber, uint8_t en_or_di)
 *       void    USART_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority)
 *       void    USART_IRQHandling(USART_Handle_t* pUSART_Handle)
@@ -27,6 +28,7 @@
 
 #include <stdint.h>
 #include "usart_driver.h"
+#include "rcc_driver.h"
 
 /*****************************************************************************************************/
 /*                                       Public API Definitions                                      */
@@ -72,6 +74,9 @@ void USART_Init(USART_Handle_t* pUSART_Handle){
 
     /* Program CR1 register */
     pUSART_Handle->pUSARTx->CR1 = temp;
+
+    /* Configure baud rate */
+    USART_SetBaudRate(pUSART_Handle->pUSARTx, pUSART_Handle->USART_Config.USART_Baud);
 }
 
 void USART_DeInit(USART_RegDef_t* pUSARTx){
@@ -264,6 +269,54 @@ uint8_t USART_ReceiveDataIT(USART_Handle_t* pUSART_Handle, uint8_t* pRxBuffer, u
     }
 
     return rxstate;
+}
+
+void USART_SetBaudRate(USART_RegDef_t* pUSARTx, uint32_t baudrate){
+
+    uint32_t PCLKx;
+    uint32_t usartdiv;
+    uint32_t mantissa, fraction;
+    uint32_t temp = 0;
+
+    /* Get the value of APB bus clock into the variable PCLKx */
+    if(pUSARTx == USART1 || pUSARTx == USART6){
+        /* USART1 and USART6 are hanging on APB2 bus */
+        PCLKx = RCC_GetPCLK2Value();
+    }
+    else{
+        PCLKx = RCC_GetPCLK1Value();
+    }
+
+    /* Check OVER0 config bit */
+    if(pUSARTx->CR1 & (1 << USART_CR1_OVER8)){
+        /* Over sampling by 8 */
+        usartdiv = ((25 * PCLKx) / (2 * baudrate));
+    }
+    else{
+        /* Over sampling by 16 */
+        usartdiv = ((25 * PCLKx) / (4 * baudrate)); 
+    }
+
+    /* Calculate the mantissa */
+    mantissa = usartdiv/100;
+    temp |= mantissa << 4;
+
+    /* Calculate the fraction part */
+    fraction = (usartdiv - (mantissa * 100));
+
+    if(pUSARTx->CR1 & (1 << USART_CR1_OVER8)){
+        /* Over sampling by 8 */
+        fraction = (((fraction * 8) + 50) / 100) & ((uint8_t)0x07);
+    }
+    else{
+        /* Over sampling by 16 */
+        fraction = (((fraction * 16) + 50) / 100) & ((uint8_t)0x0F);
+    }
+
+    temp |= fraction;
+
+    /* Set configuration in BRR register */
+    pUSARTx->BRR = temp;
 }
 
 void USART_IRQConfig(uint8_t IRQNumber, uint8_t en_or_di){

@@ -33,34 +33,11 @@
 #include <stddef.h>
 #include "stm32f446xx.h"
 #include "i2c_driver.h"
-
-#define FREQ_8MHZ    8000000
-#define FREQ_16MHZ   16000000
-
-static uint16_t AHB_PreScaler[8] = {2, 4, 8, 16, 64, 128, 256, 512};
-static uint8_t APB1_PreScaler[4] = {2, 4, 8, 16};
+#include "rcc_driver.h"
 
 /*****************************************************************************************************/
 /*                                       Static Function Prototypes                                  */
 /*****************************************************************************************************/
-
-/**
- * @fn RCC_GetPCLK1Value
- *
- * @brief function to calculate the PCLK1 clock value.
- *
- * @return PCLK1 clock value.
- */
-static uint32_t RCC_GetPCLK1Value(void);
-
-/**
- * @fn RCC_GetPLLOutputClock
- *
- * @brief function to calculate the PLL clock value.
- *
- * @return PLL clock value.
- */
-static uint32_t RCC_GetPLLOutputClock(void);
 
 /**
  * @fn I2C_GenerateStartCondition
@@ -694,61 +671,6 @@ __attribute__((weak)) void I2C_ApplicationEventCallback(I2C_Handle_t* pI2C_Handl
 /*****************************************************************************************************/
 /*                                       Static Function Definitions                                 */
 /*****************************************************************************************************/
-
-static uint32_t RCC_GetPCLK1Value(void){
-
-    uint32_t pclk1, systemclk, clksrc;
-    uint8_t temp;
-    uint8_t ahbp, apb1p;
-
-    /* Check for SWS */
-    clksrc = ((RCC->CFGR >> 2) & 0x3);
-
-    if(clksrc == 0){
-        /* clk is HSI */
-        systemclk = FREQ_16MHZ;
-    }
-    else if(clksrc == 1){
-        /* clk is HSE */
-        systemclk = FREQ_8MHZ;
-    }
-    else if(clksrc == 2){
-        /* clk is PLL */
-        systemclk = RCC_GetPLLOutputClock();
-    }
-    else{
-        /* do nothing */
-    }
-
-    /* AHB prescaler */
-    temp = ((RCC->CFGR >> 4) & 0xF);
-
-    if(temp < 8){
-        ahbp = 1;
-    }
-    else{
-        ahbp = AHB_PreScaler[temp-8];
-    }
-
-    /* APB1 prescaler */
-    temp = ((RCC->CFGR >> 10) & 0x7);
-
-    if(temp < 4){
-        apb1p = 1;
-    }
-    else{
-        apb1p = APB1_PreScaler[temp-4];
-    }
-
-    pclk1 = (systemclk/ahbp)/apb1p;
-
-    return pclk1;
-}
-
-static uint32_t RCC_GetPLLOutputClock(void){
-    /* TO BE DONE */
-    return 0;
-}
 
 static void I2C_GenerateStartCondition(I2C_RegDef_t* pI2Cx){
 
