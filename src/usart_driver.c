@@ -582,6 +582,13 @@ void USART_IRQHandling(USART_Handle_t* pUSART_Handle){
 }
 
 void USART_Enable(USART_RegDef_t* pUSARTx, uint8_t en_or_di){
+
+    if(en_or_di == ENABLE){
+        pUSARTx->CR1 |= (1 << USART_CR1_UE);
+    }
+    else{
+        pUSARTx->CR1 &= ~(1 << USART_CR1_UE);
+    }
 }
 
 uint8_t USART_GetFlagStatus(USART_RegDef_t* pUSARTx, uint32_t flagname){
