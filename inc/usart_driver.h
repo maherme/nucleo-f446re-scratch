@@ -102,6 +102,17 @@
 #define USART_BUSY_IN_RX    1
 #define USART_BUSY_IN_TX    2
 
+/**
+ * USART possible application events
+ */
+#define USART_EVENT_TX_CMPLT    0
+#define USART_EVENT_RX_CMPLT    1
+#define USART_EVENT_CTS         2
+#define USART_EVENT_IDLE        3
+#define USART_EVENT_ORE         4
+#define USART_ERROR_FE          5
+#define USART_ERROR_NF          6
+#define USART_ERROR_ORE         7
 
 /**
  * Configuration structure for USARTx peripheral.
