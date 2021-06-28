@@ -91,11 +91,11 @@ void SPI2_Init(void){
     SPI2Handle.pSPIx = SPI2;
     SPI2Handle.SPIConfig.SPI_BusConfig = SPI_BUS_CFG_FD;
     SPI2Handle.SPIConfig.SPI_DeviceMode = SPI_DEV_MODE_MASTER;
-    SPI2Handle.SPIConfig.SPI_SclkSpeed = SPI_SCLK_SPEED_DIV2;
+    SPI2Handle.SPIConfig.SPI_SclkSpeed = SPI_SCLK_SPEED_DIV8;
     SPI2Handle.SPIConfig.SPI_DFF = SPI_DFF_8BITS;
     SPI2Handle.SPIConfig.SPI_CPOL = SPI_CPOL_LOW;
     SPI2Handle.SPIConfig.SPI_CPHA = SPI_CPHA_LOW;
-    SPI2Handle.SPIConfig.SPI_SSM = SPI_SSM_EN;
+    SPI2Handle.SPIConfig.SPI_SSM = SPI_SSM_DI;
 
     SPI_Init(&SPI2Handle);
 }

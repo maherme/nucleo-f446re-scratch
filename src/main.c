@@ -26,8 +26,6 @@ static void delay(void){
 
 int main(void){
 
-    char user_data[] = "Hello world";
-
     initialise_monitor_handles();
 
     printf("Starting program!!!\n");
@@ -45,10 +43,33 @@ int main(void){
     /* SPI2 configuration */
     SPI2_GPIOInit();
     SPI2_Init();
-    /* Put NSS signal internally high and avoids MODF error */
-    SPI_SSICfg(SPI2, ENABLE);
+
+    /* Enable the SPI2 SSOE for enabling the NSS output */
+    /* The NSS pin is managed by the HW */
+    SPI_SSOECfg(SPI2, ENABLE);
+
+    for(;;);
+
+    return 0;
+}
+
+void EXTI15_10_Handler(void){
+
+    char user_data[] = "Hello world";
+    uint8_t data_len = strlen(user_data);
+
+    delay(); /* Prevent debouncing of button */
+
+    GPIO_IRQHandling(GPIO_PIN_NO_13);
+
+    /* Toggle LED */
+    GPIO_ToggleOutputPin(GPIOA, GPIO_PIN_NO_5);
+
     /* Enable the SPI2 peripheral */
     SPI_Enable(SPI2, ENABLE);
+
+    /* Send length information */
+    SPI_SendData(SPI2, &data_len, 1);
 
     /* Send data */
     SPI_SendData(SPI2, (uint8_t*)user_data, strlen(user_data));
@@ -58,14 +79,4 @@ int main(void){
 
     /* Disable the SPI2 peripheral */
     SPI_Enable(SPI2, DISABLE);
-
-    for(;;);
-
-    return 0;
-}
-
-void EXTI15_10_Handler(void){
-    delay();
-    GPIO_IRQHandling(GPIO_PIN_NO_13);
-    GPIO_ToggleOutputPin(GPIOA, GPIO_PIN_NO_5);
 }

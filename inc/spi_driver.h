@@ -17,6 +17,7 @@
 *       void    SPI_IRQHandling(SPI_Handle_t* pSPI_Handle)
 *       void    SPI_Enable(SPI_RegDef_t *pSPIx, uint8_t en_or_di)
 *       void    SPI_SSICfg(SPI_RegDef_t* pSPIx, uint8_t en_or_di)
+*       void    SPI_SSOECfg(SPI_RegDef_t* pSPIx, uint8_t en_or_di)
 *       uint8_t SPI_GetFlagStatus(SPI_RegDef_t* pSPIx, uint32_t flagname)
 *       void    SPI_ClearOVRFlag(SPI_RegDef_t* pSPIx)
 *       void    SPI_CloseTx(SPI_Handle_t* pSPI_Handle)
@@ -290,6 +291,18 @@ void SPI_Enable(SPI_RegDef_t* pSPIx, uint8_t en_or_di);
  * @return void.
  */
 void SPI_SSICfg(SPI_RegDef_t* pSPIx, uint8_t en_or_di);
+
+/**
+ * @fn SPI_Enable
+ *
+ * @brief function enable the SSOE of the SPI.
+ *
+ * @param[in] pSPIx the base address of the SPIx peripheral.
+ * @param[in] en_or_di for enable or disable.
+ *
+ * @return void.
+ */
+void SPI_SSOECfg(SPI_RegDef_t* pSPIx, uint8_t en_or_di);
 
 /**
  * @fn SPI_GetFlagStatus
