@@ -20,10 +20,6 @@
 
 extern void initialise_monitor_handles(void);
 
-static void delay(void){
-    for(uint32_t i = 0; i < 500000; i++);
-}
-
 int main(void){
 
     initialise_monitor_handles();
@@ -55,9 +51,6 @@ int main(void){
 
 void EXTI15_10_Handler(void){
 
-    char user_data[] = "Hello world";
-    uint8_t data_len = strlen(user_data);
-
     delay(); /* Prevent debouncing of button */
 
     GPIO_IRQHandling(GPIO_PIN_NO_13);
@@ -65,18 +58,16 @@ void EXTI15_10_Handler(void){
     /* Toggle LED */
     GPIO_ToggleOutputPin(GPIOA, GPIO_PIN_NO_5);
 
-    /* Enable the SPI2 peripheral */
-    SPI_Enable(SPI2, ENABLE);
 
-    /* Send length information */
-    SPI_SendData(SPI2, &data_len, 1);
-
-    /* Send data */
-    SPI_SendData(SPI2, (uint8_t*)user_data, strlen(user_data));
-
-    /* Confirm SPI is not busy */
-    while(SPI_GetFlagStatus(SPI2, SPI_BUSY_FLAG));
-
-    /* Disable the SPI2 peripheral */
-    SPI_Enable(SPI2, DISABLE);
+    //SPI2_SendHello();
+    SPI2_ReadPinArd();
+    delay();
+    SPI2_SetPinArd();
+    //SPI2_ReadANArd();
+    delay();
+    SPI2_ReadPinArd();
+    delay();
+    SPI2_PrintArd();
+    delay();
+    SPI2_ReadIDArd();
 }
