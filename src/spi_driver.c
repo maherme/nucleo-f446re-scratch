@@ -317,7 +317,7 @@ void SPI_IRQHandling(SPI_Handle_t* pSPI_Handle){
     temp1 = pSPI_Handle->pSPIx->SR & (1 << SPI_SR_TXE);
     temp2 = pSPI_Handle->pSPIx->CR2 & (1 << SPI_CR2_TXEIE);
 
-    if(temp1 & temp2){
+    if(temp1 && temp2){
         /* Handle TXE */
         spi_txe_interrupt_handle(pSPI_Handle);
     }
@@ -326,7 +326,7 @@ void SPI_IRQHandling(SPI_Handle_t* pSPI_Handle){
     temp1 = pSPI_Handle->pSPIx->SR & (1 << SPI_SR_RXNE);
     temp2 = pSPI_Handle->pSPIx->CR2 & (1 << SPI_CR2_RXNEIE);
 
-    if(temp1 & temp2){
+    if(temp1 && temp2){
         /* Handle RXE */
         spi_rxne_interrupt_handle(pSPI_Handle);
     }
@@ -335,7 +335,7 @@ void SPI_IRQHandling(SPI_Handle_t* pSPI_Handle){
     temp1 = pSPI_Handle->pSPIx->SR & (1 << SPI_SR_OVR);
     temp2 = pSPI_Handle->pSPIx->CR2 & (1 << SPI_CR2_ERRIE);
 
-    if(temp1 & temp2){
+    if(temp1 && temp2){
         /* Handle OVR error */
         spi_ovr_err_interrupt_handle(pSPI_Handle);
     }
