@@ -8,19 +8,17 @@
 *       void    delay(void)
 *       void    LED_GPIOInit(void)
 *       void    Button_GPIOInit(void)
-*       void    SPI2_GPIOInit(void)
-*       void    SPI2_Init(void)
+*       void    SPI2_Config(void)
 *       void    SPI2_SendHello(void)
-*       void    SPI2_SetPinArd(void)
-*       void    SPI2_ReadANArd(void)
-*       void    SPI2_ReadPinArd(void)
-*       void    SPI2_PrintArd(void)
-*       void    SPI2_ReadIDArd(void)
+*       void    SPI_IRQActions(void)
+*       void    SPI_SendCmds(void)
 *
 **/
 
 #ifndef TEST_H
 #define TEST_H
+
+#include "spi_driver.h"
 
 /**
  * Command codes for SPI test
@@ -85,38 +83,20 @@ void LED_GPIOInit(void);
 void Button_GPIOInit(void);
 
 /**
- * @fn SPI2_GPIOInit
+ * @fn SPI2_Config
  *
- * @brief function to initialize GPIO port for the SPI2 peripheral.
- *
- * @param[in] void
- *
- * @return void
- *
- * @note
- *      PB14 -> SPI2_MISO
- *      PB15 -> SPI2_MOSI
- *      PB13 -> SPI2_SCLK
- *      PB12 -> SPI2_NSS
- *      Alt function mode -> 5
- */
-void SPI2_GPIOInit(void);
-
-/**
- * @fn SPI2_Init
- *
- * @brief function to initialize SPI2 peripheral.
+ * @brief function to initialize and configure SPI2 peripheral.
  *
  * @param[in] void
  *
  * @return void
  */
-void SPI2_Init(void);
+void SPI2_Config(void);
 
 /**
  * @fn SPI2_SendHello
  *
- * @brief function to send hello through SPI2 peripheral.
+ * @brief function to test SPI2 peripheral transmission.
  *
  * @param[in] void
  *
@@ -125,58 +105,25 @@ void SPI2_Init(void);
 void SPI2_SendHello(void);
 
 /**
- * @fn SPI2_SetPinArd
+ * @fn SPI_IRQActions
  *
- * @brief function to send command for setting PIN to arduino through SPI2 peripheral.
+ * @brief function to perform actions needed when interruption from slave raises.
  *
  * @param[in] void
  *
  * @return void
  */
-void SPI2_SetPinArd(void);
+void SPI_IRQActions(void);
 
 /**
- * @fn SPI2_ReadANArd
+ * @fn SPI_SendCmds
  *
- * @brief function to send command for reading analog input of arduino through SPI2 peripheral.
- *
- * @param[in] void
- *
- * @return void
- */
-void SPI2_ReadANArd(void);
-
-/**
- * @fn SPI2_ReadPinArd
- *
- * @brief function to send command for reading pin status of arduino through SPI2 peripheral.
+ * @brief function to send some commands for testing SPI peripheral.
  *
  * @param[in] void
  *
  * @return void
  */
-void SPI2_ReadPinArd(void);
-
-/**
- * @fn SPI2_PrintArd
- *
- * @brief function to send command for printing a message of arduino through SPI2 peripheral.
- *
- * @param[in] void
- *
- * @return void
- */
-void SPI2_PrintArd(void);
-
-/**
- * @fn SPI2_PrintArd
- *
- * @brief function to send command for reading the ID of arduino through SPI2 peripheral.
- *
- * @param[in] void
- *
- * @return void
- */
-void SPI2_ReadIDArd(void);
+void SPI_SendCmds(void);
 
 #endif /* TEST_H */

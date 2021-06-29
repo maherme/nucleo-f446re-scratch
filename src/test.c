@@ -8,14 +8,10 @@
 *       void    delay(void)
 *       void    LED_GPIOInit(void)
 *       void    Button_GPIOInit(void)
-*       void    SPI2_GPIOInit(void)
-*       void    SPI2_Init(void)
+*       void    SPI2_Config(void)
 *       void    SPI2_SendHello(void)
-*       void    SPI2_SetPinArd(void)
-*       void    SPI2_ReadANArd(void)
-*       void    SPI2_ReadPinArd(void)
-*       void    SPI2_PrintArd(void)
-*       void    SPI2_ReadIDArd(void)
+*       void    SPI_IRQActions(void)
+*       void    SPI_SendCmds(void)
 *
 * NOTES :
 *       For further information about functions refer to the corresponding header file.
@@ -30,6 +26,13 @@
 #include "spi_driver.h"
 #include "test.h"
 
+#define SIZE_ID     11
+
+static char rx_buffer[500];
+volatile uint8_t rx_stop = 0;
+volatile uint8_t read_byte;
+SPI_Handle_t SPI2Handle;
+
 /*****************************************************************************************************/
 /*                                       Static Function Prototypes                                  */
 /*****************************************************************************************************/
@@ -43,14 +46,102 @@
  *
  * @return 1 if ack format is OK and 0 if it is not OK.
  */
-static uint8_t SPI_CheckAck(uint8_t ack){
+static uint8_t SPI_CheckAck(uint8_t ack);
 
-    if(ack == 0xF5){
-        return 1;
-    }
+/**
+ * @fn SPI2_GPIOInit
+ *
+ * @brief function to initialize GPIO port for the SPI2 peripheral.
+ *
+ * @param[in] void
+ *
+ * @return void
+ *
+ * @note
+ *      PB14 -> SPI2_MISO
+ *      PB15 -> SPI2_MOSI
+ *      PB13 -> SPI2_SCLK
+ *      PB12 -> SPI2_NSS
+ *      Alt function mode -> 5
+ */
+static void SPI2_GPIOInit(void);
 
-    return 0;
-}
+/**
+ * @fn SPI2_GPIO_IntPinInit
+ *
+ * @brief function to initialize GPIO pin which SPI issues data available interrupt.
+ *
+ * @param[in] void
+ *
+ * @return void
+ */
+static void SPI2_GPIO_IntPinInit(void);
+
+/**
+ * @fn SPI2_Init
+ *
+ * @brief function to initialize SPI2 peripheral.
+ *
+ * @param[in] pSPI_Handle.
+ *
+ * @return void
+ */
+static void SPI2_Init(SPI_Handle_t* pSPI_Handle);
+
+/**
+ * @fn SPI2_SetPinArd
+ *
+ * @brief function to send command for setting PIN to arduino through SPI2 peripheral.
+ *
+ * @param[in] void
+ *
+ * @return void
+ */
+static void SPI2_SetPinArd(void);
+
+/**
+ * @fn SPI2_ReadANArd
+ *
+ * @brief function to send command for reading analog input of arduino through SPI2 peripheral.
+ *
+ * @param[in] void
+ *
+ * @return void
+ */
+static void SPI2_ReadANArd(void);
+
+/**
+ * @fn SPI2_ReadPinArd
+ *
+ * @brief function to send command for reading pin status of arduino through SPI2 peripheral.
+ *
+ * @param[in] void
+ *
+ * @return void
+ */
+static void SPI2_ReadPinArd(void);
+
+/**
+ * @fn SPI2_PrintArd
+ *
+ * @brief function to send command for printing a message of arduino through SPI2 peripheral.
+ *
+ * @param[in] void
+ *
+ * @return void
+ */
+static void SPI2_PrintArd(void);
+
+/**
+ * @fn SPI2_PrintArd
+ *
+ * @brief function to send command for reading the ID of arduino through SPI2 peripheral.
+ *
+ * @param[in] void
+ *
+ * @return void
+ */
+static void SPI2_ReadIDArd(void);
 
 /*****************************************************************************************************/
 /*                                       Public API Definitions                                      */
@@ -91,8 +182,126 @@ void Button_GPIOInit(void){
     GPIO_Init(&GpioBtn);
 }
 
+void SPI2_Config(void){
 
-void SPI2_GPIOInit(void){
+    /* Pin interrupt for SPI with arduino */
+    SPI2_GPIO_IntPinInit();
+
+    /* SPI2 configuration */
+    SPI2_GPIOInit();
+    SPI2_Init(&SPI2Handle);
+
+    /* Enable the SPI2 SSOE for enabling the NSS output */
+    /* The NSS pin is managed by the HW */
+    SPI_SSOECfg(SPI2, ENABLE);
+
+    /* Enable SPI2 interrupt */
+    SPI_IRQConfig(IRQ_NO_SPI2, ENABLE);
+}
+
+void SPI2_SendHello(void){
+
+    char user_data[] = "Hello world";
+    uint8_t data_len = strlen(user_data);
+
+    /* Enable the SPI2 peripheral */
+    SPI_Enable(SPI2, ENABLE);
+
+    /* Send length information */
+    SPI_SendData(SPI2, &data_len, 1);
+
+    /* Send data */
+    SPI_SendData(SPI2, (uint8_t*)user_data, strlen(user_data));
+
+    /* Confirm SPI is not busy */
+    while(SPI_GetFlagStatus(SPI2, SPI_BUSY_FLAG));
+
+    /* Disable the SPI2 peripheral */
+    SPI_Enable(SPI2, DISABLE);
+}
+
+void SPI_SendCmds(void){
+
+    SPI2_ReadPinArd();
+    delay();
+    SPI2_SetPinArd();
+    delay();
+    SPI2_ReadANArd();
+    delay();
+    SPI2_ReadPinArd();
+    delay();
+    SPI2_PrintArd();
+    delay();
+    SPI2_ReadIDArd();
+}
+
+void SPI_IRQActions(void){
+
+    uint8_t dummy = 0xFF;
+
+    GPIO_IRQHandling(GPIO_PIN_NO_9);
+    GPIO_IRQConfig(IRQ_NO_EXTI9_5, DISABLE);
+
+    rx_stop = 0;
+
+    /* Enable the SPI2 peripheral */
+    SPI_Enable(SPI2, ENABLE);
+
+    while(!rx_stop){
+        /* fetch the data from the SPI peripheral byte by byte in interrupt mode */
+        while(SPI_SendDataIT(&SPI2Handle, &dummy, 1) == SPI_BUSY_IN_TX);
+        while(SPI_ReceiveDataIT(&SPI2Handle, (uint8_t*)&read_byte, 1) == SPI_BUSY_IN_RX);
+    }
+
+    /* Confirm SPI is not busy */
+    while(SPI_GetFlagStatus(SPI2, SPI_BUSY_FLAG));
+
+    /* Disable the SPI2 peripheral */
+    SPI_Enable(SPI2, DISABLE);
+
+    printf("Rx data = %s\n", rx_buffer);
+
+    GPIO_IRQConfig(IRQ_NO_EXTI9_5, ENABLE);
+}
+
+/*****************************************************************************************************/
+/*                               Weak Function Overwrite Definitions                                 */
+/*****************************************************************************************************/
+
+void SPI2_Handler(void){
+
+    SPI_IRQHandling(&SPI2Handle);
+}
+
+void SPI_ApplicationEventCallback(SPI_Handle_t* pSPI_Handle, uint8_t app_event){
+
+    static uint32_t i = 0;
+
+    /* In the RX complete event, copy data in to rcv buffer. '\0' indicates end of message(rcvStop = 1) */
+    if(app_event == SPI_EVENT_RX_CMPLT){
+        rx_buffer[i++] = read_byte;
+        if((read_byte == '\0') || (i == 500)){
+            rx_stop = 1;
+            rx_buffer[i-1] = '\0';
+            i = 0;
+        }
+    }
+}
+
+/*****************************************************************************************************/
+/*                                       Static Function Definitions                                 */
+/*****************************************************************************************************/
+
+static uint8_t SPI_CheckAck(uint8_t ack){
+
+    if(ack == 0xF5){
+        return 1;
+    }
+
+    return 0;
+}
+
+static void SPI2_GPIOInit(void){
 
     GPIO_Handle_t SPIPins;
 
@@ -122,46 +331,41 @@ void SPI2_GPIOInit(void){
     GPIO_Init(&SPIPins);
 }
 
-void SPI2_Init(void){
+static void SPI2_GPIO_IntPinInit(void){
 
-    SPI_Handle_t SPI2Handle;
+    GPIO_Handle_t SPIIntPin;
 
-    memset(&SPI2Handle, 0, sizeof(SPI2Handle));
+    memset(&SPIIntPin, 0, sizeof(SPIIntPin));
 
-    SPI2Handle.pSPIx = SPI2;
-    SPI2Handle.SPIConfig.SPI_BusConfig = SPI_BUS_CFG_FD;
-    SPI2Handle.SPIConfig.SPI_DeviceMode = SPI_DEV_MODE_MASTER;
-    SPI2Handle.SPIConfig.SPI_SclkSpeed = SPI_SCLK_SPEED_DIV8;
-    SPI2Handle.SPIConfig.SPI_DFF = SPI_DFF_8BITS;
-    SPI2Handle.SPIConfig.SPI_CPOL = SPI_CPOL_LOW;
-    SPI2Handle.SPIConfig.SPI_CPHA = SPI_CPHA_LOW;
-    SPI2Handle.SPIConfig.SPI_SSM = SPI_SSM_DI;
+    SPIIntPin.pGPIOx = GPIOC;
+    SPIIntPin.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_9;
+    SPIIntPin.GPIO_PinConfig.GPIO_PinMode = GPIO_MODE_IT_FT;
+    SPIIntPin.GPIO_PinConfig.GPIO_PinSpeed = GPIO_SPEED_LOW;
+    SPIIntPin.GPIO_PinConfig.GPIO_PinPuPdControl = GPIO_PIN_PU;
 
-    SPI_Init(&SPI2Handle);
+    GPIO_Init(&SPIIntPin);
+
+    GPIO_IRQPriorityConfig(IRQ_NO_EXTI9_5, NVIC_IRQ_PRIORITY15);
+    GPIO_IRQConfig(IRQ_NO_EXTI9_5, ENABLE);
 }
 
-void SPI2_SendHello(void){
+static void SPI2_Init(SPI_Handle_t* pSPI_Handle){
 
-    char user_data[] = "Hello world";
-    uint8_t data_len = strlen(user_data);
+    memset(pSPI_Handle, 0, sizeof(*pSPI_Handle));
 
-    /* Enable the SPI2 peripheral */
-    SPI_Enable(SPI2, ENABLE);
+    pSPI_Handle->pSPIx = SPI2;
+    pSPI_Handle->SPIConfig.SPI_BusConfig = SPI_BUS_CFG_FD;
+    pSPI_Handle->SPIConfig.SPI_DeviceMode = SPI_DEV_MODE_MASTER;
+    pSPI_Handle->SPIConfig.SPI_SclkSpeed = SPI_SCLK_SPEED_DIV8;
+    pSPI_Handle->SPIConfig.SPI_DFF = SPI_DFF_8BITS;
+    pSPI_Handle->SPIConfig.SPI_CPOL = SPI_CPOL_LOW;
+    pSPI_Handle->SPIConfig.SPI_CPHA = SPI_CPHA_LOW;
+    pSPI_Handle->SPIConfig.SPI_SSM = SPI_SSM_DI;
 
-    /* Send length information */
-    SPI_SendData(SPI2, &data_len, 1);
-
-    /* Send data */
-    SPI_SendData(SPI2, (uint8_t*)user_data, strlen(user_data));
-
-    /* Confirm SPI is not busy */
-    while(SPI_GetFlagStatus(SPI2, SPI_BUSY_FLAG));
-
-    /* Disable the SPI2 peripheral */
-    SPI_Enable(SPI2, DISABLE);
+    SPI_Init(pSPI_Handle);
 }
 
-void SPI2_SetPinArd(void){
+static void SPI2_SetPinArd(void){
 
     uint8_t dummy_write = 0xFF;
     uint8_t dummy_read = 0;
@@ -196,7 +400,7 @@ void SPI2_SetPinArd(void){
     SPI_Enable(SPI2, DISABLE);
 }
 
-void SPI2_ReadANArd(void){
+static void SPI2_ReadANArd(void){
 
     uint8_t dummy_write = 0xFF;
     uint8_t dummy_read = 0;
@@ -231,7 +435,7 @@ void SPI2_ReadANArd(void){
         /* Read analog data */
         SPI_ReceiveData(SPI2, &analog_read, 1);
 
-        printf("Data read: %d\n", analog_read);
+        printf("Analog read: %d\n", analog_read);
     }
 
     /* Confirm SPI is not busy */
@@ -241,7 +445,7 @@ void SPI2_ReadANArd(void){
     SPI_Enable(SPI2, DISABLE);
 }
 
-void SPI2_ReadPinArd(void){
+static void SPI2_ReadPinArd(void){
 
     uint8_t dummy_write = 0xFF;
     uint8_t dummy_read = 0;
@@ -276,7 +480,7 @@ void SPI2_ReadPinArd(void){
         /* Read response data */
         SPI_ReceiveData(SPI2, &pin_status_read, 1);
 
-        printf("Data read: %d\n", pin_status_read);
+        printf("Pin status: %d\n", pin_status_read);
     }
 
     /* Confirm SPI is not busy */
@@ -286,7 +490,7 @@ void SPI2_ReadPinArd(void){
     SPI_Enable(SPI2, DISABLE);
 }
 
-void SPI2_PrintArd(void){
+static void SPI2_PrintArd(void){
 
     uint8_t user_data[] = "Hello from nucleo board to arduino";
     uint8_t data_len = strlen((char*)user_data);
@@ -331,13 +535,13 @@ void SPI2_PrintArd(void){
     SPI_Enable(SPI2, DISABLE);
 }
 
-void SPI2_ReadIDArd(void){
+static void SPI2_ReadIDArd(void){
 
     uint8_t dummy_write = 0xFF;
     uint8_t dummy_read = 0;
     uint8_t ack_byte = 0;
     uint8_t cmd_code = 0;
-    uint8_t id[11] = {0};
+    uint8_t id[SIZE_ID] = {0};
 
     /* Enable the SPI2 peripheral */
     SPI_Enable(SPI2, ENABLE);
@@ -354,13 +558,13 @@ void SPI2_ReadIDArd(void){
     /* Verify the acknowledge response */
     if(SPI_CheckAck(ack_byte)){
         /* Read ID from the slave */
-        for(int8_t i = 0; i < 10; i++){
+        for(int8_t i = 0; i < (SIZE_ID-1); i++){
             /* Send dummy bits to fetch the response from the slave */
             SPI_SendData(SPI2, &dummy_write, 1);
             SPI_ReceiveData(SPI2, &id[i], 1);
         }
-        id[10] = '\0';
-        printf("Data read: %s\n", id);
+        id[SIZE_ID-1] = '\0';
+        printf("ID read: %s\n", id);
     }
 
     /* Confirm SPI is not busy */

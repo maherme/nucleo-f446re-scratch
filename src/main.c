@@ -14,10 +14,6 @@
 #include "spi_driver.h"
 #include "test.h"
 
-#define HIGH 1
-#define LOW 0
-#define BTN_PRESSED LOW
-
 extern void initialise_monitor_handles(void);
 
 int main(void){
@@ -36,17 +32,19 @@ int main(void){
     GPIO_IRQPriorityConfig(IRQ_NO_EXTI15_10, NVIC_IRQ_PRIORITY15);
     GPIO_IRQConfig(IRQ_NO_EXTI15_10, ENABLE);
 
-    /* SPI2 configuration */
-    SPI2_GPIOInit();
-    SPI2_Init();
+    /* Configure and initialise SPI2 peripheral */
+    SPI2_Config();
 
-    /* Enable the SPI2 SSOE for enabling the NSS output */
-    /* The NSS pin is managed by the HW */
-    SPI_SSOECfg(SPI2, ENABLE);
-
-    for(;;);
+    for(;;){
+    }
 
     return 0;
+}
+
+void EXTI9_5_Handler(void){
+
+    /* Interrupt actions for SPI */
+    SPI_IRQActions();
 }
 
 void EXTI15_10_Handler(void){
@@ -55,19 +53,9 @@ void EXTI15_10_Handler(void){
 
     GPIO_IRQHandling(GPIO_PIN_NO_13);
 
+    /* Send commands via SPI if button is pressed */
+    SPI_SendCmds();
+
     /* Toggle LED */
     GPIO_ToggleOutputPin(GPIOA, GPIO_PIN_NO_5);
-
-
-    //SPI2_SendHello();
-    SPI2_ReadPinArd();
-    delay();
-    SPI2_SetPinArd();
-    //SPI2_ReadANArd();
-    delay();
-    SPI2_ReadPinArd();
-    delay();
-    SPI2_PrintArd();
-    delay();
-    SPI2_ReadIDArd();
 }
