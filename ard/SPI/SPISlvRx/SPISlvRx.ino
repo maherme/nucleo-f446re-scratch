@@ -15,10 +15,6 @@
 
 #include <SPI.h>
 
-#define SPI_SCK     13
-#define SPI_MISO    12
-#define SPI_MOSI    11
-#define SPI_SS      10
 #define SIZE_BUF    200     /* Maximum number of characters to be received */
 #define SERIAL_BR   9600    /* Baud rate to print message by console */
 
@@ -63,23 +59,6 @@ static uint8_t SPIRx(void){
     while(!(SPSR & (1 << SPIF)));
     /* Return data received in the data register */
     return SPDR;
-}
-
-/**
- * @fn SPITx
- *
- * @brief function to transmit data by SPI peripheral.
- *
- * @param[in] data is the data to be transmitted.
- *
- * @return void
- */
-static void SPITx(uint8_t data){
-
-    /* Store data in the data register */
-    SPDR = data;
-    /* Wait until TX is completed */
-    while(!(SPSR & (1 << SPIF)));
 }
 
 /*****************************************************************************************************/
