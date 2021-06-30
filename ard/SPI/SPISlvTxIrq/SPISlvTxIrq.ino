@@ -88,7 +88,7 @@ static void SPITx(uint8_t data){
  *
  * @return void
  */
-void notify_controller(void){
+static void notify_controller(void){
 
     pinMode(pin_int, OUTPUT);
     digitalWrite(pin_int, HIGH);
