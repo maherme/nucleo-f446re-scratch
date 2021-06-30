@@ -12,6 +12,7 @@
 *           SS      10 Slave select (It shall be pulled low by the master).
 *
 *           Carrier return option in the arduino serial monitor is needed.
+            Transmission is notified using a 50us pulse in pin 8, 
 **/
 
 #include <SPI.h>
