@@ -12,6 +12,8 @@
 *       void    SPI2_SendHello(void)
 *       void    SPI_IRQActions(void)
 *       void    SPI_SendCmds(void)
+*       void    I2C1_Config(void)
+*       void    I2C1_SendHello(void)
 *
 **/
 
@@ -19,6 +21,7 @@
 #define TEST_H
 
 #include "spi_driver.h"
+#include "i2c_driver.h"
 
 /**
  * Command codes for SPI test
@@ -125,5 +128,27 @@ void SPI_IRQActions(void);
  * @return void
  */
 void SPI_SendCmds(void);
+
+/**
+ * @fn I2C1_Config
+ *
+ * @brief function to initialize and configure I2C1 peripheral.
+ *
+ * @param[in] void
+ *
+ * @return void
+ */
+void I2C1_Config(void);
+
+/**
+ * @fn I2C1_SendHello
+ *
+ * @brief function to test I2C1 peripheral transmission.
+ *
+ * @param[in] void
+ *
+ * @return void
+ */
+void I2C1_SendHello(void);
 
 #endif /* TEST_H */

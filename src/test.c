@@ -12,6 +12,8 @@
 *       void    SPI2_SendHello(void)
 *       void    SPI_IRQActions(void)
 *       void    SPI_SendCmds(void)
+*       void    I2C1_Config(void)
+*       void    I2C1_SendHello(void)
 *
 * NOTES :
 *       For further information about functions refer to the corresponding header file.
@@ -24,14 +26,17 @@
 #include "stm32f446xx.h"
 #include "gpio_driver.h"
 #include "spi_driver.h"
+#include "i2c_driver.h"
 #include "test.h"
 
-#define SIZE_ID     11
+#define SIZE_ID             11
+#define I2C_SLAVE_ADDRESS   0x68
 
 static char rx_buffer[500];
 volatile uint8_t rx_stop = 0;
 volatile uint8_t read_byte;
 SPI_Handle_t SPI2Handle;
+I2C_Handle_t I2C1Handle;
 
 /*****************************************************************************************************/
 /*                                       Static Function Prototypes                                  */
@@ -142,6 +147,33 @@ static void SPI2_PrintArd(void);
  * @return void
  */
 static void SPI2_ReadIDArd(void);
+
+/**
+ * @fn I2C_GPIOInit
+ *
+ * @brief function to initialize GPIO port for the I2C peripheral.
+ *
+ * @param[in] void
+ *
+ * @return void
+ *
+ * @note
+ *      PB6 -> I2C_SCL
+ *      PB9 -> I2C_SDA
+ *      Alt function mode -> 4
+ */
+static void I2C1_GPIOInit(void);
+
+/**
+ * @fn I2C_Init
+ *
+ * @brief function to initialize I2C peripheral.
+ *
+ * @param[in] pI2C_Handle.
+ *
+ * @return void
+ */
+static void I2C1_Init(I2C_Handle_t* pI2C_Handle);
 
 /*****************************************************************************************************/
 /*                                       Public API Definitions                                      */
@@ -262,6 +294,27 @@ void SPI_IRQActions(void){
     printf("Rx data = %s\n", rx_buffer);
 
     GPIO_IRQConfig(IRQ_NO_EXTI9_5, ENABLE);
+}
+
+void I2C1_Config(void){
+
+    /* I2C1 configuration */
+    I2C1_GPIOInit();
+    I2C1_Init(&I2C1Handle);
+}
+
+void I2C1_SendHello(void){
+
+    char user_data[] = "Hello world";
+
+    /* Enable the I2C1 peripheral */
+    I2C_Enable(I2C1, ENABLE);
+
+    /* Send data */
+    I2C_MasterSendData(&I2C1Handle, (uint8_t*)user_data, strlen(user_data), I2C_SLAVE_ADDRESS, I2C_DISABLE_SR);
+
+    /* Disable the I2C1 peripheral */
+    I2C_Enable(I2C1, DISABLE);
 }
 
 /*****************************************************************************************************/
@@ -572,4 +625,39 @@ static void SPI2_ReadIDArd(void){
 
     /* Disable the SPI2 peripheral */
     SPI_Enable(SPI2, DISABLE);
+}
+
+static void I2C1_GPIOInit(void){
+
+    GPIO_Handle_t I2CPins;
+
+    memset(&I2CPins, 0, sizeof(I2CPins));
+
+    I2CPins.pGPIOx = GPIOB;
+    I2CPins.GPIO_PinConfig.GPIO_PinMode = GPIO_MODE_ALTFN;
+    I2CPins.GPIO_PinConfig.GPIO_PinOPType = GPIO_OP_TYPE_OD;
+    I2CPins.GPIO_PinConfig.GPIO_PinPuPdControl = GPIO_PIN_PU;
+    I2CPins.GPIO_PinConfig.GPIO_PinAltFunMode = 4;
+    I2CPins.GPIO_PinConfig.GPIO_PinSpeed = GPIO_SPEED_FAST;
+
+    /* SCL */
+    I2CPins.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_6;
+    GPIO_Init(&I2CPins);
+
+    /* SDA */
+    I2CPins.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_9;
+    GPIO_Init(&I2CPins);
+}
+
+static void I2C1_Init(I2C_Handle_t* pI2C_Handle){
+
+    memset(pI2C_Handle, 0, sizeof(*pI2C_Handle));
+
+    pI2C_Handle->pI2Cx = I2C1;
+    pI2C_Handle->I2C_Config.I2C_ACKControl = I2C_ACK_ENABLE;
+    pI2C_Handle->I2C_Config.I2C_DeviceAddress = 0x61;
+    pI2C_Handle->I2C_Config.I2C_FMDutyCycle = I2C_FM_DUTY_2;
+    pI2C_Handle->I2C_Config.I2C_SCLSpeed = I2C_SCL_SPEED_SM;
+
+    I2C_Init(pI2C_Handle);
 }

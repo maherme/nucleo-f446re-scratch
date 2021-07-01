@@ -33,7 +33,10 @@ int main(void){
     GPIO_IRQConfig(IRQ_NO_EXTI15_10, ENABLE);
 
     /* Configure and initialise SPI2 peripheral */
-    SPI2_Config();
+    //SPI2_Config();
+
+    /* Configure and initialise I2C1 peripheral */
+    I2C1_Config();
 
     for(;;){
     }
@@ -44,7 +47,7 @@ int main(void){
 void EXTI9_5_Handler(void){
 
     /* Interrupt actions for SPI */
-    SPI_IRQActions();
+    //SPI_IRQActions();
 }
 
 void EXTI15_10_Handler(void){
@@ -54,7 +57,10 @@ void EXTI15_10_Handler(void){
     GPIO_IRQHandling(GPIO_PIN_NO_13);
 
     /* Send commands via SPI if button is pressed */
-    SPI_SendCmds();
+    //SPI_SendCmds();
+
+    /* Send I2C data */
+    I2C1_SendHello();
 
     /* Toggle LED */
     GPIO_ToggleOutputPin(GPIOA, GPIO_PIN_NO_5);
