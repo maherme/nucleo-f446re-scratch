@@ -14,6 +14,7 @@
 *       void    SPI_SendCmds(void)
 *       void    I2C1_Config(void)
 *       void    I2C1_SendHello(void)
+*       void    I2C1_SendCmd(void)
 *
 **/
 
@@ -150,5 +151,17 @@ void I2C1_Config(void);
  * @return void
  */
 void I2C1_SendHello(void);
+
+/**
+ * @fn I2C1_SendCmd
+ *
+ * @brief function to test I2C1 peripheral transmission and reception.
+ *
+ * @param[in] void
+ *
+ * @return void
+ */
+
+void I2C1_SendCmd(void);
 
 #endif /* TEST_H */

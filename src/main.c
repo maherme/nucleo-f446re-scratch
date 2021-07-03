@@ -60,7 +60,8 @@ void EXTI15_10_Handler(void){
     //SPI_SendCmds();
 
     /* Send I2C data */
-    I2C1_SendHello();
+    //I2C1_SendHello();
+    I2C1_SendCmd();
 
     /* Toggle LED */
     GPIO_ToggleOutputPin(GPIOA, GPIO_PIN_NO_5);

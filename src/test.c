@@ -14,6 +14,7 @@
 *       void    SPI_SendCmds(void)
 *       void    I2C1_Config(void)
 *       void    I2C1_SendHello(void)
+*       void    I2C1_SendCmd(void)
 *
 * NOTES :
 *       For further information about functions refer to the corresponding header file.
@@ -312,6 +313,28 @@ void I2C1_SendHello(void){
 
     /* Send data */
     I2C_MasterSendData(&I2C1Handle, (uint8_t*)user_data, strlen(user_data), I2C_SLAVE_ADDRESS, I2C_DISABLE_SR);
+
+    /* Disable the I2C1 peripheral */
+    I2C_Enable(I2C1, DISABLE);
+}
+
+void I2C1_SendCmd(void){
+
+    uint8_t rx_buf[32] = {0};
+    uint8_t len = 0;
+    uint8_t command = 0x51;
+
+    /* Enable the I2C1 peripheral */
+    I2C_Enable(I2C1, ENABLE);
+
+    I2C_MasterSendData(&I2C1Handle, &command, 1, I2C_SLAVE_ADDRESS, I2C_DISABLE_SR);
+    I2C_MasterReceiveData(&I2C1Handle, &len, 1, I2C_SLAVE_ADDRESS, I2C_DISABLE_SR);
+
+    command = 0x52;
+    I2C_MasterSendData(&I2C1Handle, &command, 1, I2C_SLAVE_ADDRESS, I2C_DISABLE_SR);
+    I2C_MasterReceiveData(&I2C1Handle, rx_buf, len, I2C_SLAVE_ADDRESS, I2C_DISABLE_SR);
+    rx_buf[len + 1] = '\0';
+    printf("Data: %s", rx_buf);
 
     /* Disable the I2C1 peripheral */
     I2C_Enable(I2C1, DISABLE);
