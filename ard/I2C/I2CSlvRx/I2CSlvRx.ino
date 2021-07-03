@@ -21,6 +21,15 @@
 /*                                       Static Function Definitions                                 */
 /*****************************************************************************************************/
 
+/**
+ * @fn rxHandler
+ *
+ * @brief function to be called when arduino receives a transmission from a master.
+ *
+ * @param[in] bytes is the number of bytes read from the master.
+ *
+ * @return void
+ */
 static void rxHandler(int bytes){
 
     uint8_t cnt = 0;
