@@ -327,12 +327,12 @@ void I2C1_SendCmd(void){
     /* Enable the I2C1 peripheral */
     I2C_Enable(I2C1, ENABLE);
 
-    I2C_MasterSendData(&I2C1Handle, &command, 1, I2C_SLAVE_ADDRESS, I2C_DISABLE_SR);
-    I2C_MasterReceiveData(&I2C1Handle, &len, 1, I2C_SLAVE_ADDRESS, I2C_DISABLE_SR);
+    I2C_MasterSendData(&I2C1Handle, &command, 1, I2C_SLAVE_ADDRESS, I2C_ENABLE_SR);
+    I2C_MasterReceiveData(&I2C1Handle, &len, 1, I2C_SLAVE_ADDRESS, I2C_ENABLE_SR);
 
     command = 0x52;
-    I2C_MasterSendData(&I2C1Handle, &command, 1, I2C_SLAVE_ADDRESS, I2C_DISABLE_SR);
-    I2C_MasterReceiveData(&I2C1Handle, rx_buf, len, I2C_SLAVE_ADDRESS, I2C_DISABLE_SR);
+    I2C_MasterSendData(&I2C1Handle, &command, 1, I2C_SLAVE_ADDRESS, I2C_ENABLE_SR);
+    I2C_MasterReceiveData(&I2C1Handle, rx_buf, len, I2C_SLAVE_ADDRESS, I2C_ENABLE_SR);
     rx_buf[len + 1] = '\0';
     printf("Data: %s", rx_buf);
 
