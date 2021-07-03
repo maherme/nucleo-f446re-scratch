@@ -158,7 +158,7 @@ static void SPI2_ReadIDArd(void);
  * @return void
  *
  * @note
- *      PB6 -> I2C_SCL
+ *      PB8 -> I2C_SCL
  *      PB9 -> I2C_SDA
  *      Alt function mode -> 4
  */
@@ -641,7 +641,7 @@ static void I2C1_GPIOInit(void){
     I2CPins.GPIO_PinConfig.GPIO_PinSpeed = GPIO_SPEED_FAST;
 
     /* SCL */
-    I2CPins.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_6;
+    I2CPins.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_8;
     GPIO_Init(&I2CPins);
 
     /* SDA */
