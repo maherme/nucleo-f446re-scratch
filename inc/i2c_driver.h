@@ -20,6 +20,7 @@
 *       void    I2C_ER_IRQHandling(I2C_Handle_t* pI2C_Handle)
 *       void    I2C_Enable(I2C_RegDef_t* pI2Cx, uint8_t en_or_di)
 *       uint8_t I2C_GetFlagStatus(I2C_RegDef_t* pI2Cx, uint32_t flagname)
+*       void    I2C_GenerateStopCondition(I2C_RegDef_t* pI2Cx)
 *       void    I2C_CloseReceiveData(I2C_Handle_t* pI2C_Handle)
 *       void    I2C_CloseSendData(I2C_Handle_t* pI2C_Handle)
 *       void    I2C_ApplicationEventCallback(I2C_Handle_t* pI2C_Handle, uint8_t app_event)
@@ -332,6 +333,17 @@ void I2C_Enable(I2C_RegDef_t* pI2Cx, uint8_t en_or_di);
  * @return flag status: FLAG_SET or FLAG_RESET.
  */
 uint8_t I2C_GetFlagStatus(I2C_RegDef_t* pI2Cx, uint32_t flagname);
+
+/**
+ * @fn I2C_GenerateStopCondition
+ *
+ * @brief function for generating the stop condition in the I2C peripheral.
+ *
+ * @param[in] pI2Cx the base address of the I2Cx peripheral.
+ *
+ * @return void.
+ */
+void I2C_GenerateStopCondition(I2C_RegDef_t* pI2Cx);
 
 /**
  * @fn I2C_CloseReceiveData
