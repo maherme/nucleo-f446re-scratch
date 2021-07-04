@@ -20,6 +20,7 @@
 *       void    I2C_ER_IRQHandling(I2C_Handle_t* pI2C_Handle)
 *       void    I2C_Enable(I2C_RegDef_t* pI2Cx, uint8_t en_or_di)
 *       uint8_t I2C_GetFlagStatus(I2C_RegDef_t* pI2Cx, uint32_t flagname)
+*       void    I2C_GenerateStopCondition(I2C_RegDef_t* pI2Cx)
 *       void    I2C_CloseReceiveData(I2C_Handle_t* pI2C_Handle)
 *       void    I2C_CloseSendData(I2C_Handle_t* pI2C_Handle)
 *       void    I2C_ApplicationEventCallback(I2C_Handle_t* pI2C_Handle, uint8_t app_event)
@@ -73,17 +74,6 @@ static void I2C_ExecuteAddressPhase(I2C_RegDef_t* pI2Cx, uint8_t slave_addr, rw_
  * @return void.
  */
 static void I2C_ClearADDRFlag(I2C_Handle_t* pI2C_Handle);
-
-/**
- * @fn I2C_GenerateStopCondition
- *
- * @brief function to generate stop condition.
- *
- * @param[in] pI2Cx the base address of the I2Cx peripheral.
- *
- * @return void.
- */
-static void I2C_GenerateStopCondition(I2C_RegDef_t* pI2Cx);
 
 /**
  * @fn I2C_ManageAcking
@@ -452,7 +442,7 @@ void I2C_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority){
 void I2C_EV_IRQHandling(I2C_Handle_t* pI2C_Handle){
 
     /* Interrupt handling for both master and slave mode of a device */
-    uint8_t temp1, temp2, temp3;
+    uint32_t temp1, temp2, temp3;
 
     temp1 = pI2C_Handle->pI2Cx->CR2 & (1 << I2C_CR2_ITEVTEN);
     temp2 = pI2C_Handle->pI2Cx->CR2 & (1 << I2C_CR2_ITBUFEN);
@@ -634,6 +624,11 @@ uint8_t I2C_GetFlagStatus(I2C_RegDef_t* pI2Cx, uint32_t flagname){
     return FLAG_RESET;
 }
 
+void I2C_GenerateStopCondition(I2C_RegDef_t* pI2Cx){
+
+    pI2Cx->CR1 |= (1 << I2C_CR1_STOP);
+}
+
 void I2C_CloseReceiveData(I2C_Handle_t* pI2C_Handle){
     /* Disable ITBUFEN control bit */
     pI2C_Handle->pI2Cx->CR2 &= ~(1 << I2C_CR2_ITBUFEN);
@@ -724,11 +719,6 @@ static void I2C_ClearADDRFlag(I2C_Handle_t* pI2C_Handle){
         dummy_read = pI2C_Handle->pI2Cx->SR2;
         (void)dummy_read;
     }
-}
-
-static void I2C_GenerateStopCondition(I2C_RegDef_t* pI2Cx){
-
-    pI2Cx->CR1 |= (1 << I2C_CR1_STOP);
 }
 
 static void I2C_ManageAcking(I2C_RegDef_t* pI2Cx, uint8_t en_or_di){
