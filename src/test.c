@@ -15,6 +15,7 @@
 *       void    I2C1_Config(void)
 *       void    I2C1_SendHello(void)
 *       void    I2C1_SendCmd(void)
+*       void    I2C1_SendCmdIT(void)
 *
 * NOTES :
 *       For further information about functions refer to the corresponding header file.
@@ -36,6 +37,7 @@
 static char rx_buffer[500];
 volatile uint8_t rx_stop = 0;
 volatile uint8_t read_byte;
+static uint8_t i2c_rx_cplt = RESET;
 SPI_Handle_t SPI2Handle;
 I2C_Handle_t I2C1Handle;
 
@@ -302,6 +304,10 @@ void I2C1_Config(void){
     /* I2C1 configuration */
     I2C1_GPIOInit();
     I2C1_Init(&I2C1Handle);
+
+    /* Enable I2C1 interrupt */
+    I2C_IRQConfig(IRQ_NO_I2C1_EV, ENABLE);
+    I2C_IRQConfig(IRQ_NO_I2C1_ER, ENABLE);
 }
 
 void I2C1_SendHello(void){
@@ -340,6 +346,33 @@ void I2C1_SendCmd(void){
     I2C_Enable(I2C1, DISABLE);
 }
 
+void I2C1_SendCmdIT(void){
+
+    uint8_t rx_buf[32] = {0};
+    uint8_t len = 0;
+    uint8_t command = 0x51;
+
+    /* Enable the I2C1 peripheral */
+    I2C_Enable(I2C1, ENABLE);
+
+    while(I2C_MasterSendDataIT(&I2C1Handle, &command, 1, I2C_SLAVE_ADDRESS, I2C_ENABLE_SR) != I2C_READY);
+    while(I2C_MasterReceiveDataIT(&I2C1Handle, &len, 1, I2C_SLAVE_ADDRESS, I2C_ENABLE_SR) != I2C_READY);
+
+    command = 0x52;
+    while(I2C_MasterSendDataIT(&I2C1Handle, &command, 1, I2C_SLAVE_ADDRESS, I2C_ENABLE_SR) != I2C_READY);
+    while(I2C_MasterReceiveDataIT(&I2C1Handle, rx_buf, len, I2C_SLAVE_ADDRESS, I2C_ENABLE_SR) != I2C_READY);
+
+    i2c_rx_cplt = RESET;
+    /* Wait until rx completes */
+    while(i2c_rx_cplt != SET);
+    rx_buf[len + 1] = '\0';
+    printf("Data: %s", rx_buf);
+    i2c_rx_cplt = RESET;
+
+    /* Disable the I2C1 peripheral */
+    I2C_Enable(I2C1, DISABLE);
+}
+
 /*****************************************************************************************************/
 /*                               Weak Function Overwrite Definitions                                 */
 /*****************************************************************************************************/
@@ -361,6 +394,33 @@ void SPI_ApplicationEventCallback(SPI_Handle_t* pSPI_Handle, uint8_t app_event){
             rx_buffer[i-1] = '\0';
             i = 0;
         }
+    }
+}
+
+void I2C1_EV_Handler(void){
+
+    I2C_EV_IRQHandling(&I2C1Handle);
+}
+
+void I2C1_ER_Handler(void){
+
+    I2C_ER_IRQHandling(&I2C1Handle);
+}
+
+void I2C_ApplicationEventCallback(I2C_Handle_t* pI2C_Handle, uint8_t app_event){
+
+    if(app_event == I2C_EVENT_TX_CMPLT){
+        printf("Tx is completed\n");
+    }
+    else if(app_event == I2C_EVENT_RX_CMPLT){
+        printf("Rx is completed\n");
+        i2c_rx_cplt = SET;
+    }
+    else if(app_event == I2C_ERROR_AF){
+        printf("Error: acknowledge failure\n");
+        I2C_CloseSendData(pI2C_Handle);
+        /* Generate the stop condition to release the bus */
+        I2C_GenerateStopCondition(I2C1);
     }
 }
 

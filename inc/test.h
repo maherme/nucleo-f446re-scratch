@@ -15,6 +15,7 @@
 *       void    I2C1_Config(void)
 *       void    I2C1_SendHello(void)
 *       void    I2C1_SendCmd(void)
+*       void    I2C1_SendCmdIT(void)
 *
 **/
 
@@ -161,7 +162,17 @@ void I2C1_SendHello(void);
  *
  * @return void
  */
-
 void I2C1_SendCmd(void);
+
+/**
+ * @fn I2C1_SendCmdIT
+ *
+ * @brief function to test I2C1 peripheral transmission and reception based on interruption.
+ *
+ * @param[in] void
+ *
+ * @return void
+ */
+void I2C1_SendCmdIT(void);
 
 #endif /* TEST_H */
