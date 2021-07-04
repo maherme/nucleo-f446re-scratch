@@ -115,7 +115,7 @@ static void I2C_MasterHandleRXNEInterrupt(I2C_Handle_t* pI2C_Handle);
 
 void I2C_Init(I2C_Handle_t* pI2C_Handle){
 
-    uint8_t temp = 0;
+    uint32_t temp = 0;
     uint16_t ccr_value = 0;
 
     /* Enable the peripheral clock */
