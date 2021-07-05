@@ -33,6 +33,7 @@
 
 #define SIZE_ID             11
 #define I2C_SLAVE_ADDRESS   0x68
+//#define I2C_MASTER /* Uncomment this define if the I2C is configured as master */
 
 static char rx_buffer[500];
 volatile uint8_t rx_stop = 0;
@@ -308,6 +309,17 @@ void I2C1_Config(void){
     /* Enable I2C1 interrupt */
     I2C_IRQConfig(IRQ_NO_I2C1_EV, ENABLE);
     I2C_IRQConfig(IRQ_NO_I2C1_ER, ENABLE);
+
+#ifndef I2C_MASTER
+    /* Enable callback events, it is needed in slave mode */
+    I2C_SlaveEnCallbackEvents(I2C1, ENABLE);
+
+    /* Enable peripheral, ONLY in slave mode */
+    I2C_Enable(I2C1, ENABLE);
+#endif
+
+    /* Enable acking */
+    I2C_ManageAcking(I2C1, I2C_ACK_ENABLE);
 }
 
 void I2C1_SendHello(void){
@@ -409,18 +421,48 @@ void I2C1_ER_Handler(void){
 
 void I2C_ApplicationEventCallback(I2C_Handle_t* pI2C_Handle, uint8_t app_event){
 
-    if(app_event == I2C_EVENT_TX_CMPLT){
-        printf("Tx is completed\n");
-    }
-    else if(app_event == I2C_EVENT_RX_CMPLT){
-        printf("Rx is completed\n");
-        i2c_rx_cplt = SET;
-    }
-    else if(app_event == I2C_ERROR_AF){
-        printf("Error: acknowledge failure\n");
-        I2C_CloseSendData(pI2C_Handle);
-        /* Generate the stop condition to release the bus */
-        I2C_GenerateStopCondition(I2C1);
+    static uint8_t tx_buf[32] = "Nucleo board slave mode";
+    static uint8_t cmd_code = 0;
+    static uint8_t cnt = 0;
+
+    switch(app_event){
+        case I2C_EVENT_TX_CMPLT:
+            printf("Tx is completed\n");
+            break;
+        case I2C_EVENT_RX_CMPLT:
+            printf("Rx is completed\n");
+            i2c_rx_cplt = SET;
+            break;
+        case I2C_EVENT_DATA_REQ:
+            if(cmd_code == 0x51){
+                /* Send length information to the master */
+                I2C_SlaveSendData(pI2C_Handle->pI2Cx, strlen((char*)tx_buf));
+            }
+            else if(cmd_code == 0x52){
+                /* Send the contents of tx_buf */
+                I2C_SlaveSendData(pI2C_Handle->pI2Cx, tx_buf[cnt++]);
+            }
+            else{
+                /* do nothing */
+            }
+            break;
+        case I2C_EVENT_DATA_RCV:
+            /* Data wainting for the slave to read */
+            cmd_code = I2C_SlaveReceiveData(pI2C_Handle->pI2Cx);
+            break;
+        case I2C_ERROR_AF:
+#if defined I2C_MASTER
+            printf("Error: acknowledge failure\n");
+            I2C_CloseSendData(pI2C_Handle);
+            /* Generate the stop condition to release the bus */
+            I2C_GenerateStopCondition(I2C1);
+#else
+            cmd_code = 0xFF;
+            cnt = 0;
+#endif
+            break;
+        default:
+            break;
     }
 }
 

@@ -21,6 +21,8 @@
 *       void    I2C_Enable(I2C_RegDef_t* pI2Cx, uint8_t en_or_di)
 *       uint8_t I2C_GetFlagStatus(I2C_RegDef_t* pI2Cx, uint32_t flagname)
 *       void    I2C_GenerateStopCondition(I2C_RegDef_t* pI2Cx)
+*       void    I2C_ManageAcking(I2C_RegDef_t* pI2Cx, uint8_t en_or_di)
+*       void    I2C_SlaveEnCallbackEvents(I2C_RegDef_t* pI2Cx, uint8_t en_or_di)
 *       void    I2C_CloseReceiveData(I2C_Handle_t* pI2C_Handle)
 *       void    I2C_CloseSendData(I2C_Handle_t* pI2C_Handle)
 *       void    I2C_ApplicationEventCallback(I2C_Handle_t* pI2C_Handle, uint8_t app_event)
@@ -344,6 +346,32 @@ uint8_t I2C_GetFlagStatus(I2C_RegDef_t* pI2Cx, uint32_t flagname);
  * @return void.
  */
 void I2C_GenerateStopCondition(I2C_RegDef_t* pI2Cx);
+
+/**
+ * @fn I2C_ManageAcking
+ *
+ * @brief function to enable or disable the acking.
+ *
+ * @param[in] pI2Cx the base address of the I2Cx peripheral.
+ * @param[in] en_or_di to enable or disable @I2C_ACKCONTROL
+ *
+ * @return void.
+ */
+void I2C_ManageAcking(I2C_RegDef_t* pI2Cx, uint8_t en_or_di);
+
+/**
+ * @fn I2C_SlaveEnCallbackEvents
+ *
+ * @brief function for enabling the callback events of the I2C peripheral.
+ *
+ * @param[in] pI2Cx the base address of the I2Cx peripheral.
+ * @param[in] en_or_di for enable or disable.
+ *
+ * @return void.
+ *
+ * @note applicable only in slave mode.
+ */
+void I2C_SlaveEnCallbackEvents(I2C_RegDef_t* pI2Cx, uint8_t en_or_di);
 
 /**
  * @fn I2C_CloseReceiveData

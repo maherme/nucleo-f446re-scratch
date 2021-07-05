@@ -21,6 +21,8 @@
 *       void    I2C_Enable(I2C_RegDef_t* pI2Cx, uint8_t en_or_di)
 *       uint8_t I2C_GetFlagStatus(I2C_RegDef_t* pI2Cx, uint32_t flagname)
 *       void    I2C_GenerateStopCondition(I2C_RegDef_t* pI2Cx)
+*       void    I2C_ManageAcking(I2C_RegDef_t* pI2Cx, uint8_t en_or_di)
+*       void    I2C_SlaveEnCallbackEvents(I2C_RegDef_t* pI2Cx, uint8_t en_or_di)
 *       void    I2C_CloseReceiveData(I2C_Handle_t* pI2C_Handle)
 *       void    I2C_CloseSendData(I2C_Handle_t* pI2C_Handle)
 *       void    I2C_ApplicationEventCallback(I2C_Handle_t* pI2C_Handle, uint8_t app_event)
@@ -74,18 +76,6 @@ static void I2C_ExecuteAddressPhase(I2C_RegDef_t* pI2Cx, uint8_t slave_addr, rw_
  * @return void.
  */
 static void I2C_ClearADDRFlag(I2C_Handle_t* pI2C_Handle);
-
-/**
- * @fn I2C_ManageAcking
- *
- * @brief function to enable or disable the acking.
- *
- * @param[in] pI2Cx the base address of the I2Cx peripheral.
- * @param[in] en_or_di to enable or disable @I2C_ACKCONTROL@
- *
- * @return void.
- */
-static void I2C_ManageAcking(I2C_RegDef_t* pI2Cx, uint8_t en_or_di);
 
 /**
  * @fn I2C_MasterHandleTXEInterrupt
@@ -629,6 +619,32 @@ void I2C_GenerateStopCondition(I2C_RegDef_t* pI2Cx){
     pI2Cx->CR1 |= (1 << I2C_CR1_STOP);
 }
 
+void I2C_ManageAcking(I2C_RegDef_t* pI2Cx, uint8_t en_or_di){
+
+    if(en_or_di == I2C_ACK_ENABLE){
+        /* enable the ack */
+        pI2Cx->CR1 |= (1 << I2C_CR1_ACK);
+    }
+    else{
+        /* disable the ack */
+        pI2Cx->CR1 &= ~(1 << I2C_CR1_ACK);
+    }
+}
+
+void I2C_SlaveEnCallbackEvents(I2C_RegDef_t* pI2Cx, uint8_t en_or_di){
+
+    if(en_or_di == ENABLE){
+        pI2Cx->CR2 |= (1 << I2C_CR2_ITEVTEN);
+        pI2Cx->CR2 |= (1 << I2C_CR2_ITBUFEN);
+        pI2Cx->CR2 |= (1 << I2C_CR2_ITERREN);
+    }
+    else{
+        pI2Cx->CR2 &= ~(1 << I2C_CR2_ITEVTEN);
+        pI2Cx->CR2 &= ~(1 << I2C_CR2_ITBUFEN);
+        pI2Cx->CR2 &= ~(1 << I2C_CR2_ITERREN);
+    }
+}
+
 void I2C_CloseReceiveData(I2C_Handle_t* pI2C_Handle){
     /* Disable ITBUFEN control bit */
     pI2C_Handle->pI2Cx->CR2 &= ~(1 << I2C_CR2_ITBUFEN);
@@ -718,18 +734,6 @@ static void I2C_ClearADDRFlag(I2C_Handle_t* pI2C_Handle){
         dummy_read = pI2C_Handle->pI2Cx->SR1;
         dummy_read = pI2C_Handle->pI2Cx->SR2;
         (void)dummy_read;
-    }
-}
-
-static void I2C_ManageAcking(I2C_RegDef_t* pI2Cx, uint8_t en_or_di){
-
-    if(en_or_di == I2C_ACK_ENABLE){
-        /* enable the ack */
-        pI2Cx->CR1 |= (1 << I2C_CR1_ACK);
-    }
-    else{
-        /* disable the ack */
-        pI2Cx->CR1 &= ~(1 << I2C_CR1_ACK);
     }
 }
 
