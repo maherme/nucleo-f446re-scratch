@@ -16,6 +16,8 @@
 *       void    I2C1_SendHello(void)
 *       void    I2C1_SendCmd(void)
 *       void    I2C1_SendCmdIT(void)
+*       void    USART2_Config(void)
+*       void    USART2_SendHello(void)
 *
 * NOTES :
 *       For further information about functions refer to the corresponding header file.
@@ -29,6 +31,7 @@
 #include "gpio_driver.h"
 #include "spi_driver.h"
 #include "i2c_driver.h"
+#include "usart_driver.h"
 #include "test.h"
 
 #define SIZE_ID             11
@@ -41,6 +44,7 @@ volatile uint8_t read_byte;
 static uint8_t i2c_rx_cplt = RESET;
 SPI_Handle_t SPI2Handle;
 I2C_Handle_t I2C1Handle;
+USART_Handle_t USART2Handle;
 
 /*****************************************************************************************************/
 /*                                       Static Function Prototypes                                  */
@@ -178,6 +182,33 @@ static void I2C1_GPIOInit(void);
  * @return void
  */
 static void I2C1_Init(I2C_Handle_t* pI2C_Handle);
+
+/**
+ * @fn USART2_Init
+ *
+ * @brief function to initialize USART2 peripheral.
+ *
+ * @param[in] void
+ *
+ * @return void
+ */
+static void USART2_Init(USART_Handle_t* pUSART_Handle);
+
+/**
+ * @fn USART2_GPIOInit
+ *
+ * @brief function to initialize GPIO port for the USART2 peripheral.
+ *
+ * @param[in] void
+ *
+ * @return void
+ *
+ * @note
+ *      PA2 -> USART2 TX
+ *      PA3 -> USART2 RX
+ *      Alt function mode -> 7
+ */
+static void USART2_GPIOInit(void);
 
 /*****************************************************************************************************/
 /*                                       Public API Definitions                                      */
@@ -383,6 +414,26 @@ void I2C1_SendCmdIT(void){
 
     /* Disable the I2C1 peripheral */
     I2C_Enable(I2C1, DISABLE);
+}
+
+void USART2_Config(void){
+
+    USART2_GPIOInit();
+    USART2_Init(&USART2Handle);
+}
+
+void USART2_SendHello(void){
+
+    char user_data[] = "Hello world";
+
+    /* Enable the USART2 peripheral */
+    USART_Enable(USART2, ENABLE);
+
+    /* Send data */
+    USART_SendData(&USART2Handle, (uint8_t*)user_data, strlen(user_data));
+
+    /* Disable the USART2 peripheral */
+    USART_Enable(USART2, DISABLE);
 }
 
 /*****************************************************************************************************/
@@ -785,4 +836,40 @@ static void I2C1_Init(I2C_Handle_t* pI2C_Handle){
     pI2C_Handle->I2C_Config.I2C_SCLSpeed = I2C_SCL_SPEED_SM;
 
     I2C_Init(pI2C_Handle);
+}
+
+static void USART2_Init(USART_Handle_t* pUSART_Handle){
+
+    memset(pUSART_Handle, 0, sizeof(*pUSART_Handle));
+
+    pUSART_Handle->pUSARTx = USART2;
+    pUSART_Handle->USART_Config.USART_Baud = USART_STD_BAUD_115200;
+    pUSART_Handle->USART_Config.USART_HWFlowControl = USART_HW_FLOW_CTRL_NONE;
+    pUSART_Handle->USART_Config.USART_Mode = USART_MODE_ONLY_TX;
+    pUSART_Handle->USART_Config.USART_NoOfStopBits = USART_STOPBITS_1;
+    pUSART_Handle->USART_Config.USART_ParityControl = USART_PARITY_DISABLE;
+
+    USART_Init(pUSART_Handle);
+}
+
+static void USART2_GPIOInit(void){
+
+    GPIO_Handle_t USARTPins;
+
+    memset(&USARTPins, 0, sizeof(USARTPins));
+
+    USARTPins.pGPIOx = GPIOA;
+    USARTPins.GPIO_PinConfig.GPIO_PinMode = GPIO_MODE_ALTFN;
+    USARTPins.GPIO_PinConfig.GPIO_PinOPType = GPIO_OP_TYPE_PP;
+    USARTPins.GPIO_PinConfig.GPIO_PinPuPdControl = GPIO_PIN_PU;
+    USARTPins.GPIO_PinConfig.GPIO_PinSpeed = GPIO_SPEED_FAST;
+    USARTPins.GPIO_PinConfig.GPIO_PinAltFunMode = 7;
+
+    /* USART2 TX */
+    USARTPins.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_2;
+    GPIO_Init(&USARTPins);
+
+    /* USART2 RX */
+    USARTPins.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_3;
+    GPIO_Init(&USARTPins);
 }
