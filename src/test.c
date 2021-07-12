@@ -18,6 +18,7 @@
 *       void    I2C1_SendCmdIT(void)
 *       void    USART3_Config(void)
 *       void    USART3_SendHello(void)
+*       void    USART3_TxRx(void)
 *
 * NOTES :
 *       For further information about functions refer to the corresponding header file.
@@ -42,6 +43,7 @@ static char rx_buffer[500];
 volatile uint8_t rx_stop = 0;
 volatile uint8_t read_byte;
 static uint8_t i2c_rx_cplt = RESET;
+static uint8_t usart_rx_cplt = RESET;
 SPI_Handle_t SPI2Handle;
 I2C_Handle_t I2C1Handle;
 USART_Handle_t USART3Handle;
@@ -418,21 +420,55 @@ void I2C1_SendCmdIT(void){
 
 void USART3_Config(void){
 
-    /* USART2 configuration */
+    /* USART3 configuration */
     USART3_GPIOInit();
     USART3_Init(&USART3Handle);
+
+    /* USART3 interrupt configuration */
+    USART_IRQConfig(IRQ_NO_USART3, ENABLE);
 }
 
 void USART3_SendHello(void){
 
-    char user_data[1024] = "Hello world\n\r";
+    char user_data[] = "Hello world\n";
 
     /* Enable the USART3 peripheral */
     USART_Enable(USART3, ENABLE);
 
     /* Send data */
     USART_SendData(&USART3Handle, (uint8_t*)user_data, strlen(user_data));
-    printf("Send Hello\n");
+    printf("Data transmitted: %s", user_data);
+
+    /* Disable the USART3 peripheral */
+    USART_Enable(USART3, DISABLE);
+}
+
+void USART3_TxRx(void){
+
+    char user_data[] = "Hello World\n";
+    uint8_t rx_buf[32] = {0};
+
+    /* Enable the USART3 peripheral */
+    USART_Enable(USART3, ENABLE);
+
+    /* Enable reception in interrupt mode */
+    while(USART_ReceiveDataIT(&USART3Handle, rx_buf, strlen(user_data)) != USART_READY);
+
+    /* Send data */
+    USART_SendData(&USART3Handle, (uint8_t*)user_data, strlen(user_data));
+    printf("Data transmitted: %s", user_data);
+
+    /* Wait until all bytes are received */
+    while(usart_rx_cplt != SET);
+
+    /* Set last byte to '\0' */
+    rx_buf[strlen(user_data) + 1] = '\0';
+
+    /* Print data received */
+    printf("Data received   : %s", rx_buf);
+
+    /* Reset reception completed flag */
+    usart_rx_cplt = RESET;
 
     /* Disable the USART3 peripheral */
     USART_Enable(USART3, DISABLE);
@@ -516,6 +552,24 @@ void I2C_ApplicationEventCallback(I2C_Handle_t* pI2C_Handle, uint8_t app_event){
             break;
         default:
             break;
+    }
+}
+
+void USART3_Handler(void){
+
+    USART_IRQHandling(&USART3Handle);
+}
+
+void USART_ApplicationEventCallback(USART_Handle_t* pUSART_Handle, uint8_t app_event){
+
+    if(app_event == USART_EVENT_RX_CMPLT){
+        usart_rx_cplt = SET;
+    }
+    else if(app_event == USART_EVENT_TX_CMPLT){
+        /* do nothing */
+    }
+    else{
+        /* do nothing */
     }
 }
 
@@ -847,7 +901,7 @@ static void USART3_Init(USART_Handle_t* pUSART_Handle){
     pUSART_Handle->pUSARTx = USART3;
     pUSART_Handle->USART_Config.USART_Baud = USART_STD_BAUD_115200;
     pUSART_Handle->USART_Config.USART_HWFlowControl = USART_HW_FLOW_CTRL_NONE;
-    pUSART_Handle->USART_Config.USART_Mode = USART_MODE_ONLY_TX;
+    pUSART_Handle->USART_Config.USART_Mode = USART_MODE_TXRX;
     pUSART_Handle->USART_Config.USART_NoOfStopBits = USART_STOPBITS_1;
     pUSART_Handle->USART_Config.USART_WordLength = USART_WORDLEN_8BITS;
     pUSART_Handle->USART_Config.USART_ParityControl = USART_PARITY_DISABLE;

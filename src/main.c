@@ -68,7 +68,8 @@ void EXTI15_10_Handler(void){
     //I2C1_SendCmdIT();
 
     /* Send USART data */
-    USART3_SendHello();
+    //USART3_SendHello();
+    USART3_TxRx();
 
     /* Toggle LED */
     GPIO_ToggleOutputPin(GPIOA, GPIO_PIN_NO_5);

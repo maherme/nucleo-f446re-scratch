@@ -18,6 +18,7 @@
 *       void    I2C1_SendCmdIT(void)
 *       void    USART3_Config(void)
 *       void    USART3_SendHello(void)
+*       void    USART3_TxRx(void)
 *
 **/
 
@@ -198,5 +199,16 @@ void USART3_Config(void);
  * @return void
  */
 void USART3_SendHello(void);
+
+/**
+ * @fn USART3_TxRx
+ *
+ * @brief function to test USART3 peripheral transmission and reception.
+ *
+ * @param[in] void
+ *
+ * @return void
+ */
+void USART3_TxRx(void);
 
 #endif /* TEST_H */
