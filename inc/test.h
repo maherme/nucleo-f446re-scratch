@@ -16,8 +16,8 @@
 *       void    I2C1_SendHello(void)
 *       void    I2C1_SendCmd(void)
 *       void    I2C1_SendCmdIT(void)
-*       void    USART2_Config(void)
-*       void    USART2_SendHello(void)
+*       void    USART3_Config(void)
+*       void    USART3_SendHello(void)
 *
 **/
 
@@ -178,25 +178,25 @@ void I2C1_SendCmd(void);
 void I2C1_SendCmdIT(void);
 
 /**
- * @fn USART2_Config
+ * @fn USART3_Config
  *
- * @brief function to initialize and configure USART2 peripheral.
+ * @brief function to initialize and configure USART3 peripheral.
  *
  * @param[in] void
  *
  * @return void
  */
-void USART2_Config(void);
+void USART3_Config(void);
 
 /**
- * @fn USART2_SendHello
+ * @fn USART3_SendHello
  *
- * @brief function to test USART2 peripheral transmission.
+ * @brief function to test USART3 peripheral transmission.
  *
  * @param[in] void
  *
  * @return void
  */
-void USART2_SendHello(void);
+void USART3_SendHello(void);
 
 #endif /* TEST_H */

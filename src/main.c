@@ -39,7 +39,7 @@ int main(void){
     //I2C1_Config();
 
     /* Configure and initialise USART2 peripheral */
-    USART2_Config();
+    USART3_Config();
 
     for(;;){
     }
@@ -68,7 +68,7 @@ void EXTI15_10_Handler(void){
     //I2C1_SendCmdIT();
 
     /* Send USART data */
-    USART2_SendHello();
+    USART3_SendHello();
 
     /* Toggle LED */
     GPIO_ToggleOutputPin(GPIOA, GPIO_PIN_NO_5);

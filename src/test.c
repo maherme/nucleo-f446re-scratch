@@ -16,8 +16,8 @@
 *       void    I2C1_SendHello(void)
 *       void    I2C1_SendCmd(void)
 *       void    I2C1_SendCmdIT(void)
-*       void    USART2_Config(void)
-*       void    USART2_SendHello(void)
+*       void    USART3_Config(void)
+*       void    USART3_SendHello(void)
 *
 * NOTES :
 *       For further information about functions refer to the corresponding header file.
@@ -44,7 +44,7 @@ volatile uint8_t read_byte;
 static uint8_t i2c_rx_cplt = RESET;
 SPI_Handle_t SPI2Handle;
 I2C_Handle_t I2C1Handle;
-USART_Handle_t USART2Handle;
+USART_Handle_t USART3Handle;
 
 /*****************************************************************************************************/
 /*                                       Static Function Prototypes                                  */
@@ -184,31 +184,31 @@ static void I2C1_GPIOInit(void);
 static void I2C1_Init(I2C_Handle_t* pI2C_Handle);
 
 /**
- * @fn USART2_Init
+ * @fn USART3_Init
  *
- * @brief function to initialize USART2 peripheral.
+ * @brief function to initialize USART3 peripheral.
  *
  * @param[in] void
  *
  * @return void
  */
-static void USART2_Init(USART_Handle_t* pUSART_Handle);
+static void USART3_Init(USART_Handle_t* pUSART_Handle);
 
 /**
- * @fn USART2_GPIOInit
+ * @fn USART3_GPIOInit
  *
- * @brief function to initialize GPIO port for the USART2 peripheral.
+ * @brief function to initialize GPIO port for the USART3 peripheral.
  *
  * @param[in] void
  *
  * @return void
  *
  * @note
- *      PA2 -> USART2 TX
- *      PA3 -> USART2 RX
+ *      PC10 -> USART3 TX
+ *      PC11 -> USART3 RX
  *      Alt function mode -> 7
  */
-static void USART2_GPIOInit(void);
+static void USART3_GPIOInit(void);
 
 /*****************************************************************************************************/
 /*                                       Public API Definitions                                      */
@@ -416,26 +416,26 @@ void I2C1_SendCmdIT(void){
     I2C_Enable(I2C1, DISABLE);
 }
 
-void USART2_Config(void){
+void USART3_Config(void){
 
     /* USART2 configuration */
-    USART2_GPIOInit();
-    USART2_Init(&USART2Handle);
+    USART3_GPIOInit();
+    USART3_Init(&USART3Handle);
 }
 
-void USART2_SendHello(void){
+void USART3_SendHello(void){
 
     char user_data[1024] = "Hello world\n\r";
 
-    /* Enable the USART2 peripheral */
-    USART_Enable(USART2, ENABLE);
+    /* Enable the USART3 peripheral */
+    USART_Enable(USART3, ENABLE);
 
     /* Send data */
-    USART_SendData(&USART2Handle, (uint8_t*)user_data, strlen(user_data));
+    USART_SendData(&USART3Handle, (uint8_t*)user_data, strlen(user_data));
     printf("Send Hello\n");
 
-    /* Disable the USART2 peripheral */
-    USART_Enable(USART2, DISABLE);
+    /* Disable the USART3 peripheral */
+    USART_Enable(USART3, DISABLE);
 }
 
 /*****************************************************************************************************/
@@ -840,11 +840,11 @@ static void I2C1_Init(I2C_Handle_t* pI2C_Handle){
     I2C_Init(pI2C_Handle);
 }
 
-static void USART2_Init(USART_Handle_t* pUSART_Handle){
+static void USART3_Init(USART_Handle_t* pUSART_Handle){
 
     memset(pUSART_Handle, 0, sizeof(*pUSART_Handle));
 
-    pUSART_Handle->pUSARTx = USART2;
+    pUSART_Handle->pUSARTx = USART3;
     pUSART_Handle->USART_Config.USART_Baud = USART_STD_BAUD_115200;
     pUSART_Handle->USART_Config.USART_HWFlowControl = USART_HW_FLOW_CTRL_NONE;
     pUSART_Handle->USART_Config.USART_Mode = USART_MODE_ONLY_TX;
@@ -855,24 +855,24 @@ static void USART2_Init(USART_Handle_t* pUSART_Handle){
     USART_Init(pUSART_Handle);
 }
 
-static void USART2_GPIOInit(void){
+static void USART3_GPIOInit(void){
 
     GPIO_Handle_t USARTPins;
 
     memset(&USARTPins, 0, sizeof(USARTPins));
 
-    USARTPins.pGPIOx = GPIOA;
+    USARTPins.pGPIOx = GPIOC;
     USARTPins.GPIO_PinConfig.GPIO_PinMode = GPIO_MODE_ALTFN;
     USARTPins.GPIO_PinConfig.GPIO_PinOPType = GPIO_OP_TYPE_PP;
     USARTPins.GPIO_PinConfig.GPIO_PinPuPdControl = GPIO_PIN_PU;
     USARTPins.GPIO_PinConfig.GPIO_PinSpeed = GPIO_SPEED_FAST;
     USARTPins.GPIO_PinConfig.GPIO_PinAltFunMode = 7;
 
-    /* USART2 TX */
-    USARTPins.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_2;
+    /* USART3 TX */
+    USARTPins.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_10;
     GPIO_Init(&USARTPins);
 
-    /* USART2 RX */
-    USARTPins.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_3;
+    /* USART3 RX */
+    USARTPins.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_11;
     GPIO_Init(&USARTPins);
 }
