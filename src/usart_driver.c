@@ -55,6 +55,9 @@ void USART_Init(USART_Handle_t* pUSART_Handle){
         /* Enable both transmitter and receiver bit field */
         temp |= ((1 << USART_CR1_TE) | (1 << USART_CR1_RE));
     }
+    else{
+        /* do nothing */
+    }
 
     /* Configure the word length */
     temp |= pUSART_Handle->USART_Config.USART_WordLength << USART_CR1_M;
@@ -72,9 +75,43 @@ void USART_Init(USART_Handle_t* pUSART_Handle){
         /* Enable ODD parity */
         temp |= (1 << USART_CR1_PS);
     }
+    else{
+        /* do nothing */
+    }
 
     /* Program CR1 register */
     pUSART_Handle->pUSARTx->CR1 = temp;
+
+    temp = 0;
+
+    /* Configure stop bits */
+    temp |= pUSART_Handle->USART_Config.USART_NoOfStopBits << USART_CR2_STOP;
+
+    /* Program CR2 register */
+    pUSART_Handle->pUSARTx->CR2 = temp;
+
+    temp = 0;
+
+    /* Configure flow control */
+    if(pUSART_Handle->USART_Config.USART_HWFlowControl == USART_HW_FLOW_CTRL_CTS){
+        /* Enable CTS flow control */
+        temp |= (1 << USART_CR3_CTSE);
+    }
+    else if(pUSART_Handle->USART_Config.USART_HWFlowControl == USART_HW_FLOW_CTRL_RTS){
+        /* Enable RTS flow control */
+        temp |= (1 << USART_CR3_RTSE);
+    }
+    else if(pUSART_Handle->USART_Config.USART_HWFlowControl == USART_HW_FLOW_CTRL_CTS_RTS){
+        /*Enable CTS and RTS flow control */
+        temp |= (1 << USART_CR3_CTSE);
+        temp |= (1 << USART_CR3_RTSE);
+    }
+    else{
+        /* do nothing */
+    }
+
+    /* Program CR3 register */
+    pUSART_Handle->pUSARTx->CR3 = temp;
 
     /* Configure baud rate */
     USART_SetBaudRate(pUSART_Handle->pUSARTx, pUSART_Handle->USART_Config.USART_Baud);
@@ -288,7 +325,7 @@ void USART_SetBaudRate(USART_RegDef_t* pUSARTx, uint32_t baudrate){
         PCLKx = RCC_GetPCLK1Value();
     }
 
-    /* Check OVER0 config bit */
+    /* Check OVER8 config bit */
     if(pUSARTx->CR1 & (1 << USART_CR1_OVER8)){
         /* Over sampling by 8 */
         usartdiv = ((25 * PCLKx) / (2 * baudrate));

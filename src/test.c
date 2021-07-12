@@ -418,19 +418,21 @@ void I2C1_SendCmdIT(void){
 
 void USART2_Config(void){
 
+    /* USART2 configuration */
     USART2_GPIOInit();
     USART2_Init(&USART2Handle);
 }
 
 void USART2_SendHello(void){
 
-    char user_data[] = "Hello world";
+    char user_data[1024] = "Hello world\n\r";
 
     /* Enable the USART2 peripheral */
     USART_Enable(USART2, ENABLE);
 
     /* Send data */
     USART_SendData(&USART2Handle, (uint8_t*)user_data, strlen(user_data));
+    printf("Send Hello\n");
 
     /* Disable the USART2 peripheral */
     USART_Enable(USART2, DISABLE);
@@ -847,6 +849,7 @@ static void USART2_Init(USART_Handle_t* pUSART_Handle){
     pUSART_Handle->USART_Config.USART_HWFlowControl = USART_HW_FLOW_CTRL_NONE;
     pUSART_Handle->USART_Config.USART_Mode = USART_MODE_ONLY_TX;
     pUSART_Handle->USART_Config.USART_NoOfStopBits = USART_STOPBITS_1;
+    pUSART_Handle->USART_Config.USART_WordLength = USART_WORDLEN_8BITS;
     pUSART_Handle->USART_Config.USART_ParityControl = USART_PARITY_DISABLE;
 
     USART_Init(pUSART_Handle);
