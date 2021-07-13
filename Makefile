@@ -1,9 +1,11 @@
 TARGET1 = $(BLD_DIR)/nucleof446re.elf
 TARGET2 = $(BLD_DIR)/nucleof446re_sh.elf
+TARGET_LIB = $(LIB_DIR)/stm32f446xx_lib.a
 SRC_DIR = ./src
 INC_DIR = ./inc
 LNK_DIR = ./lnk
 OBJ_DIR = ./obj
+LIB_DIR = ./lib
 BLD_DIR = ./build
 OBJS1 = $(OBJ_DIR)/main.o \
 		$(OBJ_DIR)/startup.o \
@@ -22,11 +24,21 @@ OBJS2 = $(OBJ_DIR)/main.o \
 		$(OBJ_DIR)/rcc_driver.o \
 		$(OBJ_DIR)/i2c_driver.o \
 		$(OBJ_DIR)/usart_driver.o
+OBJS_LIB = $(OBJ_DIR)/gpio_driver.o \
+		   $(OBJ_DIR)/spi_driver.o \
+		   $(OBJ_DIR)/rcc_driver.o \
+		   $(OBJ_DIR)/i2c_driver.o \
+		   $(OBJ_DIR)/usart_driver.o
 CC=arm-none-eabi-gcc
 MACH=cortex-m4
 CFLAGS= -c -mcpu=$(MACH) -mthumb -mfloat-abi=soft -std=gnu11 -Wall -I$(INC_DIR) -O0
 LDFLAGS= -mcpu=$(MACH) -mthumb -mfloat-abi=soft --specs=nano.specs -T $(LNK_DIR)/lk_f446re.ld -Wl,-Map=$(BLD_DIR)/nucleof446re.map
 LDFLAGS_SH= -mcpu=$(MACH) -mthumb -mfloat-abi=soft --specs=rdimon.specs -T $(LNK_DIR)/lk_f446re.ld -Wl,-Map=$(BLD_DIR)/nucleof446re.map
+
+$(TARGET_LIB) : $(OBJS_LIB)
+	@mkdir -p $(LIB_DIR)
+	@ar rcu $@ $+
+	@ranlib $@
 
 $(TARGET1) : $(OBJS1)
 	@mkdir -p $(BLD_DIR)
@@ -51,6 +63,9 @@ semi: $(TARGET2)
 .PHONY : clean
 clean:
 	rm -r $(OBJ_DIR) $(BLD_DIR)
+
+.PHONY : lib
+lib: $(TARGET_LIB)
 
 .PHONY : load
 load:
