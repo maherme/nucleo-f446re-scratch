@@ -1,6 +1,6 @@
 TARGET1 = $(BLD_DIR)/nucleof446re.elf
 TARGET2 = $(BLD_DIR)/nucleof446re_sh.elf
-TARGET_LIB = $(LIB_DIR)/stm32f446xx_lib.a
+TARGET_LIB = $(LIB_DIR)/libstm32f446xx.a
 SRC_DIR = ./src
 INC_DIR = ./inc
 LNK_DIR = ./lnk
