@@ -1,7 +1,7 @@
 # NUCLEO-F446RE from Scratch
 This is an embedded project for [NUCLEO-F446RE](https://www.st.com/en/evaluation-tools/nucleo-f446re.html) board, based on [STM32F446RE](https://www.st.com/en/microcontrollers-microprocessors/stm32f446re.html) microcontroller.
 
-It contains drivers for GPIO, SPI and I2C peripherals.
+It contains drivers for GPIO, SPI, I2C and USART peripherals.
 
 ## OpenOCD
 You can use OpenOCD (Open On-Chip Debugger) for programming or debugging this project. You can starting OpenOCD typing:
