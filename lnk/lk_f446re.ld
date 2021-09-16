@@ -3,7 +3,7 @@ ENTRY(Reset_Handler)
 
 MEMORY
 {
-    FLASH(RX) : ORIGIN = 0x08000000, LENGTH = 0x081FFFFF - 0x08000000 /* 512 KB */
+    FLASH(RX) : ORIGIN = 0x08000000, LENGTH = 0x0807FFFF - 0x08000000 /* 512 KB */
     SRAM(RWX) : ORIGIN = 0x20000000, LENGTH = 0x2001FFFF - 0x20000000 /* 128 KB */
 }
 
@@ -16,7 +16,7 @@ SECTIONS
         *(.text)
         *(.text.*)
         KEEP (*(.init))
-    	KEEP (*(.fini))
+        KEEP (*(.fini))
         *(.rodata)
         *(.rodata.*)
         . = ALIGN(4);
