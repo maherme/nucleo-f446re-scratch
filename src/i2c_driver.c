@@ -1,35 +1,49 @@
-/*****************************************************************************************************
-* FILENAME :        i2c_driver.c
+/********************************************************************************************************//**
+* @file i2c_driver.c
 *
-* DESCRIPTION :
-*       File containing the APIs for configuring the I2C peripheral.
+* @brief File containing the APIs for configuring the I2C peripheral.
 *
-* PUBLIC FUNCTIONS :
-*       void    I2C_Init(I2C_Handle_t* pI2C_Handle)
-*       void    I2C_DeInit(I2C_RegDef_t* pI2Cx)
-*       void    I2C_PerClkCtrl(I2C_RegDef_t* pI2Cx, uint8_t en_or_di)
-*       void    I2C_MasterSendData(I2C_Handle_t* pI2C_Handle, uint8_t* pTxBuffer, uint32_t len, uint8_t slave_addr, sr_t sr)
-*       void    I2C_MasterReceiveData(I2C_Handle_t* pI2C_Handle, uint8_t* pRxBuffer, uint8_t len, uint8_t slave_addr, sr_t sr)
-*       uint8_t I2C_MasterSendDataIT(I2C_Handle_t* pI2C_Handle, uint8_t* pTxBuffer, uint32_t len, uint8_t slave_addr, sr_t sr)
-*       uint8_t I2C_MasterReceiveDataIT(I2C_Handle_t* pI2C_Handle, uint8_t* pRxBuffer, uint8_t len, uint8_t slave_addr, sr_t sr)
-*       void    I2C_SlaveSendData(I2C_RegDef_t* pI2Cx, uint8_t data)
-*       uint8_t I2C_SlaveReceiveData(I2C_RegDef_t* pI2Cx)
-*       void    I2C_IRQConfig(uint8_t IRQNumber, uint8_t en_or_di)
-*       void    I2C_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority)
-*       void    I2C_EV_IRQHandling(I2C_Handle_t* pI2C_Handle)
-*       void    I2C_ER_IRQHandling(I2C_Handle_t* pI2C_Handle)
-*       void    I2C_Enable(I2C_RegDef_t* pI2Cx, uint8_t en_or_di)
-*       uint8_t I2C_GetFlagStatus(I2C_RegDef_t* pI2Cx, uint32_t flagname)
-*       void    I2C_GenerateStopCondition(I2C_RegDef_t* pI2Cx)
-*       void    I2C_ManageAcking(I2C_RegDef_t* pI2Cx, uint8_t en_or_di)
-*       void    I2C_SlaveEnCallbackEvents(I2C_RegDef_t* pI2Cx, uint8_t en_or_di)
-*       void    I2C_CloseReceiveData(I2C_Handle_t* pI2C_Handle)
-*       void    I2C_CloseSendData(I2C_Handle_t* pI2C_Handle)
-*       void    I2C_ApplicationEventCallback(I2C_Handle_t* pI2C_Handle, uint8_t app_event)
+* Public Functions:
+*   - void    I2C_Init(I2C_Handle_t* pI2C_Handle)
+*   - void    I2C_DeInit(I2C_RegDef_t* pI2Cx)
+*   - void    I2C_PerClkCtrl(I2C_RegDef_t* pI2Cx, uint8_t en_or_di)
+*   - void    I2C_MasterSendData(I2C_Handle_t* pI2C_Handle,
+*                                uint8_t* pTxBuffer,
+*                                uint32_t len,
+*                                uint8_t slave_addr,
+*                                sr_t sr)
+*   - void    I2C_MasterReceiveData(I2C_Handle_t* pI2C_Handle,
+*                                   uint8_t* pRxBuffer,
+*                                   uint8_t len,
+*                                   uint8_t slave_addr,
+*                                   sr_t sr)
+*   - uint8_t I2C_MasterSendDataIT(I2C_Handle_t* pI2C_Handle,
+*                                  uint8_t* pTxBuffer,
+*                                  uint32_t len,
+*                                  uint8_t slave_addr,
+*                                  sr_t sr)
+*   - uint8_t I2C_MasterReceiveDataIT(I2C_Handle_t* pI2C_Handle,
+*                                     uint8_t* pRxBuffer,
+*                                     uint8_t len,
+*                                     uint8_t slave_addr,
+*                                     sr_t sr)
+*   - void    I2C_SlaveSendData(I2C_RegDef_t* pI2Cx, uint8_t data)
+*   - uint8_t I2C_SlaveReceiveData(I2C_RegDef_t* pI2Cx)
+*   - void    I2C_IRQConfig(uint8_t IRQNumber, uint8_t en_or_di)
+*   - void    I2C_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority)
+*   - void    I2C_EV_IRQHandling(I2C_Handle_t* pI2C_Handle)
+*   - void    I2C_ER_IRQHandling(I2C_Handle_t* pI2C_Handle)
+*   - void    I2C_Enable(I2C_RegDef_t* pI2Cx, uint8_t en_or_di)
+*   - uint8_t I2C_GetFlagStatus(I2C_RegDef_t* pI2Cx, uint32_t flagname)
+*   - void    I2C_GenerateStopCondition(I2C_RegDef_t* pI2Cx)
+*   - void    I2C_ManageAcking(I2C_RegDef_t* pI2Cx, uint8_t en_or_di)
+*   - void    I2C_SlaveEnCallbackEvents(I2C_RegDef_t* pI2Cx, uint8_t en_or_di)
+*   - void    I2C_CloseReceiveData(I2C_Handle_t* pI2C_Handle)
+*   - void    I2C_CloseSendData(I2C_Handle_t* pI2C_Handle)
+*   - void    I2C_ApplicationEventCallback(I2C_Handle_t* pI2C_Handle, uint8_t app_event)
 *
-* NOTES :
+* @note
 *       For further information about functions refer to the corresponding header file.
-*
 **/
 
 #include <stdint.h>
@@ -38,70 +52,50 @@
 #include "i2c_driver.h"
 #include "rcc_driver.h"
 
-/*****************************************************************************************************/
-/*                                       Static Function Prototypes                                  */
-/*****************************************************************************************************/
+/***********************************************************************************************************/
+/*                                       Static Function Prototypes                                        */
+/***********************************************************************************************************/
 
 /**
- * @fn I2C_GenerateStartCondition
- *
- * @brief function to generate the start condition for transmission.
- *
+ * @brief Function to generate the start condition for transmission.
  * @param[in] pI2Cx the base address of the I2Cx peripheral.
- *
  * @return void.
  */
 static void I2C_GenerateStartCondition(I2C_RegDef_t* pI2Cx);
 
 /**
- * @fn I2C_GenerateStartCondition
- *
- * @brief function to set address of the slave for transmission.
- *
+ * @brief Function to set address of the slave for transmission.
  * @param[in] pI2Cx the base address of the I2Cx peripheral.
  * @param[in] slave_addr address of the slave.
  * @param[in] rw selection to read or write, @I2C_RW.
- *
  * @return void.
  */
 static void I2C_ExecuteAddressPhase(I2C_RegDef_t* pI2Cx, uint8_t slave_addr, rw_t rw);
 
 /**
- * @fn I2C_GenerateStartCondition
- *
- * @brief function to clear address flag.
- *
+ * @brief Function to clear address flag.
  * @param[in] pI2C_Handle handle structure for the I2C peripheral.
- *
  * @return void.
  */
 static void I2C_ClearADDRFlag(I2C_Handle_t* pI2C_Handle);
 
 /**
- * @fn I2C_MasterHandleTXEInterrupt
- *
- * @brief function to manage transmission in handle interrupt.
- *
+ * @brief Function to manage transmission in handle interrupt.
  * @param[in] pI2C_Handle handle structure for the I2C peripheral.
- *
  * @return void.
  */
 static void I2C_MasterHandleTXEInterrupt(I2C_Handle_t* pI2C_Handle);
 
 /**
- * @fn I2C_MasterHandleRXNEInterrupt
- *
- * @brief function to manage reception in handle interrupt.
- *
+ * @brief Function to manage reception in handle interrupt.
  * @param[in] pI2C_Handle handle structure for the I2C peripheral.
- *
  * @return void.
  */
 static void I2C_MasterHandleRXNEInterrupt(I2C_Handle_t* pI2C_Handle);
 
-/*****************************************************************************************************/
-/*                                       Public API Definitions                                      */
-/*****************************************************************************************************/
+/***********************************************************************************************************/
+/*                                       Public API Definitions                                            */
+/***********************************************************************************************************/
 
 void I2C_Init(I2C_Handle_t* pI2C_Handle){
 
@@ -207,7 +201,10 @@ void I2C_PerClkCtrl(I2C_RegDef_t* pI2Cx, uint8_t en_or_di){
     }
 }
 
-void I2C_MasterSendData(I2C_Handle_t* pI2C_Handle, uint8_t* pTxBuffer, uint32_t len, uint8_t slave_addr, sr_t sr){
+void I2C_MasterSendData(I2C_Handle_t* pI2C_Handle,
+                        uint8_t* pTxBuffer,
+                        uint32_t len,
+                        uint8_t slave_addr, sr_t sr){
 
     /* Generate start condition */
     I2C_GenerateStartCondition(pI2C_Handle->pI2Cx);
@@ -247,7 +244,11 @@ void I2C_MasterSendData(I2C_Handle_t* pI2C_Handle, uint8_t* pTxBuffer, uint32_t 
     }
 }
 
-void I2C_MasterReceiveData(I2C_Handle_t* pI2C_Handle, uint8_t* pRxBuffer, uint8_t len, uint8_t slave_addr, sr_t sr){
+void I2C_MasterReceiveData(I2C_Handle_t* pI2C_Handle,
+                           uint8_t* pRxBuffer,
+                           uint8_t len,
+                           uint8_t slave_addr,
+                           sr_t sr){
 
     uint32_t i = 0;
 
@@ -317,7 +318,11 @@ void I2C_MasterReceiveData(I2C_Handle_t* pI2C_Handle, uint8_t* pRxBuffer, uint8_
     }
 }
 
-uint8_t I2C_MasterSendDataIT(I2C_Handle_t* pI2C_Handle, uint8_t* pTxBuffer, uint32_t len, uint8_t slave_addr, sr_t sr){
+uint8_t I2C_MasterSendDataIT(I2C_Handle_t* pI2C_Handle,
+                             uint8_t* pTxBuffer,
+                             uint32_t len,
+                             uint8_t slave_addr,
+                             sr_t sr){
 
     uint8_t busystate = pI2C_Handle->TxRxState;
 
@@ -344,7 +349,11 @@ uint8_t I2C_MasterSendDataIT(I2C_Handle_t* pI2C_Handle, uint8_t* pTxBuffer, uint
     return busystate;
 }
 
-uint8_t I2C_MasterReceiveDataIT(I2C_Handle_t* pI2C_Handle, uint8_t* pRxBuffer, uint8_t len, uint8_t slave_addr, sr_t sr){
+uint8_t I2C_MasterReceiveDataIT(I2C_Handle_t* pI2C_Handle,
+                                uint8_t* pRxBuffer,
+                                uint8_t len,
+                                uint8_t slave_addr,
+                                sr_t sr){
 
     uint8_t busystate = pI2C_Handle->TxRxState;
 
@@ -421,6 +430,7 @@ void I2C_IRQConfig(uint8_t IRQNumber, uint8_t en_or_di){
 }
 
 void I2C_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority){
+
     /* Find out the IPR register */
     uint8_t iprx = IRQNumber / 4;
     uint8_t iprx_section = IRQNumber % 4;
@@ -679,9 +689,9 @@ __attribute__((weak)) void I2C_ApplicationEventCallback(I2C_Handle_t* pI2C_Handl
     /* This is a weak implementation. The application may override this function */
 }
 
-/*****************************************************************************************************/
-/*                                       Static Function Definitions                                 */
-/*****************************************************************************************************/
+/***********************************************************************************************************/
+/*                                       Static Function Definitions                                       */
+/***********************************************************************************************************/
 
 static void I2C_GenerateStartCondition(I2C_RegDef_t* pI2Cx){
 

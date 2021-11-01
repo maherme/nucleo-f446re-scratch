@@ -1,78 +1,64 @@
-/*****************************************************************************************************
-* FILENAME :        spi_driver.c
+/********************************************************************************************************//**
+* @file spi_driver.c
 *
-* DESCRIPTION :
-*       File containing the APIs for configuring the SPI peripheral.
+* @brief File containing the APIs for configuring the SPI peripheral.
 *
-* PUBLIC FUNCTIONS :
-*       void    SPI_Init(SPI_RegDef_t* pSPI_Handle)
-*       void    SPI_DeInit(SPI_RegDef_t* pSPIx)
-*       void    SPI_PerClkCtrl(SPI_RegDef_t* pSPIx, uint8_t en_or_di)
-*       void    SPI_SendData(SPI_RegDef_t* pSPIx, uint8_t* pTxBuffer, uint32_t len)
-*       void    SPI_ReceiveData(SPI_RegDef_t* pSPIx, uint8_t* pRxBuffer, uint32_t len)
-*       uint8_t SPI_SendDataIT(SPI_Handle_t* pSPI_Handle, uint8_t* pTxBuffer, uint32_t len)
-*       uint8_t SPI_ReceiveDataIT(SPI_Handle_t* pSPI_Handle, uint8_t* pRxBuffer, uint32_t len)
-*       void    SPI_IRQConfig(uint8_t IRQNumber, uint8_t en_or_di)
-*       void    SPI_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority)
-*       void    SPI_IRQHandling(SPI_Handle_t* pSPI_Handle)
-*       void    SPI_Enable(SPI_RegDef_t *pSPIx, uint8_t en_or_di)
-*       void    SPI_SSICfg(SPI_RegDef_t* pSPIx, uint8_t en_or_di)
-*       void    SPI_SSOECfg(SPI_RegDef_t* pSPIx, uint8_t en_or_di)
-*       uint8_t SPI_GetFlagStatus(SPI_RegDef_t* pSPIx, uint32_t flagname)
-*       void    SPI_ClearOVRFlag(SPI_RegDef_t* pSPIx)
-*       void    SPI_CloseTx(SPI_Handle_t* pSPI_Handle)
-*       void    SPI_CloseRx(SPI_Handle_t* pSPI_Handle)
-*       void    SPI_ApplicationEventCallback(SPI_Handle_t* pSPI_Handle, uint8_t app_event)
+* Public Functions :
+*       - void    SPI_Init(SPI_RegDef_t* pSPI_Handle)
+*       - void    SPI_DeInit(SPI_RegDef_t* pSPIx)
+*       - void    SPI_PerClkCtrl(SPI_RegDef_t* pSPIx, uint8_t en_or_di)
+*       - void    SPI_SendData(SPI_RegDef_t* pSPIx, uint8_t* pTxBuffer, uint32_t len)
+*       - void    SPI_ReceiveData(SPI_RegDef_t* pSPIx, uint8_t* pRxBuffer, uint32_t len)
+*       - uint8_t SPI_SendDataIT(SPI_Handle_t* pSPI_Handle, uint8_t* pTxBuffer, uint32_t len)
+*       - uint8_t SPI_ReceiveDataIT(SPI_Handle_t* pSPI_Handle, uint8_t* pRxBuffer, uint32_t len)
+*       - void    SPI_IRQConfig(uint8_t IRQNumber, uint8_t en_or_di)
+*       - void    SPI_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority)
+*       - void    SPI_IRQHandling(SPI_Handle_t* pSPI_Handle)
+*       - void    SPI_Enable(SPI_RegDef_t *pSPIx, uint8_t en_or_di)
+*       - void    SPI_SSICfg(SPI_RegDef_t* pSPIx, uint8_t en_or_di)
+*       - void    SPI_SSOECfg(SPI_RegDef_t* pSPIx, uint8_t en_or_di)
+*       - uint8_t SPI_GetFlagStatus(SPI_RegDef_t* pSPIx, uint32_t flagname)
+*       - void    SPI_ClearOVRFlag(SPI_RegDef_t* pSPIx)
+*       - void    SPI_CloseTx(SPI_Handle_t* pSPI_Handle)
+*       - void    SPI_CloseRx(SPI_Handle_t* pSPI_Handle)
+*       - void    SPI_ApplicationEventCallback(SPI_Handle_t* pSPI_Handle, uint8_t app_event)
 *
-* NOTES :
+* @note
 *       For further information about functions refer to the corresponding header file.
-*
 **/
 
 #include <stdint.h>
 #include <stddef.h>
 #include "spi_driver.h"
 
-/*****************************************************************************************************/
-/*                                       Static Function Prototypes                                  */
-/*****************************************************************************************************/
+/***********************************************************************************************************/
+/*                                       Static Function Prototypes                                        */
+/***********************************************************************************************************/
 
 /**
- * @fn spi_txe_interrupt_handle
- *
- * @brief function to handle transmission interrupt.
- *
+ * @brief Function to handle transmission interrupt.
  * @param[in] pSPI_Handle handle structure for the SPI peripheral.
- *
  * @return void
  */
 static void spi_txe_interrupt_handle(SPI_Handle_t* pSPI_Handle);
 
 /**
- * @fn spi_rxne_interrupt_handle
- *
- * @brief function to handle reception interrupt.
- *
+ * @brief Function to handle reception interrupt.
  * @param[in] pSPI_Handle handle structure for the SPI peripheral.
- *
  * @return void
  */
 static void spi_rxne_interrupt_handle(SPI_Handle_t* pSPI_Handle);
 
 /**
- * @fn spi_ovr_err_interrupt_handle
- *
- * @brief function to handle error interrupt.
- *
+ * @brief Function to handle error interrupt.
  * @param[in] pSPI_Handle handle structure for the SPI peripheral.
- *
  * @return void
  */
 static void spi_ovr_err_interrupt_handle(SPI_Handle_t* pSPI_Handle);
 
-/*****************************************************************************************************/
-/*                                       Public API Definitions                                      */
-/*****************************************************************************************************/
+/***********************************************************************************************************/
+/*                                       Public API Definitions                                            */
+/***********************************************************************************************************/
 
 void SPI_Init(SPI_Handle_t* pSPI_Handle){
 
@@ -408,9 +394,9 @@ __attribute__((weak)) void SPI_ApplicationEventCallback(SPI_Handle_t* pSPI_Handl
     /* This is a weak implementation. The application may override this function */
 }
 
-/*****************************************************************************************************/
-/*                                       Static Function Definitions                                 */
-/*****************************************************************************************************/
+/***********************************************************************************************************/
+/*                                       Static Function Definitions                                       */
+/***********************************************************************************************************/
 
 static void spi_txe_interrupt_handle(SPI_Handle_t* pSPI_Handle){
 
