@@ -67,7 +67,7 @@ static void I2C_GenerateStartCondition(I2C_RegDef_t* pI2Cx);
  * @brief Function to set address of the slave for transmission.
  * @param[in] pI2Cx the base address of the I2Cx peripheral.
  * @param[in] slave_addr address of the slave.
- * @param[in] rw selection to read or write, @I2C_RW.
+ * @param[in] rw selection to read or write.
  * @return void.
  */
 static void I2C_ExecuteAddressPhase(I2C_RegDef_t* pI2Cx, uint8_t slave_addr, rw_t rw);

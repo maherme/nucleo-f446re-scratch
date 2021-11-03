@@ -1,5 +1,5 @@
 /********************************************************************************************************//**
-* @file i2c_driver.c
+* @file i2c_driver.h
 *
 * @brief File containing the APIs for configuring the I2C peripheral.
 *
@@ -50,87 +50,87 @@
 #include "stm32f446xx.h"
 
 /**
- * @name I2C possible SCL speed values.
+ * @defgroup I2C_Speed I2C possible SCL speed values.
  * @{
  */
-#define I2C_SCL_SPEED_SM        100000
-#define I2C_SCL_SPEED_FM2K      200000
-#define I2C_SCL_SPEED_FM4K      400000
+#define I2C_SCL_SPEED_SM        100000  /**< @brief Standard speed of 100KHz */
+#define I2C_SCL_SPEED_FM2K      200000  /**< @brief High speed of 200KHz */
+#define I2C_SCL_SPEED_FM4K      400000  /**< @brief Fast speed of 400KHz */
 /**@}*/
 
 /**
- * @name I2C possible ack control values.
+ * @defgroup I2C_Ack I2C possible ack control values.
  * @{
  */
-#define I2C_ACK_ENABLE          1
-#define I2C_ACK_DISABLE         0
+#define I2C_ACK_ENABLE          1   /**< @brief I2C Acknowledge enable */
+#define I2C_ACK_DISABLE         0   /**< @brief I2C Acknowledge disable */
 /**@}*/
 
 /**
- * @name I2C possible duty cycle values.
+ * @defgroup I2C_Duty I2C possible duty cycle values.
  * @{
  */
-#define I2C_FM_DUTY_2           0
-#define I2C_FM_DUTY_16_9        1
+#define I2C_FM_DUTY_2           0   /**< @brief Fm mode Tlow/Thigh = 2 */
+#define I2C_FM_DUTY_16_9        1   /**< @brief Fm mode Tlow/Thigh = 16/9 */
 /**@}*/
 
 /**
- * @name I2C possible application states.
+ * @defgroup I2C_Event I2C possible application states.
  * @{
  */
-#define I2C_READY               0
-#define I2C_BUSY_IN_RX          1
-#define I2C_BUSY_IN_TX          2
+#define I2C_READY               0   /**< @brief I2C Ready */
+#define I2C_BUSY_IN_RX          1   /**< @brief I2C Busy in reception */
+#define I2C_BUSY_IN_TX          2   /**< @brief I2C Busy in transmission */
 /**@}*/
 
 /**
- * @name I2C related status flags definitions.
+ * @defgroup I2C_Status I2C related status flags definitions.
  * @{
  */
-#define I2C_FLAG_TXE        (1 << I2C_SR1_TXE)
-#define I2C_FLAG_RXNE       (1 << I2C_SR1_RXNE)
-#define I2C_FLAG_SB         (1 << I2C_SR1_SB)
-#define I2C_FLAG_OVR        (1 << I2C_SR1_OVR)
-#define I2C_FLAG_AF         (1 << I2C_SR1_AF)
-#define I2C_FLAG_ARLO       (1 << I2C_SR1_ARLO)
-#define I2C_FLAG_BERR       (1 << I2C_SR1_BERR)
-#define I2C_FLAG_STOPF      (1 << I2C_SR1_STOPF)
-#define I2C_FLAG_ADD10      (1 << I2C_SR1_ADD10)
-#define I2C_FLAG_BTF        (1 << I2C_SR1_BTF)
-#define I2C_FLAG_ADDR       (1 << I2C_SR1_ADDR)
-#define I2C_FLAG_TIMEOUT    (1 << I2C_SR1_TIMEOUT)
+#define I2C_FLAG_TXE        (1 << I2C_SR1_TXE)      /**< @brief TXE of I2C status register */
+#define I2C_FLAG_RXNE       (1 << I2C_SR1_RXNE)     /**< @brief RXNE of I2C status register */
+#define I2C_FLAG_SB         (1 << I2C_SR1_SB)       /**< @brief SB of I2C status register */
+#define I2C_FLAG_OVR        (1 << I2C_SR1_OVR)      /**< @brief OVR of I2C status register */
+#define I2C_FLAG_AF         (1 << I2C_SR1_AF)       /**< @brief AF of I2C status register */
+#define I2C_FLAG_ARLO       (1 << I2C_SR1_ARLO)     /**< @brief ARLO of I2C status register */
+#define I2C_FLAG_BERR       (1 << I2C_SR1_BERR)     /**< @brief BERR of I2C status register */
+#define I2C_FLAG_STOPF      (1 << I2C_SR1_STOPF)    /**< @brief STOPF of I2C status register */
+#define I2C_FLAG_ADD10      (1 << I2C_SR1_ADD10)    /**< @brief ADD10 of I2C status register */
+#define I2C_FLAG_BTF        (1 << I2C_SR1_BTF)      /**< @brief BTF of I2C status register */
+#define I2C_FLAG_ADDR       (1 << I2C_SR1_ADDR)     /**< @brief ADDR of I2C status register */
+#define I2C_FLAG_TIMEOUT    (1 << I2C_SR1_TIMEOUT)  /**< @brief TIMEOUT of I2C status register */
 /**@}*/
 
 /**
  * @brief Possible options for rw in I2C_ExecuteAddressPhase().
  */
 typedef enum{
-    READ,
-    WRITE
+    READ,   /**< Read selection */
+    WRITE   /**< Write selection */
 }rw_t;
 
 /**
  * @brief Possible options for enable / disable for start repeating.
  */
 typedef enum{
-    I2C_DISABLE_SR, /**< @brief Start repeating disable */
-    I2C_ENABLE_SR   /**< @brief Start repeating enable */
+    I2C_DISABLE_SR, /**< Start repeating disable */
+    I2C_ENABLE_SR   /**< Start repeating enable */
 }sr_t;
 
 /**
- * @name I2C possible application events
+ * @defgroup I2C_AppEvent I2C possible application events
  * @{
  */
-#define I2C_EVENT_TX_CMPLT  1
-#define I2C_EVENT_RX_CMPLT  2
-#define I2C_EVENT_STOP      3
-#define I2C_ERROR_BERR      4
-#define I2C_ERROR_ARLO      5
-#define I2C_ERROR_AF        6
-#define I2C_ERROR_OVR       7
-#define I2C_ERROR_TIMEOUT   8
-#define I2C_EVENT_DATA_REQ  9
-#define I2C_EVENT_DATA_RCV  10
+#define I2C_EVENT_TX_CMPLT  1   /**< @brief Transmission completed event */
+#define I2C_EVENT_RX_CMPLT  2   /**< @brief Reception completed event */
+#define I2C_EVENT_STOP      3   /**< @brief Stop event */
+#define I2C_ERROR_BERR      4   /**< @brief Bus error event */
+#define I2C_ERROR_ARLO      5   /**< @brief Arbitration lost event */
+#define I2C_ERROR_AF        6   /**< @brief Acknowledge failure event */
+#define I2C_ERROR_OVR       7   /**< @brief Overrun/underrun error event */
+#define I2C_ERROR_TIMEOUT   8   /**< @brief Timeout error event */
+#define I2C_EVENT_DATA_REQ  9   /**< @brief Requested data event */
+#define I2C_EVENT_DATA_RCV  10  /**< @brief Received data event */
 /**@}*/
 
 /**
@@ -138,10 +138,10 @@ typedef enum{
  */
 typedef struct
 {
-    uint32_t I2C_SCLSpeed;          /**< Possible values from @I2C_SCLSPEED */
+    uint32_t I2C_SCLSpeed;          /**< Possible values from @ref I2C_Speed */
     uint8_t I2C_DeviceAddress;      /**< Device Address */
-    uint8_t I2C_ACKControl;         /**< Possible values from @I2C_ACKCONTROL */
-    uint16_t I2C_FMDutyCycle;       /**< Possible values from @I2C_FMDUTYCYCLE */
+    uint8_t I2C_ACKControl;         /**< Possible values from @ref I2C_Ack */
+    uint16_t I2C_FMDutyCycle;       /**< Possible values from @ref I2C_Duty */
 }I2C_Config_t;
 
 /**
@@ -193,7 +193,7 @@ void I2C_PerClkCtrl(I2C_RegDef_t* pI2Cx, uint8_t en_or_di);
  * @param[in] pTxBuffer buffer to store data to be transmitted.
  * @param[in] len length of the transmission buffer.
  * @param[in] slave_addr slave address.
- * @param[in] sr for enabling start repeating, possible values @I2C_SR.
+ * @param[in] sr for enabling start repeating, possible values.
  * @return void
  * @note blocking call.
  */
@@ -209,7 +209,7 @@ void I2C_MasterSendData(I2C_Handle_t* pI2C_Handle,
  * @param[out] pRxBuffer buffer to store received data.
  * @param[in] len length of the transmission buffer.
  * @param[in] slave_addr slave address.
- * @param[in] sr for enabling start repeating, possible values @I2C_SR.
+ * @param[in] sr for enabling start repeating, possible values.
  * @return void
  * @note blocking call.
  */
@@ -225,7 +225,7 @@ void I2C_MasterReceiveData(I2C_Handle_t* pI2C_Handle,
  * @param[in] pTxBuffer buffer to store data to be transmitted.
  * @param[in] len length of the transmission buffer.
  * @param[in] slave_addr slave address.
- * @param[in] sr for enabling start repeating, possible values @I2C_SR.
+ * @param[in] sr for enabling start repeating, possible values.
  * @return application state.
  */
 uint8_t I2C_MasterSendDataIT(I2C_Handle_t* pI2C_Handle,
@@ -240,7 +240,7 @@ uint8_t I2C_MasterSendDataIT(I2C_Handle_t* pI2C_Handle,
  * @param[out] pRxBuffer buffer to store received data.
  * @param[in] len length of the transmission buffer.
  * @param[in] slave_addr slave address.
- * @param[in] sr for enabling start repeating, possible values @I2C_SR.
+ * @param[in] sr for enabling start repeating, possible values.
  * @return application state.
  */
 uint8_t I2C_MasterReceiveDataIT(I2C_Handle_t* pI2C_Handle,
@@ -320,7 +320,7 @@ void I2C_GenerateStopCondition(I2C_RegDef_t* pI2Cx);
 /**
  * @brief Function to enable or disable the acking.
  * @param[in] pI2Cx the base address of the I2Cx peripheral.
- * @param[in] en_or_di to enable or disable @I2C_ACKCONTROL
+ * @param[in] en_or_di to enable or disable @ref I2C_Ack
  * @return void.
  */
 void I2C_ManageAcking(I2C_RegDef_t* pI2Cx, uint8_t en_or_di);
@@ -351,7 +351,7 @@ void I2C_CloseSendData(I2C_Handle_t* pI2C_Handle);
 /**
  * @brief Function for application callback.
  * @param[in] pI2C_Handle handle structure to I2C peripheral.
- * @param[in] app_event application event.
+ * @param[in] app_event @ref I2C_AppEvent.
  * @return void.
  */
 void I2C_ApplicationEventCallback(I2C_Handle_t* pI2C_Handle, uint8_t app_event);

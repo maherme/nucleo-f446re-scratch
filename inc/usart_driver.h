@@ -28,21 +28,17 @@
 #include "stm32f446xx.h"
 
 /**
- * @name USART_DEVICE_MODE
- * @brief USART possible device mode.
+ * @defgroup USART_Mode USART possible device mode.
  * @{
  */
-/** @brief Mode transmission only. */
-#define USART_MODE_ONLY_TX      0
-/** @brief Mode reception only. */
-#define USART_MODE_ONLY_RX      1
-/** @brief Mode transmission and reception. */
-#define USART_MODE_TXRX         2
+
+#define USART_MODE_ONLY_TX      0   /**< @brief Mode transmission only. */
+#define USART_MODE_ONLY_RX      1   /**< @brief Mode reception only. */
+#define USART_MODE_TXRX         2   /**< @brief Mode transmission and reception. */
 /** @} */
 
 /**
- * @name USART_BAUD
- * @brief USART possible options for baudrate.
+ * @defgroup USART_Baudrate USART possible options for baudrate.
  * @{
  */
 #define USART_STD_BAUD_1200     1200        /**< @brief Baudrate 1200 */
@@ -60,8 +56,7 @@
 /** @} */
 
 /**
- * @name USART_PARITY_CTL
- * @brief USART possible options for parity control.
+ * @defgroup USART_Parity USART possible options for parity control.
  * @{
  */
 #define USART_PARITY_DISABLE    0   /**< @brief Partity control disabled */
@@ -70,8 +65,7 @@
 /** @} */
 
 /**
- * @name USART_WORD_LENGTH
- * @brief USART possible options for word length.
+ * @defgroup USART_WLength USART possible options for word length.
  * @{
  */
 #define USART_WORDLEN_8BITS     0   /**< @brief Word length of 8 bits */
@@ -79,8 +73,7 @@
 /** @} */
 
 /**
- * @name USART_NUM_STOP_BITS
- * @brief USART possible options for number of stop bits.
+ * @defgroup USART_StopBits USART possible options for number of stop bits.
  * @{
  */
 #define USART_STOPBITS_1        0   /**< @brief Number stop bits 1 */
@@ -90,8 +83,7 @@
 /** @} */
 
 /**
- * @name USART_HW_FLOW_CTL
- * @brief USART possible options for hardware flow control.
+ * @defgroup USART_FlowCtl USART possible options for hardware flow control.
  * @{
  */
 #define USART_HW_FLOW_CTRL_NONE     0   /**< @brief Flow control disabled */
@@ -101,7 +93,7 @@
 /** @} */
 
 /**
- * @name USART related status flags definitions.
+ * @defgroup USART_Status USART related status flags definitions.
  * @{
  */
 #define USART_FLAG_TXE      (1 << USART_SR_TXE)     /**< @brief TXE of USART status register */
@@ -110,8 +102,7 @@
 /** @} */
 
 /**
- * @name USART_APP_STATE
- * @brief USART possible application states.
+ * @defgroup USART_AppState USART possible application states.
  * @{
  */
 #define USART_READY         0   /**< @brief USART ready */
@@ -120,7 +111,7 @@
 /** @} */
 
 /**
- * @name USART possible application events
+ * @defgroup USART_AppEvent USART possible application events
  * @{
  */
 #define USART_EVENT_TX_CMPLT    0   /**< @brief Transmission completed event */
@@ -138,12 +129,12 @@
  */
 typedef struct
 {
-    uint8_t USART_Mode;             /**< Possible values from USART_DEVICE_MODE */
-    uint32_t USART_Baud;            /**< Possible values from USART_BAUD */
-    uint8_t USART_NoOfStopBits;     /**< Possible values from USART_NUM_STOP_BITS */
-    uint8_t USART_WordLength;       /**< Possible values from USART_WORD_LENGTH */
-    uint8_t USART_ParityControl;    /**< Possible values from USART_PARITY_CTL */
-    uint8_t USART_HWFlowControl;    /**< Possible values from USART_HW_FLOW_CTL */
+    uint8_t USART_Mode;             /**< Possible values from @ref USART_Mode */
+    uint32_t USART_Baud;            /**< Possible values from @ref USART_Baudrate */
+    uint8_t USART_NoOfStopBits;     /**< Possible values from @ref USART_StopBits */
+    uint8_t USART_WordLength;       /**< Possible values from @ref USART_WLength */
+    uint8_t USART_ParityControl;    /**< Possible values from @ref USART_Parity */
+    uint8_t USART_HWFlowControl;    /**< Possible values from @ref USART_FlowCtl */
 }USART_Config_t;
 
 /**
@@ -212,7 +203,7 @@ void USART_ReceiveData(USART_Handle_t* pUSART_Handle, uint8_t* pRxBuffer, uint32
  * @param[in] pUSART_Handle handle structure for the USART peripheral.
  * @param[in] pTxBuffer buffer with the data to send.
  * @param[in] len length of the data to send.
- * @return USART_APP_STATE.
+ * @return @ref USART_AppState.
  */
 uint8_t USART_SendDataIT(USART_Handle_t* pUSART_Handle, uint8_t* pTxBuffer, uint32_t len);
 
@@ -221,7 +212,7 @@ uint8_t USART_SendDataIT(USART_Handle_t* pUSART_Handle, uint8_t* pTxBuffer, uint
  * @param[in] pUSART_Handle handle structure for the USART peripheral.
  * @param[out] pRxBuffer buffer to store the received data.
  * @param[in] len length of the data to receive.
- * @return USART_APP_STATE.
+ * @return @ref USART_AppState.
  */
 uint8_t USART_ReceiveDataIT(USART_Handle_t* pUSART_Handle, uint8_t* pRxBuffer, uint32_t len);
 
@@ -283,7 +274,7 @@ void USART_ClearFlag(USART_RegDef_t* pUSARTx, uint16_t status_flagname);
 /**
  * @brief Function for application callback.
  * @param[in] pUSART_Handle handle structure to USART peripheral.
- * @param[in] app_event application event.
+ * @param[in] app_event @ref USART_AppEvent.
  * @return void.
  */
 void USART_ApplicationEventCallback(USART_Handle_t* pUSART_Handle, uint8_t app_event);

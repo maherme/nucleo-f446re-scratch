@@ -31,7 +31,7 @@
 #include "stm32f446xx.h"
 
 /**
- * @name SPI possible device modes.
+ * @defgroup SPI_Mode SPI possible device modes.
  * @{
  */
 #define SPI_DEV_MODE_MASTER     1   /**< @brief Master mode */
@@ -39,7 +39,7 @@
 /**@}*/
 
 /**
- * @name SPI possible bus configuration.
+ * @defgroup SPI_BusCfg SPI possible bus configuration.
  * @{
  */
 #define SPI_BUS_CFG_FD          0   /**< @brief Full Duplex */
@@ -48,7 +48,7 @@
 /**@}*/
 
 /**
- * @name SPI possible baud rate control.
+ * @defgroup SPI_Baudrate SPI possible baud rate control.
  * @{
  */
 #define SPI_SCLK_SPEED_DIV2     0   /**< @brief Serial clock speed division by 2 */
@@ -62,7 +62,7 @@
 /**@}*/
 
 /**
- * @name SPI possible data frame format.
+ * @defgroup SPI_FFormat SPI possible data frame format.
  * @{
  */
 #define SPI_DFF_8BITS   0   /**< @brief 8 bits data frame format */
@@ -70,7 +70,7 @@
 /**@}*/
 
 /**
- * @name SPI possible clock polarity.
+ * @defgroup SPI_ClkPol SPI possible clock polarity.
  * @{
  */
 #define SPI_CPOL_HIGH   1   /**< @brief Clock polarity high */
@@ -78,7 +78,7 @@
 /**@}*/
 
 /**
- * @name SPI possible clock phase.
+ * @defgroup SPI_ClkPhase SPI possible clock phase.
  * @{
  */
 #define SPI_CPHA_HIGH   1   /**< @brief Clock phase high */
@@ -86,7 +86,7 @@
 /**@}*/
 
 /**
- * @name SPI software slave management configuration.
+ * @defgroup SPI_SSM SPI software slave management configuration.
  * @{
  */
 #define SPI_SSM_EN      1   /**< @brief Software slave management enable */
@@ -94,7 +94,7 @@
 /**@}*/
 
 /**
- * @name SPI related status flags definitions.
+ * @defgroup SPI_Status SPI related status flags definitions.
  * @{
  */
 #define SPI_TXE_FLAG    (1 << SPI_SR_TXE)   /**< @brief TXE of SPI status register */
@@ -103,7 +103,7 @@
 /**@}*/
 
 /**
- * @name SPI possible application states
+ * @defgroup SPI_AppStates SPI possible application states
  * @{
  */
 #define SPI_READY       0   /**< @brief SPI ready */
@@ -112,7 +112,7 @@
 /**@}*/
 
 /**
- * @name SPI possible application events
+ * @defgroup SPI_Events SPI possible application events
  * @{
  */
 #define SPI_EVENT_TX_CMPLT  1   /**< @brief Transmission completed event */
@@ -125,13 +125,13 @@
  */
 typedef struct
 {
-    uint8_t SPI_DeviceMode;     /**< Possible values from @SPI_DEVICE_MODE */
-    uint8_t SPI_BusConfig;      /**< Possible values from @SPI_BUS_CFG */
-    uint8_t SPI_SclkSpeed;      /**< Possible values from @SPI_SCLK_SPEED */
-    uint8_t SPI_DFF;            /**< Possible values from @SPI_DFF */
-    uint8_t SPI_CPOL;           /**< Possible values from @SPI_CPOL */
-    uint8_t SPI_CPHA;           /**< Possible values from @SPI_CPHA */
-    uint8_t SPI_SSM;            /**< Possible values from @SPI_SSM */
+    uint8_t SPI_DeviceMode;     /**< Possible values from @ref SPI_Mode */
+    uint8_t SPI_BusConfig;      /**< Possible values from @ref SPI_BusCfg */
+    uint8_t SPI_SclkSpeed;      /**< Possible values from @ref SPI_Baudrate */
+    uint8_t SPI_DFF;            /**< Possible values from @ref SPI_FFormat */
+    uint8_t SPI_CPOL;           /**< Possible values from @ref SPI_ClkPol */
+    uint8_t SPI_CPHA;           /**< Possible values from @ref SPI_ClkPhase */
+    uint8_t SPI_SSM;            /**< Possible values from @ref SPI_SSM */
 }SPI_Config_t;
 
 /**
@@ -200,7 +200,7 @@ void SPI_ReceiveData(SPI_RegDef_t* pSPIx, uint8_t* pRxBuffer, uint32_t len);
  * @param[in] pSPI_Handle handle structure for the SPI peripheral.
  * @param[in] pTxBuffer buffer with the data to send.
  * @param[in] len length of the data to send.
- * @return @SPI_APP_STATE.
+ * @return @ref SPI_AppStates.
  */
 uint8_t SPI_SendDataIT(SPI_Handle_t* pSPI_Handle, uint8_t* pTxBuffer, uint32_t len);
 
@@ -209,7 +209,7 @@ uint8_t SPI_SendDataIT(SPI_Handle_t* pSPI_Handle, uint8_t* pTxBuffer, uint32_t l
  * @param[in] pSPI_Handle handle structure for the SPI peripheral.
  * @param[out] pRxBuffer buffer to store the received data.
  * @param[in] len length of the data to receive.
- * @return @SPI_APP_STATE.
+ * @return @ref SPI_AppStates.
  */
 uint8_t SPI_ReceiveDataIT(SPI_Handle_t* pSPI_Handle, uint8_t* pRxBuffer, uint32_t len);
 
@@ -292,7 +292,7 @@ void SPI_CloseRx(SPI_Handle_t* pSPI_Handle);
 /**
  * @brief Function for application callback.
  * @param[in] pSPI_Handle handle structure to SPI peripheral.
- * @param[in] app_event application event.
+ * @param[in] app_event @ref SPI_Events
  * @return void.
  */
 void SPI_ApplicationEventCallback(SPI_Handle_t* pSPI_Handle, uint8_t app_event);
