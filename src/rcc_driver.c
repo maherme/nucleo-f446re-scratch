@@ -37,7 +37,7 @@ uint32_t RCC_GetPCLK1Value(void){
     uint8_t ahbp, apb1p;
 
     /* Check for SWS */
-    clksrc = ((RCC->CFGR >> 2) & 0x3);
+    clksrc = ((RCC->CFGR >> RCC_CFGR_SWS) & 0x3);
 
     if(clksrc == 0){
         /* clk is HSI */
@@ -56,7 +56,7 @@ uint32_t RCC_GetPCLK1Value(void){
     }
 
     /* AHB prescaler */
-    temp = ((RCC->CFGR >> 4) & 0xF);
+    temp = ((RCC->CFGR >> RCC_CFGR_HPRE) & 0xF);
 
     if(temp < 8){
         ahbp = 1;
@@ -66,7 +66,7 @@ uint32_t RCC_GetPCLK1Value(void){
     }
 
     /* APB1 prescaler */
-    temp = ((RCC->CFGR >> 10) & 0x7);
+    temp = ((RCC->CFGR >> RCC_CFGR_PPRE1) & 0x7);
 
     if(temp < 4){
         apb1p = 1;
@@ -87,7 +87,7 @@ uint32_t RCC_GetPCLK2Value(void){
     uint8_t ahbp, apb2p;
 
     /* Check for SWS */
-    clksrc = ((RCC->CFGR >> 2) & 0x3);
+    clksrc = ((RCC->CFGR >> RCC_CFGR_SWS) & 0x3);
 
     if(clksrc == 0){
         /* clk is HSI */
@@ -106,7 +106,7 @@ uint32_t RCC_GetPCLK2Value(void){
     }
 
     /* AHB prescaler */
-    temp = ((RCC->CFGR >> 4) & 0xF);
+    temp = ((RCC->CFGR >> RCC_CFGR_HPRE) & 0xF);
 
     if(temp < 8){
         ahbp = 1;
@@ -116,7 +116,7 @@ uint32_t RCC_GetPCLK2Value(void){
     }
 
     /* APB2 prescaler */
-    temp = ((RCC->CFGR >> 13) & 0x7);
+    temp = ((RCC->CFGR >> RCC_CFGR_PPRE2) & 0x7);
 
     if(temp < 4){
         apb2p = 1;

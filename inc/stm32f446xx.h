@@ -636,6 +636,53 @@ typedef struct
 #define FLASH_OPTCR_SPRMOD      31 /**< @brief Selection of Protection Mode of nWRPi bits offset */
 /** @} */
 
+/**
+ * @name Bit position definition RCC clock control register.
+ * @{
+ */
+#define RCC_CR_HSION       0   /**< @brief Internal high-speed clock enable */
+#define RCC_CR_HSIRDY      1   /**< @brief Internal high-speed clock ready flag */
+#define RCC_CR_HSITRIM     3   /**< @brief Internal high-speed clock trimming */
+#define RCC_CR_HSICAL      8   /**< @brief Internal high-speed clock calibration */
+#define RCC_CR_HSEON       16  /**< @brief HSE clock enable.*/
+#define RCC_CR_HSERDY      17  /**< @brief HSE clock ready flag */
+#define RCC_CR_HSEBYP      18  /**< @brief HSE clock bypass */
+#define RCC_CR_CSSON       19  /**< @brief Clock security system enable */
+#define RCC_CR_PLLON       24  /**< @brief Main PLL enable */
+#define RCC_CR_PLLRDY      25  /**< @brief Main PLL clock ready flag */
+#define RCC_CR_PLLI2SON    26  /**< @brief PLLI2S enable */
+#define RCC_CR_PLLI2SRDY   27  /**< @brief PLLI2S clock ready flag */
+#define RCC_CR_PLLSAION    28  /**< @brief PLLSAI enable */
+#define RCC_CR_PLLSAIRDY   29  /**< @brief PLLSAI clock ready flag */
+/** @}*/
+
+/**
+ * @name Bit position definition RCC PLL configuration register.
+ * @{
+ */
+#define RCC_PLLCFGR_PLLM    0   /**< @brief Division factor for the main PLL input clock */
+#define RCC_PLLCFGR_PLLN    6   /**< @brief Main PLL multiplication factor for VCO */
+#define RCC_PLLCFGR_PLLP    16  /**< @brief Main PLL division factor for main system clock */
+#define RCC_PLLCFGR_PLLSRC  22  /**< @brief Main PLL and audio PLL entry clock source */
+#define RCC_PLLCFGR_PLLQ    24  /**< @brief Main PLL division factor for USB OTG FS */
+#define RCC_PLLCFGR_PLLR    28  /**< @brief Main PLL div factor for I2Ss, SAIs, SYSTEM and SPDIF-Rx clocks */
+/** @}*/
+
+/**
+ * @name Bit position definition RCC clock configuration register.
+ * @{
+ */
+#define RCC_CFGR_SW         0   /**< @brief System clock switch */
+#define RCC_CFGR_SWS        2   /**< @brief System clock switch status */
+#define RCC_CFGR_HPRE       4   /**< @brief AHB prescaler */
+#define RCC_CFGR_PPRE1      10  /**< @brief APB Low speed prescaler (APB1) */
+#define RCC_CFGR_PPRE2      13  /**< @brief APB High speed prescaler (APB2) */
+#define RCC_CFGR_RTCPRE     16  /**< @brief HSE division factor for RTC clock */
+#define RCC_CFGR_MCO1       21  /**< @brief Microcontroller clock output 1 */
+#define RCC_CFGR_MCO1PRE    24  /**< @brief MCO1 prescaler */
+#define RCC_CFGR_MCO2PRE    27  /**< @brief MCO2 prescaler */
+#define RCC_CFGR_MCO2       30  /**< @brief Microcontroller clock output 2 */
+
 /***********************************************************************************************************/
 /*          Peripheral definitions (peripheral base addresses typecasted to xxx_RegDef_t)                  */
 /***********************************************************************************************************/
