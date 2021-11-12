@@ -2,7 +2,9 @@ TARGET1 = $(BLD_DIR)/nucleof446re.elf
 TARGET2 = $(BLD_DIR)/nucleof446re_sh.elf
 TARGET_LIB = $(LIB_DIR)/libstm32f446xx.a
 SRC_DIR = ./src
-INC_DIR = ./inc
+DRV_DIR = ./src/drv
+TST_DIR = ./src/tst
+INCLUDE = -I./inc -I./inc/drv -I./inc/tst
 LNK_DIR = ./lnk
 OBJ_DIR = ./obj
 LIB_DIR = ./lib
@@ -36,7 +38,7 @@ CC = arm-none-eabi-gcc
 AR = arm-none-eabi-ar
 CR = arm-none-eabi-ranlib
 MACH = cortex-m4
-CFLAGS = -c -MD -mcpu=$(MACH) -mthumb -mfloat-abi=soft -std=gnu11 -Wall -I$(INC_DIR) -O0
+CFLAGS = -c -MD -mcpu=$(MACH) -mthumb -mfloat-abi=soft -std=gnu11 -Wall $(INCLUDE) -O0
 LDFLAGS = -mcpu=$(MACH) -mthumb -mfloat-abi=soft --specs=nano.specs -T $(LNK_DIR)/lk_f446re.ld \
 		  -Wl,-Map=$(BLD_DIR)/nucleof446re.map
 LDFLAGS_SH = -mcpu=$(MACH) -mthumb -mfloat-abi=soft --specs=rdimon.specs -T $(LNK_DIR)/lk_f446re.ld \
@@ -56,6 +58,14 @@ $(TARGET2) : $(OBJS2)
 	$(CC) $(LDFLAGS_SH) $(OBJS2) -o $(TARGET2)
 
 $(OBJ_DIR)/%.o : $(SRC_DIR)/%.c
+	@mkdir -p $(OBJ_DIR)
+	$(CC) $(CFLAGS) $< -o $@
+
+$(OBJ_DIR)/%.o : $(DRV_DIR)/%.c
+	@mkdir -p $(OBJ_DIR)
+	$(CC) $(CFLAGS) $< -o $@
+
+$(OBJ_DIR)/%.o : $(TST_DIR)/%.c
 	@mkdir -p $(OBJ_DIR)
 	$(CC) $(CFLAGS) $< -o $@
 
