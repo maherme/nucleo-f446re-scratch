@@ -16,7 +16,17 @@
 #include "stm32f446xx.h"
 #include "gpio_driver.h"
 #include "test.h"
+#include "test_spi.h"
 #include "utils.h"
+
+/**
+ * @name Flags for enabling peripheral testing.
+ * @{
+ */
+#define TEST_SPI    0   /**< @brief Set to 1 for enabling the SPI test */
+#define TEST_I2C    0   /**< @brief Set to 1 for enabling the I2C test */
+#define TEST_USART  0   /**< @brief Set to 1 for enabling the USART test */
+/** @} */
 
 /***********************************************************************************************************/
 /*                                       Static Function Prototypes                                        */
@@ -50,14 +60,20 @@ void test_init(void){
     GPIO_IRQPriorityConfig(IRQ_NO_EXTI15_10, NVIC_IRQ_PRIORITY15);
     GPIO_IRQConfig(IRQ_NO_EXTI15_10, ENABLE);
 
+#if TEST_SPI
     /* Configure and initialise SPI2 peripheral */
-    //SPI2_Config();
+    SPI2_Config();
+#endif
 
+#if TEST_I2C
     /* Configure and initialise I2C1 peripheral */
-    //I2C1_Config();
+    I2C1_Config();
+#endif
 
+#if TEST_USART
     /* Configure and initialise USART2 peripheral */
-    //USART3_Config();
+    USART3_Config();
+#endif
 }
 
 /***********************************************************************************************************/
@@ -66,8 +82,10 @@ void test_init(void){
 
 void EXTI9_5_Handler(void){
 
-    /* Interrupt actions for SPI */
-    //SPI_IRQActions();
+#if TEST_SPI
+    /* Interrupt actions for testing SPI */
+    SPI_IRQActions();
+#endif
 }
 
 void EXTI15_10_Handler(void){
@@ -76,17 +94,25 @@ void EXTI15_10_Handler(void){
 
     GPIO_IRQHandling(GPIO_PIN_NO_13);
 
-    /* Send commands via SPI if button is pressed */
-    //SPI_SendCmds();
+#if TEST_SPI
+    /* Send a "hello world" string via SPI to Arduino board */
+    //SPI2_SendHello();
+    /* Send commands via SPI to Arduino board */
+    SPI_SendCmds();
+#endif
 
+#if TEST_I2C
     /* Send I2C data */
     //I2C1_SendHello();
     //I2C1_SendCmd();
     //I2C1_SendCmdIT();
+#endif
 
+#if TEST_USART
     /* Send USART data */
     //USART3_SendHello();
     //USART3_TxRx();
+#endif
 
     /* Toggle LED */
     GPIO_ToggleOutputPin(GPIOA, GPIO_PIN_NO_5);
