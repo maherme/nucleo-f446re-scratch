@@ -682,6 +682,7 @@ typedef struct
 #define RCC_CFGR_MCO1PRE    24  /**< @brief MCO1 prescaler */
 #define RCC_CFGR_MCO2PRE    27  /**< @brief MCO2 prescaler */
 #define RCC_CFGR_MCO2       30  /**< @brief Microcontroller clock output 2 */
+/** @} */
 
 /***********************************************************************************************************/
 /*          Peripheral definitions (peripheral base addresses typecasted to xxx_RegDef_t)                  */
