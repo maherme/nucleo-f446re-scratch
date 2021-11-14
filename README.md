@@ -28,7 +28,9 @@ arm semihosting enable
 ```
 ## Test
 ### Test SPI Driver
-For testing the SPI driver you need to set TEST_SPI to 1 in the [test.c](src/tst/test.c) file. 
+For testing the SPI driver you need to use the Nucleo board, an Arduino UNO board and also a logic level converter; due to the Nucleo board works with 3.3V PIN level and Arduino UNO board works with 5V PIN level.
+
+You need to set TEST_SPI to 1 in the [test.c](src/tst/test.c) file for enabling the code to test the SPI peripheral driver.
 
 You can use the SPI2_SendHello API placed in [test_spi.c](src/tst/test_spi.c) file which sends the "Hello World" string to the Arduino board, for testing with this API you need to use the [SPISlvRx.ino](ard/SPI/SPISlvRx/SPISlvRx.ino) sketch. You need to open a Serial Monitor using the Arduino IDE configuring a speed of 9600 baud for receiving this string.
 
