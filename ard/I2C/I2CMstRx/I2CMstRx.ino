@@ -40,37 +40,37 @@ void loop(void){
 
     while(!Serial.available());
     input = Serial.read();
-
-    while(input != 's');
-
-    Serial.println("Starting ...");
-
-    Wire.beginTransmission(SLAVE_ADDR);
-    Wire.write(0x51);
-    Wire.endTransmission();
-
-    Wire.requestFrom(SLAVE_ADDR, 1);
-
-    if(Wire.available()){
-        len = Wire.read();
+    Serial.println(input);
+    if(input == 's'){
+      Serial.println("Starting ...");
+  
+      Wire.beginTransmission(SLAVE_ADDR);
+      Wire.write(0x51);
+      Wire.endTransmission();
+  
+      Wire.requestFrom(SLAVE_ADDR, 1);
+  
+      if(Wire.available()){
+          len = Wire.read();
+      }
+      Serial.print("Data length: ");
+      Serial.println(String(len, DEC));
+  
+      Wire.beginTransmission(SLAVE_ADDR);
+      Wire.write(0x52);
+      Wire.endTransmission();
+  
+      Wire.requestFrom(SLAVE_ADDR, (int)len);
+  
+      for(i = 0; i <= len; i++){
+          if(Wire.available()){
+              rx_buf[i] = Wire.read();
+          }
+      }
+      rx_buf[i] = '\0';
+  
+      Serial.print("Data: ");
+      Serial.println((char*)rx_buf);
+      Serial.println("***********************END***********************");
     }
-    Serial.print("Data length: ");
-    Serial.println(String(len, DEC));
-
-    Wire.beginTransmission(SLAVE_ADDR);
-    Wire.write(0x52);
-    Wire.endTransmission();
-
-    Wire.requestFrom(SLAVE_ADDR, (int)len);
-
-    for(i = 0; i <= len; i++){
-        if(Wire.available()){
-            rx_buf[i] = Wire.read();
-        }
-    }
-    rx_buf[i] = '\0';
-
-    Serial.print("Data: ");
-    Serial.println((char*)rx_buf);
-    Serial.println("***********************END***********************");
 }

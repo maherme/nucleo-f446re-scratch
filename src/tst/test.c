@@ -17,6 +17,7 @@
 #include "gpio_driver.h"
 #include "test.h"
 #include "test_spi.h"
+#include "test_i2c.h"
 #include "utils.h"
 
 /**
@@ -102,10 +103,12 @@ void EXTI15_10_Handler(void){
 #endif
 
 #if TEST_I2C
-    /* Send I2C data */
+    /* Send "hello world" string via I2C to Arduino board */
     //I2C1_SendHello();
+    /* Send commands via I2C to Arduino board using non interrupt mode */
     //I2C1_SendCmd();
-    //I2C1_SendCmdIT();
+    /* Send commands via I2C to Arduino board using interrupt mode */
+    I2C1_SendCmdIT();
 #endif
 
 #if TEST_USART

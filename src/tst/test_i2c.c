@@ -22,7 +22,8 @@
 
 /** @brief Slave address for I2C peripheral */
 #define I2C_SLAVE_ADDRESS   0x68
-//#define I2C_MASTER /* Uncomment this define if the I2C is configured as master */
+/** @brief Set I2C_MASTER to 1 for master mode or to 0 for slave mode */
+#define I2C_MASTER          1
 
 /** @brief Flag for completed reception */
 static uint8_t i2c_rx_cplt = RESET;
@@ -64,7 +65,7 @@ void I2C1_Config(void){
     I2C_IRQConfig(IRQ_NO_I2C1_EV, ENABLE);
     I2C_IRQConfig(IRQ_NO_I2C1_ER, ENABLE);
 
-#ifndef I2C_MASTER
+#if I2C_MASTER == 0
     /* Enable callback events, it is needed in slave mode */
     I2C_SlaveEnCallbackEvents(I2C1, ENABLE);
 
@@ -185,7 +186,7 @@ void I2C_ApplicationEventCallback(I2C_Handle_t* pI2C_Handle, uint8_t app_event){
             cmd_code = I2C_SlaveReceiveData(pI2C_Handle->pI2Cx);
             break;
         case I2C_ERROR_AF:
-#if defined I2C_MASTER
+#if I2C_MASTER
             printf("Error: acknowledge failure\n");
             I2C_CloseSendData(pI2C_Handle);
             /* Generate the stop condition to release the bus */
