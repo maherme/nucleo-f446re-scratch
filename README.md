@@ -61,6 +61,7 @@ You can test transmission and reception using the I2C1_SendCmd API placed in the
 |:----------:|:----------------------------------------:|
 | 0x51       | Request the lenght of a string to send   |
 | 0x52       | Request to send the string               |
+
 For testing with this API you need to use the [I2CSlvCmd.ino](ard/I2C/I2CSlvRx/I2CSlvCmd.ino) sketch.You need to open a Serial Monitor using the Arduino IDE configuring a speed of 9600 baud and you should use also the semi hosting binary for the STM32 microcontroller for watching further information.
 
 For performing all these tests you need to follow the connection diagram below:
