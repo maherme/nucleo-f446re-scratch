@@ -56,6 +56,13 @@ You need to set TEST_I2C to 1 in the [test.c](src/tst/test.c) file for enabling 
 
 You can use the I2C1_SendHello API placed in the [test_i2c.c](src/tst/test_i2c.c) file which sends the "Hello World" string to the Arduino board, for testing with this API you need to use the [I2CSlvRx.ino](ard/I2C/I2CSlvRx/I2CSlvRx.ino) sketch. You need to open a Serial Monitor using the Arduino IDE configuring a speed of 9600 baud for receiving this string.
 
+You can test transmission and reception using the I2C1_SendCmd API placed in the [test_i2c.c](src/tst/test_i2c.c) file which sends two commands to the Arduino board and this will send an answer. These commands are:
+| Command ID | Functionality                            |
+|:----------:|:----------------------------------------:|
+| 0x51       | Request the lenght of a string to send   |
+| 0x52       | Request to send the string               |
+For testing with this API you need to use the [I2CSlvCmd.ino](ard/I2C/I2CSlvRx/I2CSlvCmd.ino) sketch.You need to open a Serial Monitor using the Arduino IDE configuring a speed of 9600 baud and you should use also the semi hosting binary for the STM32 microcontroller for watching further information.
+
 For performing all these tests you need to follow the connection diagram below:
 ![Alt text](doc/img/nucleo-i2c-test.png)
 In this diagram:
