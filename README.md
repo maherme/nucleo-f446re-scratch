@@ -93,3 +93,5 @@ In this diagram:
 |:----------------------:|:----------:|:-----------:|
 | UART TX                | PC10       | GPIO 1      |
 | UART RX                | PC11       | GPIO 0      |
+
+Warning!!! You need to disconnect the cable from GPIO0 (RX PIN) of Arduino board before programming the sketch; in other way the programming process will fail.
