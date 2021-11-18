@@ -1,16 +1,14 @@
-/*****************************************************************************************************
-* FILENAME :        SPISlvRx.ino
+/********************************************************************************************************//**
+* @file SPISlvRx.ino
 *
-* DESCRIPTION :
-*       File containing the implementation of a SPI receptor.
+* @brief File containing the implementation of a SPI receptor.
 *
-* NOTES :
+* @note
 *           SPI pin:
 *           SCK     13 Serial clock.
 *           MISO    12 Master input slave output.
 *           MOSI    11 Master output slave input.
 *           SS      10 Slave select (It shall be pulled low by the master).
-*
 **/
 
 #include <SPI.h>
@@ -20,17 +18,12 @@
 
 static char data_buffer[SIZE_BUF] = {0};
 
-/*****************************************************************************************************/
-/*                                       Static Function Definitions                                 */
-/*****************************************************************************************************/
+/***********************************************************************************************************/
+/*                                       Static Function Definitions                                       */
+/***********************************************************************************************************/
 
 /**
- * @fn SPIInit
- *
  * @brief function to initialize SPI peripheral.
- *
- * @param[in] void
- *
  * @return void
  */
 static void SPIInit(void){
@@ -45,12 +38,7 @@ static void SPIInit(void){
 }
 
 /**
- * @fn SPIRx
- *
  * @brief function to read data received by SPI peripheral.
- *
- * @param[in] void
- *
  * @return SPDR register when data is available.
  */
 static uint8_t SPIRx(void){
@@ -61,9 +49,9 @@ static uint8_t SPIRx(void){
     return SPDR;
 }
 
-/*****************************************************************************************************/
-/*                                       Main Functions Definitions                                  */
-/*****************************************************************************************************/
+/***********************************************************************************************************/
+/*                                       Main Functions Definitions                                        */
+/***********************************************************************************************************/
 
 void setup(){
 

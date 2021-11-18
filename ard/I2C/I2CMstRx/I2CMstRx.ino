@@ -1,14 +1,12 @@
-/*****************************************************************************************************
-* FILENAME :        I2CMstRx.ino
+/********************************************************************************************************//**
+* @file I2CMstRx.ino
 *
-* DESCRIPTION :
-*       File containing the implementation of a I2C receptor as a master.
+* @brief File containing the implementation of a I2C receptor as a master.
 *
-* NOTES :
+* @note
 *           I2C pin:
-*           SCL     A5 Serial clock.
-*           SDA     A4 Serial data.
-*
+*           SCL     GPIO18 Serial clock.
+*           SDA     GPIO19 Serial data.
 **/
 
 #include <Wire.h>
@@ -16,9 +14,9 @@
 #define SLAVE_ADDR      0x61
 #define SERIAL_BR       9600
 
-/*****************************************************************************************************/
-/*                                       Main Functions Definitions                                  */
-/*****************************************************************************************************/
+/***********************************************************************************************************/
+/*                                       Main Functions Definitions                                        */
+/***********************************************************************************************************/
 
 void setup(void){
 
@@ -43,32 +41,32 @@ void loop(void){
     Serial.println(input);
     if(input == 's'){
       Serial.println("Starting ...");
-  
+
       Wire.beginTransmission(SLAVE_ADDR);
       Wire.write(0x51);
       Wire.endTransmission();
-  
+
       Wire.requestFrom(SLAVE_ADDR, 1);
-  
+
       if(Wire.available()){
           len = Wire.read();
       }
       Serial.print("Data length: ");
       Serial.println(String(len, DEC));
-  
+
       Wire.beginTransmission(SLAVE_ADDR);
       Wire.write(0x52);
       Wire.endTransmission();
-  
+
       Wire.requestFrom(SLAVE_ADDR, (int)len);
-  
+
       for(i = 0; i <= len; i++){
           if(Wire.available()){
               rx_buf[i] = Wire.read();
           }
       }
       rx_buf[i] = '\0';
-  
+
       Serial.print("Data: ");
       Serial.println((char*)rx_buf);
       Serial.println("***********************END***********************");

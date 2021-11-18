@@ -1,29 +1,23 @@
-/*****************************************************************************************************
-* FILENAME :        USARTRxTx.ino
+/********************************************************************************************************//**
+* @file USARTRxTx.ino
 *
-* DESCRIPTION :
-*       File containing the implementation of a USART receptor and transmitter.
+* @brief File containing the implementation of a USART receptor and transmitter.
 *
-* NOTES :
+* @note
 *           USART pin:
 *           TX    1 Transmitter.
 *           RX    0 Receiver.
-*
 **/
 
 #define SERIAL_BR   115200
 
-/*****************************************************************************************************/
-/*                                       Static Function Definitions                                 */
-/*****************************************************************************************************/
+/***********************************************************************************************************/
+/*                                       Static Function Definitions                                       */
+/***********************************************************************************************************/
 
 /**
- * @fn changeCase
- *
  * @brief function to change the case to the inverse of the input character.
- *
  * @param[in] ch is a character.
- *
  * @return the character entered as parameter with the opposite case.
  */
 static char changeCase(char ch){
@@ -41,9 +35,9 @@ static char changeCase(char ch){
     return ch;
 }
 
-/*****************************************************************************************************/
-/*                                       Main Functions Definitions                                  */
-/*****************************************************************************************************/
+/***********************************************************************************************************/
+/*                                       Main Functions Definitions                                        */
+/***********************************************************************************************************/
 
 void setup(void){
 

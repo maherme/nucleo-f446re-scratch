@@ -1,15 +1,12 @@
-
-/*****************************************************************************************************
-* FILENAME :        I2CSlvRx.ino
+/********************************************************************************************************//**
+* @file I2CSlvRx.ino
 *
-* DESCRIPTION :
-*       File containing the implementation of a I2C receptor.
+* @brief File containing the implementation of a I2C receptor.
 *
-* NOTES :
+* @note
 *           I2C pin:
-*           SCL     A5 Serial clock.
-*           SDA     A4 Serial data.
-*
+*           SCL     GPIO18 Serial clock.
+*           SDA     GPIO19 Serial data.
 **/
 
 #include <Wire.h>
@@ -17,17 +14,13 @@
 #define ADDR        0x68
 #define SERIAL_BR   9600
 
-/*****************************************************************************************************/
-/*                                       Static Function Definitions                                 */
-/*****************************************************************************************************/
+/***********************************************************************************************************/
+/*                                       Static Function Definitions                                       */
+/***********************************************************************************************************/
 
 /**
- * @fn rxHandler
- *
  * @brief function to be called when arduino receives a transmission from a master.
- *
  * @param[in] bytes is the number of bytes read from the master.
- *
  * @return void
  */
 static void rxHandler(int bytes){
@@ -44,9 +37,9 @@ static void rxHandler(int bytes){
     Serial.println((char*)rx_buffer);
 }
 
-/*****************************************************************************************************/
-/*                                       Main Functions Definitions                                  */
-/*****************************************************************************************************/
+/***********************************************************************************************************/
+/*                                       Main Functions Definitions                                        */
+/***********************************************************************************************************/
 
 void setup(void){
 

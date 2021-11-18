@@ -1,14 +1,12 @@
-/*****************************************************************************************************
-* FILENAME :        I2CSlvCmd.ino
+/********************************************************************************************************//**
+* @file I2CSlvCmd.ino
 *
-* DESCRIPTION :
-*       File containing the implementation of a I2C transmitter and receptor.
+* @brief File containing the implementation of a I2C transmitter and receptor.
 *
-* NOTES :
+* @note
 *           I2C pin:
-*           SCL     A5 Serial clock.
-*           SDA     A4 Serial data.
-*
+*           SCL     GPIO18 Serial clock.
+*           SDA     GPIO19 Serial data.
 **/
 
 #include <Wire.h>
@@ -18,17 +16,13 @@
 
 static uint8_t active_cmd = 0xFF;
 
-/*****************************************************************************************************/
-/*                                       Static Function Definitions                                 */
-/*****************************************************************************************************/
+/***********************************************************************************************************/
+/*                                       Static Function Definitions                                       */
+/***********************************************************************************************************/
 
 /**
- * @fn rxHandler
- *
  * @brief function to be called when this slave device receives a transmission from a master.
- *
  * @param[in] bytes is the number of bytes read from the master.
- *
  * @return void
  */
 static void rxHandler(int bytes){
@@ -38,12 +32,8 @@ static void rxHandler(int bytes){
 }
 
 /**
- * @fn rqHandler
- *
  * @brief function to be called when a master requests data from this slave device.
- *
  * @param[in] void
- *
  * @return void
  */
 static void rqHandler(void){
@@ -64,9 +54,9 @@ static void rqHandler(void){
     }
 }
 
-/*****************************************************************************************************/
-/*                                       Main Functions Definitions                                  */
-/*****************************************************************************************************/
+/***********************************************************************************************************/
+/*                                       Main Functions Definitions                                        */
+/***********************************************************************************************************/
 
 void setup(void){
 

@@ -1,17 +1,14 @@
-
-/*****************************************************************************************************
-* FILENAME :        SPISlvCmd.ino
+/********************************************************************************************************//**
+* @file SPISlvCmd.ino
 *
-* DESCRIPTION :
-*       File containing the implementation of a SPI command receptor.
+* @brief File containing the implementation of a SPI command receptor.
 *
-* NOTES :
+* @note
 *           SPI pin:
 *           SCK     13 Serial clock.
 *           MISO    12 Master input slave output.
 *           MOSI    11 Master output slave input.
 *           SS      10 Slave select (It shall be pulled low by the master).
-*
 **/
 
 #include <SPI.h>
@@ -45,17 +42,12 @@ static const uint8_t led = 9; /* LED digital pin */
 static uint8_t led_status = HIGH;
 static const uint8_t board_id[11] = "ArduinoUno";
 
-/*****************************************************************************************************/
-/*                                       Static Function Definitions                                 */
-/*****************************************************************************************************/
+/***********************************************************************************************************/
+/*                                       Static Function Definitions                                       */
+/***********************************************************************************************************/
 
 /**
- * @fn SPIInit
- *
  * @brief function to initialize SPI peripheral.
- *
- * @param[in] void
- *
  * @return void
  */
 static void SPIInit(void){
@@ -70,12 +62,7 @@ static void SPIInit(void){
 }
 
 /**
- * @fn SPIRx
- *
  * @brief function to read data received by SPI peripheral.
- *
- * @param[in] void
- *
  * @return SPDR register when data is available.
  */
 static uint8_t SPIRx(void){
@@ -87,12 +74,8 @@ static uint8_t SPIRx(void){
 }
 
 /**
- * @fn SPITx
- *
  * @brief function to transmit data by SPI peripheral.
- *
  * @param[in] data is the data to be transmitted.
- *
  * @return void
  */
 static void SPITx(uint8_t data){
@@ -104,12 +87,7 @@ static void SPITx(uint8_t data){
 }
 
 /**
- * @fn CmdLedCtrl
- *
  * @brief function handling for CMD_LED_CTRL.
- *
- * @param[in] void
- *
  * @return void
  */
 static void CmdLedCtrl(void){
@@ -134,12 +112,7 @@ static void CmdLedCtrl(void){
 }
 
 /**
- * @fn CmdSensorRead
- *
  * @brief function handling for CMD_SENSOR_READ.
- *
- * @param[in] void
- *
  * @return void
  */
 static void CmdSensorRead(void){
@@ -159,12 +132,7 @@ static void CmdSensorRead(void){
 }
 
 /**
- * @fn CmdLedRead
- *
  * @brief function handling for CMD_LED_READ.
- *
- * @param[in] void
- *
  * @return void
  */
 static void CmdLedRead(void){
@@ -182,12 +150,7 @@ static void CmdLedRead(void){
 }
 
 /**
- * @fn CmdPrint
- *
  * @brief function handling for CMD_PRINT.
- *
- * @param[in] void
- *
  * @return void
  */
 static void CmdPrint(void){
@@ -206,12 +169,7 @@ static void CmdPrint(void){
 }
 
 /**
- * @fn CmdIDRead
- *
  * @brief function handling for CMD_ID_READ.
- *
- * @param[in] void
- *
  * @return void
  */
 static void CmdIDRead(void){
@@ -224,9 +182,9 @@ static void CmdIDRead(void){
     Serial.println("Rx: CMD_ID_READ");
 }
 
-/*****************************************************************************************************/
-/*                                       Main Functions Definitions                                  */
-/*****************************************************************************************************/
+/***********************************************************************************************************/
+/*                                       Main Functions Definitions                                        */
+/***********************************************************************************************************/
 
 void setup(){
 

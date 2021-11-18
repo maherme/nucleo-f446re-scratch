@@ -1,10 +1,9 @@
-/*****************************************************************************************************
-* FILENAME :        SPISlvTxIrq.ino
+/********************************************************************************************************//**
+* @file SPISlvTxIrq.ino
 *
-* DESCRIPTION :
-*       File containing the implementation of a SPI transmitter.
+* @brief File containing the implementation of a SPI transmitter.
 *
-* NOTES :
+* @note
 *           SPI pin:
 *           SCK     13 Serial clock.
 *           MISO    12 Master input slave output.
@@ -22,17 +21,12 @@
 
 static const uint8_t pin_int = 8; /* Pin for transmission notification */
 
-/*****************************************************************************************************/
-/*                                       Static Function Definitions                                 */
-/*****************************************************************************************************/
+/***********************************************************************************************************/
+/*                                       Static Function Definitions                                       */
+/***********************************************************************************************************/
 
 /**
- * @fn SPIInit
- *
  * @brief function to initialize SPI peripheral.
- *
- * @param[in] void
- *
  * @return void
  */
 static void SPIInit(void){
@@ -47,12 +41,7 @@ static void SPIInit(void){
 }
 
 /**
- * @fn SPIRx
- *
  * @brief function to read data received by SPI peripheral.
- *
- * @param[in] void
- *
  * @return SPDR register when data is available.
  */
 static uint8_t SPIRx(void){
@@ -64,12 +53,8 @@ static uint8_t SPIRx(void){
 }
 
 /**
- * @fn SPITx
- *
  * @brief function to transmit data by SPI peripheral.
- *
  * @param[in] data is the data to be transmitted.
- *
  * @return void
  */
 static void SPITx(uint8_t data){
@@ -81,12 +66,8 @@ static void SPITx(uint8_t data){
 }
 
 /**
- * @fn notify_controller
- *
  * @brief function to notify a transmission to the SPI master.
- *
  * @param[in] data is the data to be transmitted.
- *
  * @return void
  */
 static void notify_controller(void){
@@ -97,9 +78,9 @@ static void notify_controller(void){
     digitalWrite(pin_int, LOW);
 }
 
-/*****************************************************************************************************/
-/*                                       Main Functions Definitions                                  */
-/*****************************************************************************************************/
+/***********************************************************************************************************/
+/*                                       Main Functions Definitions                                        */
+/***********************************************************************************************************/
 
 void setup(){
 
