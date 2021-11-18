@@ -78,6 +78,14 @@ In this diagram:
 
 ### Test USART Driver
 
+For testing the USART driver you need to use the Nucleo board, an Arduino UNO board and also a logic level converter; due to the Nucleo board works with 3.3V PIN level and Arduino UNO board works with 5V PIN level.
+
+You need to set TEST_USART to 1 in the [test.c](src/tst/test.c) file for enabling the code to test the USART peripheral driver.
+
+You can use the USART3_SendHello API placed in the [test_usart.c](src/tst/test_usart.c) file which sends the "Hello World" string to the Arduino board, for testing with this API you need to use the [USARTRx.ino](ard/USART/USARTRx/USARTRx.ino) sketch. You need to open a Serial Monitor using the Arduino IDE configuring a speed of 115200 baud for receiving this string.
+
+You can use the USART3_TxRx API for testing the transmission and reception APIs of the USART driver. This function is placed in the [test_usart.c](src/tst/test_usart.c) file. You will need to use the [USARTRxTx.ino](ard/USART/USARTRxTx/USARTRxTx.ino) sketch for the Arduino board. You need to open a Serial Monitor using the Arduino IDE configuring a speed of 115200 baud for receiving this string.
+
 For performing all these tests you need to follow the connection diagram below:
 ![Alt text](doc/img/nucleo-usart-test.png)
 In this diagram:
