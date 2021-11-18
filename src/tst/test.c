@@ -18,6 +18,7 @@
 #include "test.h"
 #include "test_spi.h"
 #include "test_i2c.h"
+#include "test_usart.h"
 #include "utils.h"
 
 /**
@@ -114,7 +115,7 @@ void EXTI15_10_Handler(void){
 #if TEST_USART
     /* Send USART data */
     //USART3_SendHello();
-    //USART3_TxRx();
+    USART3_TxRx();
 #endif
 
     /* Toggle LED */

@@ -13,6 +13,8 @@
 **/
 
 #include <stdint.h>
+#include <string.h>
+#include <stdio.h>
 #include "test_usart.h"
 #include "usart_driver.h"
 #include "gpio_driver.h"

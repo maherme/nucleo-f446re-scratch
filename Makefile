@@ -16,6 +16,7 @@ OBJS1 = $(OBJ_DIR)/main.o \
 		$(OBJ_DIR)/test.o \
 		$(OBJ_DIR)/test_spi.o \
 		$(OBJ_DIR)/test_i2c.o \
+		$(OBJ_DIR)/test_usart.o \
 		$(OBJ_DIR)/gpio_driver.o \
 		$(OBJ_DIR)/spi_driver.o \
 		$(OBJ_DIR)/rcc_driver.o \
@@ -28,6 +29,7 @@ OBJS2 = $(OBJ_DIR)/main.o \
 		$(OBJ_DIR)/test.o \
 		$(OBJ_DIR)/test_spi.o \
 		$(OBJ_DIR)/test_i2c.o \
+		$(OBJ_DIR)/test_usart.o \
 		$(OBJ_DIR)/gpio_driver.o \
 		$(OBJ_DIR)/spi_driver.o \
 		$(OBJ_DIR)/rcc_driver.o \
