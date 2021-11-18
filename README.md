@@ -75,3 +75,13 @@ In this diagram:
 |:----------------------:|:----------:|:-----------:|
 | I2C SDA                | PB9        | GPIO 19     |
 | I2C SLC                | PB8        | GPIO 18     |
+
+### Test USART Driver
+
+For performing all these tests you need to follow the connection diagram below:
+![Alt text](doc/img/nucleo-usart-test.png)
+In this diagram:
+| PIN Functionality      | Nucleo PIN | Arduino PIN |
+|:----------------------:|:----------:|:-----------:|
+| UART TX                | PC10       | GPIO 1      |
+| UART RX                | PC11       | GPIO 0      |
