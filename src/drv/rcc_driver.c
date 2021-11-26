@@ -7,6 +7,7 @@
 *       - uint32_t RCC_GetPCLK1Value(void)
 *       - uint32_t RCC_GetPCLK2Value(void)
 *       - uint32_t RCC_GetPLLOutputClock(void)
+*       - uint8_t  RCC_SetSystemClock(RCC_Config_t RCC_Config)
 *
 * @note
 *       For further information about functions refer to the corresponding header file.
@@ -25,6 +26,19 @@
 static uint16_t AHB_PreScaler[8] = {2, 4, 8, 16, 64, 128, 256, 512};
 /** @brief Possible APB prescaler values */
 static uint8_t APB_PreScaler[4] = {2, 4, 8, 16};
+/** @brief Possible PLLP prescaler values */
+static uint8_t PLLP_PreScaler[4] = {2, 4, 6, 8};
+
+/***********************************************************************************************************/
+/*                                       Static Function Prototypes                                        */
+/***********************************************************************************************************/
+
+/**
+ * @brief Function for configuring the PLL.
+ * @param[in] RCC_Config is the configuration struct.
+ * @return void.
+ */
+static void RCC_PLLConfig(RCC_Config_t RCC_Config);
 
 /***********************************************************************************************************/
 /*                                       Public API Definitions                                            */
@@ -131,6 +145,138 @@ uint32_t RCC_GetPCLK2Value(void){
 }
 
 uint32_t RCC_GetPLLOutputClock(void){
-    /* TO BE DONE */
+
+    uint8_t pllm = 0;
+    uint16_t plln = 0;
+    uint8_t pllp = 0;
+    uint32_t pll_clock = 0;
+
+    pllm = ((RCC->PLLCFGR >> RCC_PLLCFGR_PLLM) & 0x3F);
+    plln = ((RCC->PLLCFGR >> RCC_PLLCFGR_PLLN) & 0x01FF);
+    pllp = ((RCC->PLLCFGR >> RCC_PLLCFGR_PLLP) & 0x03);
+
+    if((uint8_t)(RCC->PLLCFGR >> RCC_PLLCFGR_PLLSRC) & 0x01){
+        /* HSE oscillator clock selected as PLL clock input */
+        pll_clock = ((uint32_t)(FREQ_8MHZ*plln)/pllm)/PLLP_PreScaler[pllp];
+    }
+    else{
+        /* HSI clock selected as PLL clock input */
+        pll_clock = ((uint32_t)(FREQ_16MHZ*plln)/pllm)/PLLP_PreScaler[pllp];
+    }
+
+    return pll_clock;
+}
+
+uint8_t RCC_SetSystemClock(RCC_Config_t RCC_Config){
+
+    /* Check clk_source is a valid value */
+    if(RCC_Config.clk_source > RCC_CLK_SOURCE_PLL_R){
+        return 1;
+    }
+
+    /* Set prescaler values */
+    /* Clear and set AHB prescaler */
+    RCC->CFGR &= ~(0x0F << RCC_CFGR_HPRE);
+    RCC->CFGR |= (RCC_Config.ahb_presc << RCC_CFGR_HPRE);
+    /* Clear and set APB1 prescaler */
+    RCC->CFGR &= ~(0x07 << RCC_CFGR_PPRE1);
+    RCC->CFGR |= (RCC_Config.apb1_presc << RCC_CFGR_PPRE1);
+    /* Clear and set APB2 prescaler */
+    RCC->CFGR &= ~(0x07 << RCC_CFGR_PPRE2);
+    RCC->CFGR |= (RCC_Config.apb2_presc << RCC_CFGR_PPRE2);
+
+    /* Clear the RCC_CFGR_SW bits before setting */
+    RCC->CFGR &= ~(0x03 << RCC_CFGR_SW);
+
+    if(RCC_Config.clk_source == RCC_CLK_SOURCE_HSI){
+        /* Enable HSI source */
+        RCC->CR |= (1 << RCC_CR_HSION);
+        /* Wait unitl source is ready */
+        while(!(RCC->CR & (1 << RCC_CR_HSIRDY)));
+        /* Disable HSE source */
+        RCC->CR &= ~(1 << RCC_CR_HSEON);
+    }
+    else if(RCC_Config.clk_source == RCC_CLK_SOURCE_HSE){
+        /* Set HSE mode */
+        if(RCC_Config.hse_mode == RCC_HSE_BYPASS){
+            RCC->CR |= (1 << RCC_CR_HSEBYP);
+        }
+        else{
+            RCC->CR &= ~(1 << RCC_CR_HSEBYP);
+        }
+        /* Enable HSE source */
+        RCC->CR |= (1 << RCC_CR_HSEON);
+        /* Wait until source is ready */
+        while(!(RCC->CR & (1 << RCC_CR_HSERDY)));
+        /* Switch to HSE source clock */
+        RCC->CFGR |= (0x01 << RCC_CFGR_SW);
+        /* Disable HSI source */
+        RCC->CR &= ~(1 << RCC_CR_HSION);
+    }
+    else{
+        /* Configure PLL */
+        RCC_PLLConfig(RCC_Config);
+        /* Enable PLL source */
+        RCC->CR |= (1 << RCC_CR_PLLON);
+        /* Wait until source is ready */
+        while(!(RCC->CR & (1 << RCC_CR_PLLRDY)));
+        if(RCC_Config.clk_source == RCC_CLK_SOURCE_PLL_P){
+            /* Switch to PLL source clock */
+            RCC->CFGR |= (0x02 << RCC_CFGR_SW);
+        }
+        else if(RCC_Config.clk_source == RCC_CLK_SOURCE_PLL_R){
+            /* Switch to PLL_R source clock */
+            RCC->CFGR |= (0x03 << RCC_CFGR_SW);
+        }
+        else{
+            return 1;
+        }
+    }
+
     return 0;
+}
+
+/***********************************************************************************************************/
+/*                                       Static Function Definitions                                       */
+/***********************************************************************************************************/
+
+static void RCC_PLLConfig(RCC_Config_t RCC_Config){
+
+    /* Clear and set R prescaler division factor */
+    RCC->PLLCFGR &= ~(0x07 << RCC_PLLCFGR_PLLR);
+    RCC->PLLCFGR |= (RCC_Config.pll_r << RCC_PLLCFGR_PLLR);
+    /* Clear and set Q prescaler division factor */
+    RCC->PLLCFGR &= ~(0x0F << RCC_PLLCFGR_PLLQ);
+    RCC->PLLCFGR |= (RCC_Config.pll_q << RCC_PLLCFGR_PLLQ);
+    /* Clear and set P prescaler division factor */
+    RCC->PLLCFGR &= ~(0x03 << RCC_PLLCFGR_PLLP);
+    RCC->PLLCFGR |= (RCC_Config.pll_p << RCC_PLLCFGR_PLLP);
+    /* Clear and set N prescaler multiplication value */
+    RCC->PLLCFGR &= ~(0x01FF << RCC_PLLCFGR_PLLN);
+    RCC->PLLCFGR |= (RCC_Config.pll_n << RCC_PLLCFGR_PLLN);
+    /* Clear and set M prescaler division factor */
+    RCC->PLLCFGR &= ~(0x3F << RCC_PLLCFGR_PLLM);
+    RCC->PLLCFGR |= (RCC_Config.pll_m << RCC_PLLCFGR_PLLM);
+    /* Clear and set input source for PLL */
+    RCC->PLLCFGR &= ~(0x01 << RCC_PLLCFGR_PLLSRC);
+    RCC->PLLCFGR |= (RCC_Config.pll_source << RCC_PLLCFGR_PLLSRC);
+    /* Enable input source for PLL */
+    if(RCC_Config.pll_source == PLL_SOURCE_HSI){
+        /* Enable HSI source */
+        RCC->CR |= (1 << RCC_CR_HSION);
+    }
+    else if(RCC_Config.pll_source == PLL_SOURCE_HSE){
+        /* Set HSE mode */
+        if(RCC_Config.hse_mode == RCC_HSE_BYPASS){
+            RCC->CR |= (1 << RCC_CR_HSEBYP);
+        }
+        else{
+            RCC->CR &= ~(1 << RCC_CR_HSEBYP);
+        }
+        /* Enable HSE source */
+        RCC->CR |= (1 << RCC_CR_HSEON);
+    }
+    else{
+        /* do nothing */
+    }
 }

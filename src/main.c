@@ -19,6 +19,7 @@ int main(void){
     test_init();
 
     for(;;){
+        test_process();
     }
 
     return 0;

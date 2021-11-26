@@ -5,6 +5,7 @@
 *
 * PUBLIC FUNCTIONS :
 *       - void    test_init(void)
+*       - void    test_process(void)
 *
 * @note
 *       For further information about functions refer to the corresponding header file.
@@ -19,7 +20,11 @@
 #include "test_spi.h"
 #include "test_i2c.h"
 #include "test_usart.h"
+#include "test_rcc.h"
 #include "utils.h"
+
+#include "rcc_driver.h"
+#include "flash_driver.h"
 
 /**
  * @name Flags for enabling peripheral testing.
@@ -28,6 +33,7 @@
 #define TEST_SPI    0   /**< @brief Set to 1 for enabling the SPI test */
 #define TEST_I2C    0   /**< @brief Set to 1 for enabling the I2C test */
 #define TEST_USART  0   /**< @brief Set to 1 for enabling the USART test */
+#define TEST_RCC    1   /**< @brief Set to 1 for enabling the RCC test */
 /** @} */
 
 /***********************************************************************************************************/
@@ -75,6 +81,23 @@ void test_init(void){
 #if TEST_USART
     /* Configure and initialise USART2 peripheral */
     USART3_Config();
+#endif
+
+#if TEST_RCC
+    //SetHSEBypass();
+    SetPLLMax();
+#endif
+}
+
+void test_process(void){
+#if TEST_RCC
+    static uint32_t i = 0;
+    if(i > 200000){
+        /* Toggle LED */
+        GPIO_ToggleOutputPin(GPIOA, GPIO_PIN_NO_5);
+        i = 0;
+    }
+    i++;
 #endif
 }
 
