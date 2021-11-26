@@ -18,6 +18,7 @@
 *       - void    Flash_SetPSIZE(flash_psize_t psize)
 *       - uint8_t Flash_Busy(void)
 *       - void    Flash_GetOBCfg(OPT_Cfg_t* OPTCfg)
+*       - uint8_t Flash_SetLatency(uint8_t latency)
 *
 * @note
 *       For further information about functions refer to the corresponding header file.
@@ -322,4 +323,18 @@ void Flash_GetOBCfg(OPT_Cfg_t* OPTCfg){
 
     /* Lock Option Byte Flash area */
     Flash_OPTLock();
+}
+
+uint8_t Flash_SetLatency(uint8_t latency){
+
+    /* Check value is allowed */
+    if(latency > 0x0F){
+        return 1;
+    }
+
+    /* Clear and set latency */
+    FLASHINTR->ACR &= ~(0x0F << FLASH_ACR_LATENCY);
+    FLASHINTR->ACR |= (latency << FLASH_ACR_LATENCY);
+
+    return 0;
 }

@@ -18,6 +18,7 @@
 *       - void    Flash_SetPSIZE(flash_psize_t psize)
 *       - uint8_t Flash_Busy(void)
 *       - void    Flash_GetOBCfg(OPT_Cfg_t* OPTCfg)
+*       - uint8_t Flash_SetLatency(uint8_t latency)
 */
 
 #ifndef FLASH_DRIVER_H
@@ -163,5 +164,13 @@ uint8_t Flash_Busy(void);
  * @return void.
  */
 void Flash_GetOBCfg(OPT_Cfg_t* OPTCfg);
+
+/**
+ * @brief Function for setting the latency of the flash.
+ * @param[in] latency is the latency value to be set.
+ * @return 0 is OK.
+ * @return 1 is fail.
+ */
+uint8_t Flash_SetLatency(uint8_t latency);
 
 #endif
