@@ -362,6 +362,25 @@ typedef struct
     volatile uint32_t OPTCR;        /**< @brief Flash option control register   Address offset 0x14 */
 }FLASHINTR_RegDef_t;
 
+/**
+ * @brief Peripheral register definition structure for TIM6 and TIM7.
+ */
+typedef struct
+{
+    volatile uint32_t CR1;          /**< @brief Control register 1              Address offset 0x00 */
+    volatile uint32_t CR2;          /**< @brief Control register 2              Address offset 0x04 */
+    uint32_t RESERVED0;             /**< @brief Reserved                        Address offset 0x08 */
+    volatile uint32_t DIER;         /**< @brief DMA/Interrupt enable register   Address offset 0x0C */
+    volatile uint32_t SR;           /**< @brief Status resgister                Address offset 0x10 */
+    volatile uint32_t EGR;          /**< @brief Event generation register       Address offset 0x14 */
+    uint32_t RESERVED1;             /**< @brief Reserved                        Address offset 0x18 */
+    uint32_t RESERVED2;             /**< @brief Reserved                        Address offset 0x1C */
+    uint32_t RESERVED3;             /**< @brief Reserved                        Address offset 0x20 */
+    volatile uint32_t CNT;          /**< @brief Counter                         Address offset 0x24 */
+    volatile uint32_t PSC;          /**< @brief Prescaler                       Address offset 0x28 */
+    volatile uint32_t ARR;          /**< @brief Auto-reload register            Address offset 0x2C */
+}TIM6_7_RegDef_t;
+
 /***********************************************************************************************************/
 /*                          Bit Position Definition of Peripheral Register                                 */
 /***********************************************************************************************************/
@@ -684,6 +703,67 @@ typedef struct
 #define RCC_CFGR_MCO2       30  /**< @brief Microcontroller clock output 2 */
 /** @} */
 
+/**
+ * @name Bit position definition TIM6 and TIM7 control register 1.
+ * @{
+ */
+#define TIM6_7_CR1_CEN      0   /**< @brief Counter enable */
+#define TIM6_7_CR1_UDIS     1   /**< @brief Update disable */
+#define TIM6_7_CR1_URS      2   /**< @brief Update request source */
+#define TIM6_7_CR1_OPM      3   /**< @brief One-pulse mode */
+#define TIM6_7_CR1_ARPE     7   /**< @brief Auto-reload preload enable */
+/** @} */
+
+/**
+ * @name Bit position definition TIM6 and TIM7 control register 2.
+ * @{
+ */
+#define TIM6_7_CR2_MMS      4   /**< @brief Master mode selection */
+/** @} */
+
+/**
+ * @name Bit position definition TIM6 and TIM7 DMA/Interrupt enable register.
+ * @{
+ */
+#define TIM6_7_DIER_UIE     0   /**< @brief Update interrupt enable */
+#define TIM6_7_DIER_UDE     8   /**< @brief Update DMA request enable */
+/** @} */
+
+/**
+ * @name Bit position definition TIM6 and TIM7 status register.
+ * @{
+ */
+#define TIM6_7_SR_UIF       0   /**< @brief Update interrupt flag */
+/** @} */
+
+/**
+ * @name Bit position definition TIM6 and TIM7 event generation register.
+ * @{
+ */
+#define TIM6_7_EGR_UG       0   /**< @brief Update generation */
+/** @} */
+
+/**
+ * @name Bit position definition TIM6 and TIM7 counter register.
+ * @{
+ */
+#define TIM6_7_CNT          0   /**< @brief Counter value */
+/** @} */
+
+/**
+ * @name Bit position definition TIM6 and TIM7 prescaler register.
+ * @{
+ */
+#define TIM6_7_PSC          0   /**< @brief Prescaler value */
+/** @} */
+
+/**
+ * @name Bit position definition TIM6 and TIM7 auto-reload register.
+ * @{
+ */
+#define TIM6_7_ARR          0   /**< brief Auto-reload value */
+/** @} */
+
 /***********************************************************************************************************/
 /*          Peripheral definitions (peripheral base addresses typecasted to xxx_RegDef_t)                  */
 /***********************************************************************************************************/
@@ -729,6 +809,9 @@ typedef struct
 #define DBGMCU      ((DBG_RegDef_t*)DBGMCU_BASEADDR)        /**< @brief DBGMCU base addr reg definition */
 
 #define FLASHINTR   ((FLASHINTR_RegDef_t*)FLASHINTR_BASEADDR)   /**< @brief FLASHINTR base addr reg defini */
+
+#define TIM6        ((TIM6_7_RegDef_t*)TIM6_BASEADDR)       /**< @brief TIM6 base addr reg definition */
+#define TIM7        ((TIM6_7_RegDef_t*)TIM7_BASEADDR)       /**< @brief TIM7 base addr reg definition */
 /** @} */
 
 /***********************************************************************************************************/
@@ -795,6 +878,14 @@ typedef struct
 /** @} */
 
 /**
+ * @name Clock enable macros for TIM6 and TIM7 peripheral.
+ * @{
+ */
+#define TIM6_PCLK_EN()      (RCC->APB1ENR |= (1 << 4))  /**< @brief Clock enable for TIM6 */
+#define TIM7_PCLK_EN()      (RCC->APB1ENR |= (1 << 5))  /**< @brief Clock enable for TIM7 */
+/** @} */
+
+/**
  * @name Clock disable macros for GPIOx peripheral.
  * @{
  */
@@ -851,6 +942,14 @@ typedef struct
  * @{
  */
 #define CRC_PCLK_DI()       (RCC->AHB1ENR &= ~(1 << 12))    /**< @brief Clock disable for CRC */
+/** @} */
+
+/**
+ * @name Clock disable macros for TIM6 and TIM7 peripheral.
+ * @{
+ */
+#define TIM6_PCLK_DI()      (RCC->APB1ENR &= ~(1 << 4))     /**< @brief Clock disable for TIM6 */
+#define TIM7_PCLK_DI()      (RCC->APB1ENR &= ~(1 << 5))     /**< @brief Clock disable for TIM7 */
 /** @} */
 
 /**
@@ -937,6 +1036,14 @@ typedef struct
  */
 /** @brief Reset macro for CRC */
 #define CRC_REG_RESET()     do{(RCC->AHB1RSTR |= (1 << 12)); (RCC->AHB1RSTR &= ~(1 << 12));}while(0)
+/** @} */
+
+/**
+ * @name Reset macros TIM6 and TIM7 peripheral.
+ * @{
+ */
+#define TIM6_REG_RESET()    do{(RCC->APB1RSTR |= (1 << 4)); (RCC->APB1RSTR &= ~(1 << 4));}while(0)
+#define TIM7_REG_RESET()    do{(RCC->APB1RSTR |= (1 << 5)); (RCC->APB1RSTR &= ~(1 << 5));}while(0)
 /** @} */
 
 /***********************************************************************************************************/
