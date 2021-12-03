@@ -21,10 +21,8 @@
 #include "test_i2c.h"
 #include "test_usart.h"
 #include "test_rcc.h"
+#include "test_timer.h"
 #include "utils.h"
-
-#include "rcc_driver.h"
-#include "flash_driver.h"
 
 /**
  * @name Flags for enabling peripheral testing.
@@ -33,7 +31,8 @@
 #define TEST_SPI    0   /**< @brief Set to 1 for enabling the SPI test */
 #define TEST_I2C    0   /**< @brief Set to 1 for enabling the I2C test */
 #define TEST_USART  0   /**< @brief Set to 1 for enabling the USART test */
-#define TEST_RCC    1   /**< @brief Set to 1 for enabling the RCC test */
+#define TEST_RCC    0   /**< @brief Set to 1 for enabling the RCC test */
+#define TEST_TIMER  1   /**< @brief Set to 1 for enabling the Timer test */
 /** @} */
 
 /***********************************************************************************************************/
@@ -86,6 +85,10 @@ void test_init(void){
 #if TEST_RCC
     //SetHSEBypass();
     SetPLLMax();
+#endif
+
+#if TEST_TIMER
+    Timer6_Config();
 #endif
 }
 

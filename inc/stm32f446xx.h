@@ -1077,6 +1077,8 @@ typedef struct
 #define IRQ_NO_UART4        52  /**< @brief Interrupt Number for UART4 */
 #define IRQ_NO_UART5        53  /**< @brief Interrupt Number for UART5 */
 #define IRQ_NO_USART6       71  /**< @brief Interrupt Number for USART6 */
+#define IRQ_NO_TIM6_DAC     54  /**< @brief Interrupt Number for TIM6 or DAC */
+#define IRQ_NO_TIM7         55  /**< @brief Interrupt Number for TIM7 */
 /** @} */
 
 /**
