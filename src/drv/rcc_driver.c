@@ -8,6 +8,8 @@
 *       - uint32_t RCC_GetPCLK2Value(void)
 *       - uint32_t RCC_GetPLLOutputClock(void)
 *       - uint8_t  RCC_SetSystemClock(RCC_Config_t RCC_Config)
+*       - uint8_t RCC_SetMCO1Clk(RCC_Config_t RCC_Config)
+*       - uint8_t RCC_SetMCO2Clk(RCC_Config_t RCC_Config)
 *
 * @note
 *       For further information about functions refer to the corresponding header file.
@@ -232,6 +234,76 @@ uint8_t RCC_SetSystemClock(RCC_Config_t RCC_Config){
             return 1;
         }
     }
+
+    return 0;
+}
+
+uint8_t RCC_SetMCO1Clk(RCC_Config_t RCC_Config){
+
+    /* Check if division factor and input source are correct */
+    if((RCC_Config.mco1_presc > MCO_P_5) || (RCC_Config.mco1_source > MCO1_PLL)){
+        return 1;
+    }
+
+    /* Clear and set prescaler value */
+    RCC->CFGR &= ~(0x07 << RCC_CFGR_MCO1PRE);
+    RCC->CFGR |= (RCC_Config.mco1_presc << RCC_CFGR_MCO1PRE);
+    /* Clear and set source value */
+    RCC->CFGR &= ~(0x03 << RCC_CFGR_MCO1);
+    RCC->CFGR |= (RCC_Config.mco1_source << RCC_CFGR_MCO1);
+    /* Check and enable source value */
+    if(RCC_Config.mco1_source == MCO1_HSI){
+        /* Enable HSI source */
+        RCC->CR |= (1 << RCC_CR_HSION);
+    }
+    else if(RCC_Config.mco1_source == MCO1_LSE){
+        /* Disalbe backup protection */
+        PWR_PCLK_EN();
+        PWR->CR |= (1 << PWR_CR_DBP);
+        /* Set LSE bypass */
+        if(RCC_Config.lse_bypass == RCC_LSE_BYPASS){
+            RCC->BDCR |= (1 << RCC_BDCR_LSEBYP);
+        }
+        else{
+            RCC->BDCR &= ~(1 << RCC_BDCR_LSEBYP);
+        }
+        /* Enable LSE source */
+        RCC->BDCR |= (1 << RCC_BDCR_LSEON);
+    }
+    else if(RCC_Config.mco1_source == MCO1_HSE){
+        /* Set HSE mode */
+        if(RCC_Config.hse_mode == RCC_HSE_BYPASS){
+            RCC->CR |= (1 << RCC_CR_HSEBYP);
+        }
+        else{
+            RCC->CR &= ~(1 << RCC_CR_HSEBYP);
+        }
+        /* Enable HSE source */
+        RCC->CR |= (1 << RCC_CR_HSEON);
+    }
+    else{
+        /* Configure PLL */
+        RCC_PLLConfig(RCC_Config);
+        /* Enable PLL */
+        RCC->CR |= (1 << RCC_CR_PLLON);
+    }
+
+    return 0;
+}
+
+uint8_t RCC_SetMCO2Clk(RCC_Config_t RCC_Config){
+
+    /* Check if division factor is correct */
+    if(RCC_Config.mco2_presc > MCO_P_5){
+        return 1;
+    }
+
+    /* Clear and set prescaler value */
+    RCC->CFGR &= ~(0x07 << RCC_CFGR_MCO2PRE);
+    RCC->CFGR |= (RCC_Config.mco2_presc << RCC_CFGR_MCO2PRE);
+    /* Clear and set source value */
+    RCC->CFGR &= ~(0x03 << RCC_CFGR_MCO2);
+    RCC->CFGR |= (RCC_Config.mco2_source << RCC_CFGR_MCO2);
 
     return 0;
 }

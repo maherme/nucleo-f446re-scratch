@@ -6,6 +6,7 @@
 * Public Functions:
 *       - void SetHSEBypass(void)
 *       - void SetPLLMax(void)
+*       - void SetMCO(void)
 **/
 
 #ifndef TEST_RCC_H
@@ -26,5 +27,11 @@ void SetHSEBypass(void);
  * @return void.
  */
 void SetPLLMax(void);
+
+/**
+ * @brief Function for setting the MCO1 and MCO2.
+ * @return void
+ */
+void SetMCO(void);
 
 #endif /* TEST_RCC_H */

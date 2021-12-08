@@ -31,8 +31,8 @@
 #define TEST_SPI    0   /**< @brief Set to 1 for enabling the SPI test */
 #define TEST_I2C    0   /**< @brief Set to 1 for enabling the I2C test */
 #define TEST_USART  0   /**< @brief Set to 1 for enabling the USART test */
-#define TEST_RCC    0   /**< @brief Set to 1 for enabling the RCC test */
-#define TEST_TIMER  1   /**< @brief Set to 1 for enabling the Timer test */
+#define TEST_RCC    1   /**< @brief Set to 1 for enabling the RCC test */
+#define TEST_TIMER  0   /**< @brief Set to 1 for enabling the Timer test */
 /** @} */
 
 /***********************************************************************************************************/
@@ -84,7 +84,8 @@ void test_init(void){
 
 #if TEST_RCC
     //SetHSEBypass();
-    SetPLLMax();
+    //SetPLLMax();
+    SetMCO();
 #endif
 
 #if TEST_TIMER

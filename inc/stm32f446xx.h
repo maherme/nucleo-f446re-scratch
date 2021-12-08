@@ -202,7 +202,7 @@ typedef struct
     volatile uint32_t LCKR;     /**< @brief GPIO port configuration lock register        Addr offset 0x1C */
     volatile uint32_t AFR[2];   /**< @brief GPIO alternate funct low register AFR[0]  Addr offset 0x20<br> */
                                 /**< @brief GPIO alternate function high register AFR[1] Addr offset 0x24 */
-} GPIO_RegDef_t;
+}GPIO_RegDef_t;
 
 /**
  * @brief Peripheral register definition structure for RCC.
@@ -247,7 +247,16 @@ typedef struct
     volatile uint32_t DCKCFGR;      /**< @brief RCC dedicated clock configuration register   Addr off 0x8C */
     volatile uint32_t CKGATENR;     /**< @brief RCC clocks gated enable register             Addr off 0x90 */
     volatile uint32_t DCKCFGR2;     /**< @brief RCC dedicated clocks configuration reg 2     Addr off 0x94 */
-} RCC_RegDef_t;
+}RCC_RegDef_t;
+
+/**
+ * @brief Peripheral register definition structure for PWR.
+ */
+typedef struct
+{
+    volatile uint32_t CR;           /**< @brief PWR power control register          Address offset 0x00 */
+    volatile uint32_t CSR;          /**< @brief PWR power control/status register   Address offset 0x04 */
+}PWR_RegDef_t;
 
 /**
  * @brief Peripheral register definition structure for EXTI.
@@ -704,6 +713,26 @@ typedef struct
 /** @} */
 
 /**
+ * @name Bit position definition RCC backup domain control register.
+ * @{
+ */
+#define RCC_BDCR_LSEON      0   /**< @brief External low speed oscillator enable */
+#define RCC_BDCR_LSERDY     1   /**< @brief External low speed oscillator ready */
+#define RCC_BDCR_LSEBYP     2   /**< @brief External low speed oscillator bypass */
+#define RCC_BDCR_LSEMOD     3   /**< @brief External low speed oscillator mode */
+#define RCC_BDCR_RTCSEL     8   /**< @brief RTC clock source selection */
+#define RCC_BDCR_RTCEN      15  /**< @brief RTC clock enable */
+#define RCC_BDCR_BDRST      16  /**< @brief Backup domain software reset */
+/**@}*/
+
+/**
+ * @name Bit position definition PWR power control register.
+ * @{
+ */
+#define PWR_CR_DBP          8   /**< @brief Disable backup domain write protection */
+/**@}*/
+
+/**
  * @name Bit position definition TIM6 and TIM7 control register 1.
  * @{
  */
@@ -783,6 +812,8 @@ typedef struct
 #define GPIOI       ((GPIO_RegDef_t*)GPIOI_BASEADDR)        /**< @brief GPIOI base addr reg definition */
 
 #define RCC         ((RCC_RegDef_t*)RCC_BASEADDR)           /**< @brief RCC base addr reg definition */
+
+#define PWR         ((PWR_RegDef_t*)PWR_BASEADDR)           /**< @brief PWR base addr reg definition */
 
 #define EXTI        ((EXTI_RegDef_t*)EXTI_BASEADDR)         /**< @brief EXTI base addr reg definition */
 
@@ -886,6 +917,13 @@ typedef struct
 /** @} */
 
 /**
+ * @name Clock enable macros for PWR peripheral.
+ * @{
+ */
+#define PWR_PCLK_EN()       (RCC->APB1ENR |= (1 << 28)) /**< @brief Clock enable for PWR */
+/** @} */
+
+/**
  * @name Clock disable macros for GPIOx peripheral.
  * @{
  */
@@ -951,6 +989,14 @@ typedef struct
 #define TIM6_PCLK_DI()      (RCC->APB1ENR &= ~(1 << 4))     /**< @brief Clock disable for TIM6 */
 #define TIM7_PCLK_DI()      (RCC->APB1ENR &= ~(1 << 5))     /**< @brief Clock disable for TIM7 */
 /** @} */
+
+/**
+ * @name Clock disable macros for PWR peripheral.
+ * @{
+ */
+#define PWR_PCLK_DI()       (RCC->APB1ENR &= ~(1 << 28))    /**< @brief Clock enable for PWR */
+/** @} */
+
 
 /**
  * @name Reset macros GPIOx peripheral.

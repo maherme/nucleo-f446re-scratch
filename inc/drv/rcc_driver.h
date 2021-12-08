@@ -8,6 +8,8 @@
 *       - uint32_t RCC_GetPCLK2Value(void)
 *       - uint32_t RCC_GetPLLOutputClock(void)
 *       - uint8_t  RCC_SetSystemClock(RCC_Config_t RCC_Config)
+*       - uint8_t RCC_SetMCO1Clk(RCC_Config_t RCC_Config)
+*       - uint8_t RCC_SetMCO2Clk(RCC_Config_t RCC_Config)
 */
 
 #ifndef RCC_DRIVER_H
@@ -16,7 +18,7 @@
 #include <stdint.h>
 
 /**
- * @defgroup Clk_Source Possible system clk input source value.
+ * @defgroup Clk_Source Possible system clk input source values.
  * @{
  */
 #define RCC_CLK_SOURCE_HSI      0   /**< @brief High Speed Internal source clock */
@@ -71,7 +73,7 @@
 /**@}*/
 
 /**
- * @defgroup PLL_Source Possible PLL clk input source value.
+ * @defgroup PLL_Source Possible PLL clk input source values.
  * @{
  */
 #define PLL_SOURCE_HSI          0x00    /**< @brief HSI source clock for PLL */
@@ -86,6 +88,45 @@
 #define PLL_P_4                 0x01    /**< @brief PLL P prescaler division factor to 4 */
 #define PLL_P_6                 0x02    /**< @brief PLL P prescaler division factor to 6 */
 #define PLL_P_8                 0x03    /**< @brief PLL P prescaler division factor to 8 */
+/**@}*/
+
+/**
+ * @defgroup MCO1_Source Possible MCO1 source values.
+ * @{
+ */
+#define MCO1_HSI                0x00    /**< @brief HSI as input source of MCO1 */
+#define MCO1_LSE                0x01    /**< @brief LSE as input source of MCO1 */
+#define MCO1_HSE                0x02    /**< @brief HSE as input source of MCO1 */
+#define MCO1_PLL                0x03    /**< @brief PLL as input source of MCO1 */
+/**@}*/
+
+/**
+ * @defgroup MCO2_Source Possible MCO2 source values.
+ * @{
+ */
+#define MCO2_SYSCLK             0x00    /**< @brief SYSCLK as input source of MCO2 */
+#define MCO2_PLLI2S             0x01    /**< @brief PLLI2S as input source of MCO2 */
+#define MCO2_HSE                0x02    /**< @brief HSE as input source of MCO2 */
+#define MCO2_PLL                0x03    /**< @brief PLL as input source of MCO2 */
+/**@}*/
+
+/**
+ * @defgroup MCO_Presc Possible values of MCO1 and MCO2 prescaler.
+ * @{
+ */
+#define MCO_P_1                 0x00    /**< @brief MCO1 no prescaler division factor */
+#define MCO_P_2                 0x04    /**< @brief MCO1 prescaler division factor to 2 */
+#define MCO_P_3                 0x05    /**< @brief MCO1 prescaler division factor to 3 */
+#define MCO_P_4                 0x06    /**< @brief MCO1 prescaler division factor to 4 */
+#define MCO_P_5                 0x07    /**< @brief MCO1 prescaler division factor to 5 */
+/**@}*/
+
+/**
+ * @defgroup LSE_Bypass Possible values of LSE Bypass.
+ * @{
+ */
+#define RCC_LSE_BYPASS          0x00    /**< @brief Bypass mode for LSE source clock */
+#define RCC_LSE_CRYSTAL         0x01    /**< @brief Crystal mode for LSE source clock */
 /**@}*/
 
 /**
@@ -104,6 +145,11 @@ typedef struct
     uint8_t pll_p;          /**< Possible values from @ref PLL_P */
     uint8_t pll_m;          /**< Division factor of PLL (2 <= pll_m <= 63 */
     uint16_t pll_n;         /**< Multiplication factor of PLL (50 <= pll_n <= 432) */
+    uint8_t mco1_source;    /**< Possible values from @ref MCO1_Source */
+    uint8_t mco1_presc;     /**< Possible values from @ref MCO_Presc */
+    uint8_t mco2_source;    /**< Possible values from @ref MCO2_Source */
+    uint8_t mco2_presc;     /**< Possible values from @ref MCO_Presc */
+    uint8_t lse_bypass;     /**< Possible values from @ref LSE_Bypass */
 }RCC_Config_t;
 
 /***********************************************************************************************************/
@@ -135,5 +181,21 @@ uint32_t RCC_GetPLLOutputClock(void);
  * @return 1 is fail.
  */
 uint8_t RCC_SetSystemClock(RCC_Config_t RCC_Config);
+
+/**
+ * @brief Function to configure the MCO1.
+ * @param[in] RCC_Config is the configuration struct.
+ * @return 0 is OK.
+ * @return 1 is fail.
+ */
+uint8_t RCC_SetMCO1Clk(RCC_Config_t RCC_Config);
+
+/**
+ * @brief Function to configure the MCO2.
+ * @param[in] RCC_Config is the configuration struct.
+ * @return 0 is OK.
+ * @return 1 is fail.
+ */
+uint8_t RCC_SetMCO2Clk(RCC_Config_t RCC_Config);
 
 #endif /* RCC_DRIVER_H */
