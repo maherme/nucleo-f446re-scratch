@@ -726,6 +726,17 @@ typedef struct
 /**@}*/
 
 /**
+ * @name Bit position definition RCC PLLI2S configuration register.
+ * @{
+ */
+#define RCC_PLLI2SCFGR_PLLI2SM  0   /**< @brief Division factor for the PLLI2S input clock */
+#define RCC_PLLI2SCFGR_PLLI2SN  6   /**< @brief PLLI2S multiplication factor for VCO */
+#define RCC_PLLI2SCFGR_PLLI2SP  16  /**< @brief PLLI2S division factor for SPDIF-Rx clock */
+#define RCC_PLLI2SCFGR_PLLI2SQ  24  /**< @brief PLLI2S division factor for SAI1 clock.*/
+#define RCC_PLLI2SCFGR_PLLI2SR  28  /**< @brief PLLI2S division factor for I2S clock */
+/** @} */
+
+/**
  * @name Bit position definition PWR power control register.
  * @{
  */

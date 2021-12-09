@@ -85,7 +85,8 @@ void test_init(void){
 #if TEST_RCC
     //SetHSEBypass();
     //SetPLLMax();
-    SetMCO();
+    //SetMCO_LSE_HSE();
+    SetMCO_PLL();
 #endif
 
 #if TEST_TIMER

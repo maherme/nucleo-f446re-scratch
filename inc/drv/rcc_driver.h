@@ -150,6 +150,11 @@ typedef struct
     uint8_t mco2_source;    /**< Possible values from @ref MCO2_Source */
     uint8_t mco2_presc;     /**< Possible values from @ref MCO_Presc */
     uint8_t lse_bypass;     /**< Possible values from @ref LSE_Bypass */
+    uint8_t plli2s_r;       /**< Prescaler R value (2 <= plli2s_r <= 7) */
+    uint8_t plli2s_q;       /**< Prescaler Q value (2 <= plli2s_q <= 15) */
+    uint8_t plli2s_p;       /**< Possible values from @ref PLL_P */
+    uint8_t plli2s_m;       /**< Division factor of PLLI2S (2 <= plli2s_m <= 63) */
+    uint16_t plli2s_n;      /**< Multiplication factor of PLL (50 <= plli2s_n <= 432) */
 }RCC_Config_t;
 
 /***********************************************************************************************************/

@@ -6,7 +6,8 @@
 * Public Functions:
 *       - void SetHSEBypass(void)
 *       - void SetPLLMax(void)
-*       - void SetMCO(void)
+*       - void SetMCO_LSE_HSE(void)
+*       - void SetMCO_PLL(void)
 *
 * @note
 *       For further information about functions refer to the corresponding header file.
@@ -72,16 +73,10 @@ void SetPLLMax(void){
     printf("PLL Output Clock: %ld\n", temp);
 }
 
-void SetMCO(void){
+void SetMCO_LSE_HSE(void){
 
     RCC_Config_t RCC_Cfg = {0};
     GPIO_Handle_t MCOPin = {0};
-
-    /* Set clock configuration */
-    RCC_Cfg.clk_source = RCC_CLK_SOURCE_HSE;
-    RCC_Cfg.hse_mode = RCC_HSE_BYPASS;
-    /* Set clock */
-    RCC_SetSystemClock(RCC_Cfg);
 
     /* Set configuration */
     RCC_Cfg.mco1_source = MCO1_LSE;
@@ -93,6 +88,54 @@ void SetMCO(void){
     RCC_SetMCO1Clk(RCC_Cfg);
     /* Set MCO2 */
     RCC_SetMCO2Clk(RCC_Cfg);
+    /* Set clock configuration */
+    RCC_Cfg.clk_source = RCC_CLK_SOURCE_HSE;
+    RCC_Cfg.hse_mode = RCC_HSE_BYPASS;
+    /* Set clock */
+    RCC_SetSystemClock(RCC_Cfg);
+
+    /* Set GPIOs */
+    MCOPin.pGPIOx = GPIOA;
+    MCOPin.GPIO_PinConfig.GPIO_PinMode = GPIO_MODE_ALTFN;
+    MCOPin.GPIO_PinConfig.GPIO_PinOPType = GPIO_OP_TYPE_PP;
+    MCOPin.GPIO_PinConfig.GPIO_PinPuPdControl = GPIO_NO_PULL;
+    MCOPin.GPIO_PinConfig.GPIO_PinAltFunMode = 0;
+    MCOPin.GPIO_PinConfig.GPIO_PinSpeed = GPIO_SPEED_HIGH;
+    /* MCO1 PA8 */
+    MCOPin.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_8;
+    GPIO_Init(&MCOPin);
+    /* MCO2 PC9 */
+    MCOPin.pGPIOx = GPIOC;
+    MCOPin.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_9;
+    GPIO_Init(&MCOPin);
+}
+
+void SetMCO_PLL(void){
+
+    RCC_Config_t RCC_Cfg = {0};
+    GPIO_Handle_t MCOPin = {0};
+
+    /* Set configuration */
+    RCC_Cfg.clk_source = RCC_CLK_SOURCE_PLL_P;
+    RCC_Cfg.ahb_presc = AHB_NO_PRESC;
+    RCC_Cfg.apb1_presc = APB1_NO_PRESC;
+    RCC_Cfg.apb2_presc = APB2_NO_PRESC;
+    RCC_Cfg.mco1_source = MCO1_PLL;
+    RCC_Cfg.mco1_presc = MCO_P_5;
+    RCC_Cfg.pll_source = PLL_SOURCE_HSE;
+    RCC_Cfg.pll_n = 80;
+    RCC_Cfg.pll_m = 4;
+    RCC_Cfg.pll_p = PLL_P_8;
+    RCC_Cfg.mco2_source = MCO2_PLLI2S;
+    RCC_Cfg.mco2_presc = MCO_P_5;
+    RCC_Cfg.plli2s_n = 80;
+    RCC_Cfg.plli2s_m = 4;
+    /* Set MCO1 */
+    RCC_SetMCO1Clk(RCC_Cfg);
+    /* Set MCO2 */
+    RCC_SetMCO2Clk(RCC_Cfg);
+    /* Set clock */
+    RCC_SetSystemClock(RCC_Cfg);
 
     /* Set GPIOs */
     MCOPin.pGPIOx = GPIOA;

@@ -42,6 +42,13 @@ static uint8_t PLLP_PreScaler[4] = {2, 4, 6, 8};
  */
 static void RCC_PLLConfig(RCC_Config_t RCC_Config);
 
+/**
+ * @brief Function for configuring the PLLI2S.
+ * @param[in] RCC_Config is the configuration struct.
+ * @return void.
+ */
+static void RCC_PLLI2SConfig(RCC_Config_t RCC_Config);
+
 /***********************************************************************************************************/
 /*                                       Public API Definitions                                            */
 /***********************************************************************************************************/
@@ -304,6 +311,33 @@ uint8_t RCC_SetMCO2Clk(RCC_Config_t RCC_Config){
     /* Clear and set source value */
     RCC->CFGR &= ~(0x03 << RCC_CFGR_MCO2);
     RCC->CFGR |= (RCC_Config.mco2_source << RCC_CFGR_MCO2);
+    /* Check and enable source value */
+    if(RCC_Config.mco2_source == MCO2_SYSCLK){
+        /* Do nothing */
+    }
+    else if(RCC_Config.mco2_source == MCO2_PLLI2S){
+        /* Configure PLLI2S */
+        RCC_PLLI2SConfig(RCC_Config);
+        /* Enable PLLI2S */
+        RCC->CR |= (1 << RCC_CR_PLLI2SON);
+    }
+    else if(RCC_Config.mco2_source == MCO2_HSE){
+        /* Set HSE mode */
+        if(RCC_Config.hse_mode == RCC_HSE_BYPASS){
+            RCC->CR |= (1 << RCC_CR_HSEBYP);
+        }
+        else{
+            RCC->CR &= ~(1 << RCC_CR_HSEBYP);
+        }
+        /* Enable HSE source */
+        RCC->CR |= (1 << RCC_CR_HSEON);
+    }
+    else{
+        /* Configure PLL */
+        RCC_PLLConfig(RCC_Config);
+        /* Enable PLL */
+        RCC->CR |= (1 << RCC_CR_PLLON);
+    }
 
     return 0;
 }
@@ -332,7 +366,50 @@ static void RCC_PLLConfig(RCC_Config_t RCC_Config){
     /* Clear and set input source for PLL */
     RCC->PLLCFGR &= ~(0x01 << RCC_PLLCFGR_PLLSRC);
     RCC->PLLCFGR |= (RCC_Config.pll_source << RCC_PLLCFGR_PLLSRC);
+
     /* Enable input source for PLL */
+    if(RCC_Config.pll_source == PLL_SOURCE_HSI){
+        /* Enable HSI source */
+        RCC->CR |= (1 << RCC_CR_HSION);
+    }
+    else if(RCC_Config.pll_source == PLL_SOURCE_HSE){
+        /* Set HSE mode */
+        if(RCC_Config.hse_mode == RCC_HSE_BYPASS){
+            RCC->CR |= (1 << RCC_CR_HSEBYP);
+        }
+        else{
+            RCC->CR &= ~(1 << RCC_CR_HSEBYP);
+        }
+        /* Enable HSE source */
+        RCC->CR |= (1 << RCC_CR_HSEON);
+    }
+    else{
+        /* do nothing */
+    }
+}
+
+static void RCC_PLLI2SConfig(RCC_Config_t RCC_Config){
+
+    /* Clear and set R prescaler division factor */
+    RCC->PLLI2SCFGR &= ~(0x07 << RCC_PLLI2SCFGR_PLLI2SR);
+    RCC->PLLI2SCFGR |= (RCC_Config.plli2s_r << RCC_PLLI2SCFGR_PLLI2SR);
+    /* Clear and set Q prescaler division factor */
+    RCC->PLLI2SCFGR &= ~(0x0F << RCC_PLLI2SCFGR_PLLI2SQ);
+    RCC->PLLI2SCFGR |= (RCC_Config.plli2s_q << RCC_PLLI2SCFGR_PLLI2SQ);
+    /* Clear and set P prescaler division factor */
+    RCC->PLLI2SCFGR &= ~(0x03 << RCC_PLLI2SCFGR_PLLI2SP);
+    RCC->PLLI2SCFGR |= (RCC_Config.plli2s_p << RCC_PLLI2SCFGR_PLLI2SP);
+    /* Clear and set N prescaler multiplication value */
+    RCC->PLLI2SCFGR &= ~(0x01FF << RCC_PLLI2SCFGR_PLLI2SN);
+    RCC->PLLI2SCFGR |= (RCC_Config.plli2s_n << RCC_PLLI2SCFGR_PLLI2SN);
+    /* Clear and set M prescaler division factor */
+    RCC->PLLI2SCFGR &= ~(0x3F << RCC_PLLI2SCFGR_PLLI2SM);
+    RCC->PLLI2SCFGR |= (RCC_Config.plli2s_m << RCC_PLLI2SCFGR_PLLI2SM);
+    /* Clear and set input source for PLLI2S */
+    RCC->PLLCFGR &= ~(0x01 << RCC_PLLCFGR_PLLSRC);
+    RCC->PLLCFGR |= (RCC_Config.pll_source << RCC_PLLCFGR_PLLSRC);
+
+    /* Enable input source for PLLI2S */
     if(RCC_Config.pll_source == PLL_SOURCE_HSI){
         /* Enable HSI source */
         RCC->CR |= (1 << RCC_CR_HSION);
