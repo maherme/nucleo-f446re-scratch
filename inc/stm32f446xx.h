@@ -372,23 +372,32 @@ typedef struct
 }FLASHINTR_RegDef_t;
 
 /**
- * @brief Peripheral register definition structure for TIM6 and TIM7.
+ * @brief Peripheral register definition structure for TIM.
  */
 typedef struct
 {
-    volatile uint32_t CR1;          /**< @brief Control register 1              Address offset 0x00 */
-    volatile uint32_t CR2;          /**< @brief Control register 2              Address offset 0x04 */
-    uint32_t RESERVED0;             /**< @brief Reserved                        Address offset 0x08 */
-    volatile uint32_t DIER;         /**< @brief DMA/Interrupt enable register   Address offset 0x0C */
-    volatile uint32_t SR;           /**< @brief Status resgister                Address offset 0x10 */
-    volatile uint32_t EGR;          /**< @brief Event generation register       Address offset 0x14 */
-    uint32_t RESERVED1;             /**< @brief Reserved                        Address offset 0x18 */
-    uint32_t RESERVED2;             /**< @brief Reserved                        Address offset 0x1C */
-    uint32_t RESERVED3;             /**< @brief Reserved                        Address offset 0x20 */
-    volatile uint32_t CNT;          /**< @brief Counter                         Address offset 0x24 */
-    volatile uint32_t PSC;          /**< @brief Prescaler                       Address offset 0x28 */
-    volatile uint32_t ARR;          /**< @brief Auto-reload register            Address offset 0x2C */
-}TIM6_7_RegDef_t;
+    volatile uint32_t CR1;          /**< @brief Control register 1                  Address offset 0x00 */
+    volatile uint32_t CR2;          /**< @brief Control register 2                  Address offset 0x04 */
+    volatile uint32_t SMCR;         /**< @brief Slave mode control register         Address offset 0x08 */
+    volatile uint32_t DIER;         /**< @brief DMA/Interrupt enable register       Address offset 0x0C */
+    volatile uint32_t SR;           /**< @brief Status resgister                    Address offset 0x10 */
+    volatile uint32_t EGR;          /**< @brief Event generation register           Address offset 0x14 */
+    volatile uint32_t CCMR1;        /**< @brief Capture compare mode register 1     Address offset 0x18 */
+    volatile uint32_t CCMR2;        /**< @brief Capture compare mode register 2     Address offset 0x1C */
+    volatile uint32_t CCER;         /**< @brief Capture compare enable register     Address offset 0x20 */
+    volatile uint32_t CNT;          /**< @brief Counter                             Address offset 0x24 */
+    volatile uint32_t PSC;          /**< @brief Prescaler                           Address offset 0x28 */
+    volatile uint32_t ARR;          /**< @brief Auto-reload register                Address offset 0x2C */
+    volatile uint32_t RCR;          /**< @brief Repetition counter register         Address offset 0x30 */
+    volatile uint32_t CCR1;         /**< @brief Capture compare register 1          Address offset 0x34 */
+    volatile uint32_t CCR2;         /**< @brief Capture compare register 2          Address offset 0x38 */
+    volatile uint32_t CCR3;         /**< @brief Capture compare register 3          Address offset 0x3C */
+    volatile uint32_t CCR4;         /**< @brief Capture compare register 4          Address offset 0x40 */
+    volatile uint32_t BDTR;         /**< @brief Break and dead-time register        Address offset 0x44 */
+    volatile uint32_t DCR;          /**< @brief DMA control register                Address offset 0x48 */
+    volatile uint32_t DMAR;         /**< @brief DMA address for full transfer       Address offset 0x4C */
+    volatile uint32_t OR;           /**< @brief Option register                     Address offset 0x50 */
+}TIM_RegDef_t;
 
 /***********************************************************************************************************/
 /*                          Bit Position Definition of Peripheral Register                                 */
@@ -744,64 +753,64 @@ typedef struct
 /**@}*/
 
 /**
- * @name Bit position definition TIM6 and TIM7 control register 1.
+ * @name Bit position definition TIM control register 1.
  * @{
  */
-#define TIM6_7_CR1_CEN      0   /**< @brief Counter enable */
-#define TIM6_7_CR1_UDIS     1   /**< @brief Update disable */
-#define TIM6_7_CR1_URS      2   /**< @brief Update request source */
-#define TIM6_7_CR1_OPM      3   /**< @brief One-pulse mode */
-#define TIM6_7_CR1_ARPE     7   /**< @brief Auto-reload preload enable */
+#define TIM_CR1_CEN         0   /**< @brief Counter enable */
+#define TIM_CR1_UDIS        1   /**< @brief Update disable */
+#define TIM_CR1_URS         2   /**< @brief Update request source */
+#define TIM_CR1_OPM         3   /**< @brief One-pulse mode */
+#define TIM_CR1_ARPE        7   /**< @brief Auto-reload preload enable */
 /** @} */
 
 /**
- * @name Bit position definition TIM6 and TIM7 control register 2.
+ * @name Bit position definition TIM control register 2.
  * @{
  */
-#define TIM6_7_CR2_MMS      4   /**< @brief Master mode selection */
+#define TIM_CR2_MMS         4   /**< @brief Master mode selection */
 /** @} */
 
 /**
- * @name Bit position definition TIM6 and TIM7 DMA/Interrupt enable register.
+ * @name Bit position definition TIM DMA/Interrupt enable register.
  * @{
  */
-#define TIM6_7_DIER_UIE     0   /**< @brief Update interrupt enable */
-#define TIM6_7_DIER_UDE     8   /**< @brief Update DMA request enable */
+#define TIM_DIER_UIE        0   /**< @brief Update interrupt enable */
+#define TIM_DIER_UDE        8   /**< @brief Update DMA request enable */
 /** @} */
 
 /**
- * @name Bit position definition TIM6 and TIM7 status register.
+ * @name Bit position definition TIM status register.
  * @{
  */
-#define TIM6_7_SR_UIF       0   /**< @brief Update interrupt flag */
+#define TIM_SR_UIF          0   /**< @brief Update interrupt flag */
 /** @} */
 
 /**
- * @name Bit position definition TIM6 and TIM7 event generation register.
+ * @name Bit position definition TIM event generation register.
  * @{
  */
-#define TIM6_7_EGR_UG       0   /**< @brief Update generation */
+#define TIM_EGR_UG          0   /**< @brief Update generation */
 /** @} */
 
 /**
- * @name Bit position definition TIM6 and TIM7 counter register.
+ * @name Bit position definition TIM counter register.
  * @{
  */
-#define TIM6_7_CNT          0   /**< @brief Counter value */
+#define TIM_CNT             0   /**< @brief Counter value */
 /** @} */
 
 /**
- * @name Bit position definition TIM6 and TIM7 prescaler register.
+ * @name Bit position definition TIM prescaler register.
  * @{
  */
-#define TIM6_7_PSC          0   /**< @brief Prescaler value */
+#define TIM_PSC             0   /**< @brief Prescaler value */
 /** @} */
 
 /**
- * @name Bit position definition TIM6 and TIM7 auto-reload register.
+ * @name Bit position definition TIM auto-reload register.
  * @{
  */
-#define TIM6_7_ARR          0   /**< brief Auto-reload value */
+#define TIM_ARR             0   /**< brief Auto-reload value */
 /** @} */
 
 /***********************************************************************************************************/
@@ -852,8 +861,20 @@ typedef struct
 
 #define FLASHINTR   ((FLASHINTR_RegDef_t*)FLASHINTR_BASEADDR)   /**< @brief FLASHINTR base addr reg defini */
 
-#define TIM6        ((TIM6_7_RegDef_t*)TIM6_BASEADDR)       /**< @brief TIM6 base addr reg definition */
-#define TIM7        ((TIM6_7_RegDef_t*)TIM7_BASEADDR)       /**< @brief TIM7 base addr reg definition */
+#define TIM1        ((TIM_RegDef_t*)TIM1_BASEADDR)          /**< @brief TIM1 base addr reg definition */
+#define TIM2        ((TIM_RegDef_t*)TIM2_BASEADDR)          /**< @brief TIM2 base addr reg definition */
+#define TIM3        ((TIM_RegDef_t*)TIM3_BASEADDR)          /**< @brief TIM3 base addr reg definition */
+#define TIM4        ((TIM_RegDef_t*)TIM4_BASEADDR)          /**< @brief TIM4 base addr reg definition */
+#define TIM5        ((TIM_RegDef_t*)TIM5_BASEADDR)          /**< @brief TIM5 base addr reg definition */
+#define TIM6        ((TIM_RegDef_t*)TIM6_BASEADDR)          /**< @brief TIM6 base addr reg definition */
+#define TIM7        ((TIM_RegDef_t*)TIM7_BASEADDR)          /**< @brief TIM7 base addr reg definition */
+#define TIM8        ((TIM_RegDef_t*)TIM8_BASEADDR)          /**< @brief TIM8 base addr reg definition */
+#define TIM9        ((TIM_RegDef_t*)TIM9_BASEADDR)          /**< @brief TIM9 base addr reg definition */
+#define TIM10       ((TIM_RegDef_t*)TIM10_BASEADDR)         /**< @brief TIM10 base addr reg definition */
+#define TIM11       ((TIM_RegDef_t*)TIM11_BASEADDR)         /**< @brief TIM11 base addr reg definition */
+#define TIM12       ((TIM_RegDef_t*)TIM12_BASEADDR)         /**< @brief TIM12 base addr reg definition */
+#define TIM13       ((TIM_RegDef_t*)TIM13_BASEADDR)         /**< @brief TIM13 base addr reg definition */
+#define TIM14       ((TIM_RegDef_t*)TIM14_BASEADDR)         /**< @brief TIM14 base addr reg definition */
 /** @} */
 
 /***********************************************************************************************************/
@@ -920,11 +941,23 @@ typedef struct
 /** @} */
 
 /**
- * @name Clock enable macros for TIM6 and TIM7 peripheral.
+ * @name Clock enable macros for TIM peripheral.
  * @{
  */
+#define TIM1_PCLK_EN()      (RCC->APB2ENR |= (1 << 0))  /**< @brief Clock enable for TIM1 */
+#define TIM2_PCLK_EN()      (RCC->APB1ENR |= (1 << 0))  /**< @brief Clock enable for TIM2 */
+#define TIM3_PCLK_EN()      (RCC->APB1ENR |= (1 << 1))  /**< @brief Clock enable for TIM3 */
+#define TIM4_PCLK_EN()      (RCC->APB1ENR |= (1 << 2))  /**< @brief Clock enable for TIM4 */
+#define TIM5_PCLK_EN()      (RCC->APB1ENR |= (1 << 3))  /**< @brief Clock enable for TIM5 */
 #define TIM6_PCLK_EN()      (RCC->APB1ENR |= (1 << 4))  /**< @brief Clock enable for TIM6 */
 #define TIM7_PCLK_EN()      (RCC->APB1ENR |= (1 << 5))  /**< @brief Clock enable for TIM7 */
+#define TIM8_PCLK_EN()      (RCC->APB2ENR |= (1 << 1))  /**< @brief Clock enable for TIM8 */
+#define TIM9_PCLK_EN()      (RCC->APB2ENR |= (1 << 16)) /**< @brief Clock enable for TIM9 */
+#define TIM10_PCLK_EN()     (RCC->APB2ENR |= (1 << 17)) /**< @brief Clock enable for TIM10 */
+#define TIM11_PCLK_EN()     (RCC->APB2ENR |= (1 << 18)) /**< @brief Clock enable for TIM11 */
+#define TIM12_PCLK_EN()     (RCC->APB1ENR |= (1 << 6))  /**< @brief Clock enable for TIM12 */
+#define TIM13_PCLK_EN()     (RCC->APB1ENR |= (1 << 7))  /**< @brief Clock enable for TIM13 */
+#define TIM14_PCLK_EN()     (RCC->APB1ENR |= (1 << 8))  /**< @brief Clock enable for TIM14 */
 /** @} */
 
 /**
@@ -994,11 +1027,23 @@ typedef struct
 /** @} */
 
 /**
- * @name Clock disable macros for TIM6 and TIM7 peripheral.
+ * @name Clock disable macros for TIM peripheral.
  * @{
  */
+#define TIM1_PCLK_DI()      (RCC->APB2ENR &= ~(1 << 0))     /**< @brief Clock disable for TIM1 */
+#define TIM2_PCLK_DI()      (RCC->APB1ENR &= ~(1 << 0))     /**< @brief Clock disable for TIM2 */
+#define TIM3_PCLK_DI()      (RCC->APB1ENR &= ~(1 << 1))     /**< @brief Clock disable for TIM3 */
+#define TIM4_PCLK_DI()      (RCC->APB1ENR &= ~(1 << 2))     /**< @brief Clock disable for TIM4 */
+#define TIM5_PCLK_DI()      (RCC->APB1ENR &= ~(1 << 3))     /**< @brief Clock disable for TIM5 */
 #define TIM6_PCLK_DI()      (RCC->APB1ENR &= ~(1 << 4))     /**< @brief Clock disable for TIM6 */
 #define TIM7_PCLK_DI()      (RCC->APB1ENR &= ~(1 << 5))     /**< @brief Clock disable for TIM7 */
+#define TIM8_PCLK_DI()      (RCC->APB2ENR &= ~(1 << 8))     /**< @brief Clock disable for TIM8 */
+#define TIM9_PCLK_DI()      (RCC->APB2ENR &= ~(1 << 16))    /**< @brief Clock disable for TIM9 */
+#define TIM10_PCLK_DI()     (RCC->APB2ENR &= ~(1 << 17))    /**< @brief Clock disable for TIM10 */
+#define TIM11_PCLK_DI()     (RCC->APB2ENR &= ~(1 << 18))    /**< @brief Clock disable for TIM11 */
+#define TIM12_PCLK_DI()     (RCC->APB1ENR &= ~(1 << 6))     /**< @brief Clock disable for TIM12 */
+#define TIM13_PCLK_DI()     (RCC->APB1ENR &= ~(1 << 7))     /**< @brief Clock disable for TIM13 */
+#define TIM14_PCLK_DI()     (RCC->APB1ENR &= ~(1 << 8))     /**< @brief Clock disable for TIM14 */
 /** @} */
 
 /**
@@ -1096,11 +1141,37 @@ typedef struct
 /** @} */
 
 /**
- * @name Reset macros TIM6 and TIM7 peripheral.
+ * @name Reset macros TIM peripheral.
  * @{
  */
+/** @brief Reset macro for TIM1 */
+#define TIM1_REG_RESET()    do{(RCC->APB2RSTR |= (1 << 0)); (RCC->APB2RSTR &= ~(1 << 0));}while(0)
+/** @brief Reset macro for TIM2 */
+#define TIM2_REG_RESET()    do{(RCC->APB1RSTR |= (1 << 0)); (RCC->APB1RSTR &= ~(1 << 0));}while(0)
+/** @brief Reset macro for TIM3 */
+#define TIM3_REG_RESET()    do{(RCC->APB1RSTR |= (1 << 1)); (RCC->APB1RSTR &= ~(1 << 1));}while(0)
+/** @brief Reset macro for TIM4 */
+#define TIM4_REG_RESET()    do{(RCC->APB1RSTR |= (1 << 2)); (RCC->APB1RSTR &= ~(1 << 2));}while(0)
+/** @brief Reset macro for TIM5 */
+#define TIM5_REG_RESET()    do{(RCC->APB1RSTR |= (1 << 3)); (RCC->APB1RSTR &= ~(1 << 3));}while(0)
+/** @brief Reset macro for TIM6 */
 #define TIM6_REG_RESET()    do{(RCC->APB1RSTR |= (1 << 4)); (RCC->APB1RSTR &= ~(1 << 4));}while(0)
+/** @brief Reset macro for TIM7 */
 #define TIM7_REG_RESET()    do{(RCC->APB1RSTR |= (1 << 5)); (RCC->APB1RSTR &= ~(1 << 5));}while(0)
+/** @brief Reset macro for TIM8 */
+#define TIM8_REG_RESET()    do{(RCC->APB2RSTR |= (1 << 1)); (RCC->APB2RSTR &= ~(1 << 1));}while(0)
+/** @brief Reset macro for TIM9 */
+#define TIM9_REG_RESET()    do{(RCC->APB2RSTR |= (1 << 16)); (RCC->APB2RSTR &= ~(1 << 16));}while(0)
+/** @brief Reset macro for TIM10 */
+#define TIM10_REG_RESET()   do{(RCC->APB2RSTR |= (1 << 17)); (RCC->APB2RSTR &= ~(1 << 17));}while(0)
+/** @brief Reset macro for TIM11 */
+#define TIM11_REG_RESET()   do{(RCC->APB2RSTR |= (1 << 18)); (RCC->APB2RSTR &= ~(1 << 18));}while(0)
+/** @brief Reset macro for TIM12 */
+#define TIM12_REG_RESET()   do{(RCC->APB1RSTR |= (1 << 6)); (RCC->APB1RSTR &= ~(1 << 6));}while(0)
+/** @brief Reset macro for TIM13 */
+#define TIM13_REG_RESET()   do{(RCC->APB1RSTR |= (1 << 7)); (RCC->APB1RSTR &= ~(1 << 7));}while(0)
+/** @brief Reset macro for TIM14 */
+#define TIM14_REG_RESET()   do{(RCC->APB1RSTR |= (1 << 8)); (RCC->APB1RSTR &= ~(1 << 8));}while(0)
 /** @} */
 
 /***********************************************************************************************************/

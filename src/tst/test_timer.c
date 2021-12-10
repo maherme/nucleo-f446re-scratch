@@ -24,6 +24,7 @@ Timer_Handle_t Timer6 = {0};
 
 void Timer6_Config(void){
 
+    Timer6.tim_num = TIMER6;
     Timer6.pTimer = TIM6;
     Timer6.prescaler = 240;
     Timer6.period = 64000 - 1;
