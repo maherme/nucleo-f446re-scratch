@@ -4,12 +4,14 @@
 * @brief File containing the APIs for configuring the TIM peripheral.
 *
 * Public Functions:
-*       - void Timer_Init(Timer_Handle_t* Timer_Handle)
-*       - void Timer_Start(Timer_Handle_t* Timer_Handle)
-*       - void Timer_PerClkCtrl(Timer_Num_t timer_num, uint8_t en_or_di)
-*       - void Timer_IRQConfig(uint8_t IRQNumber, uint8_t en_or_di)
-*       - void Timer_IRQHandling(Timer_Handle_t* Timer_Handle)
-*       - void Timer_ApplicationEventCallback(void)
+*       - void     Timer_Init(Timer_Handle_t* Timer_Handle)
+*       - void     Timer_Start(Timer_Handle_t* Timer_Handle)
+*       - void     Timer_ICInit(Timer_Handle_t* Timer_Handle, IC_Handle_t IC_Handle, CC_Channel_t channel)
+*       - uint32_t Timer_ICGetValue(Timer_Handle_t* Timer_Handle, CC_Channel_t channel)
+*       - void     Timer_PerClkCtrl(Timer_Num_t timer_num, uint8_t en_or_di)
+*       - void     Timer_IRQConfig(uint8_t IRQNumber, uint8_t en_or_di)
+*       - void     Timer_IRQHandling(Timer_Handle_t* Timer_Handle)
+*       - void     Timer_ApplicationEventCallback(void)
 *
 * @note
 *       For further information about functions refer to the corresponding header file.
@@ -31,8 +33,16 @@ void Timer_Init(Timer_Handle_t* Timer_Handle){
     Timer_Handle->pTimer->PSC &= ~(0xFFFF << TIM_PSC);
     Timer_Handle->pTimer->PSC |= (Timer_Handle->prescaler << TIM_PSC);
     /*Clear and set period value */
-    Timer_Handle->pTimer->ARR &= ~(0xFFFF << TIM_ARR);
-    Timer_Handle->pTimer->ARR |= (Timer_Handle->period << TIM_ARR);
+    /* TIM2 and TIM5 have 32 bits of counter capacity */
+    if((Timer_Handle->tim_num == TIMER2) || (Timer_Handle->tim_num == TIMER5)){
+        Timer_Handle->pTimer->ARR &= ~(0xFFFFFFFF << TIM_ARR);
+        Timer_Handle->pTimer->ARR |= (Timer_Handle->period << TIM_ARR);
+    }
+    /* Rest of the TIMx have 16 bits of counter capacity */
+    else{
+        Timer_Handle->pTimer->ARR &= ~(0xFFFF << TIM_ARR);
+        Timer_Handle->pTimer->ARR |= (uint16_t)(Timer_Handle->period << TIM_ARR);
+    }
     /* Enable interrupt */
     Timer_Handle->pTimer->DIER |= (1 << TIM_DIER_UIE);
 }
@@ -43,6 +53,110 @@ void Timer_Start(Timer_Handle_t* Timer_Handle){
     Timer_Handle->pTimer->SR &= ~(1 << TIM_SR_UIF);
     /* Set counter enable */
     Timer_Handle->pTimer->CR1 |= (1 << TIM_CR1_CEN);
+}
+
+void Timer_ICInit(Timer_Handle_t* Timer_Handle, IC_Handle_t IC_Handle, CC_Channel_t channel){
+
+    switch(channel){
+        case CHANNEL1:
+            /* Set polarity value */
+            Timer_Handle->pTimer->CCER &= ~(0x05 << TIM_CCER_CC1P);
+            Timer_Handle->pTimer->CCER |= (IC_Handle.ic_polarity << TIM_CCER_CC1P);
+            /* Set input capture selection */
+            Timer_Handle->pTimer->CCMR1 &= ~(0x03 << TIM_CCMR1_CC1S);
+            Timer_Handle->pTimer->CCMR1 |= (IC_Handle.ic_select << TIM_CCMR1_CC1S);
+            /* Set input capture prescaler */
+            Timer_Handle->pTimer->CCMR1 &= ~(0x03 << TIM_CCMR1_IC1PSC);
+            Timer_Handle->pTimer->CCMR1 |= (IC_Handle.ic_prescaler << TIM_CCMR1_IC1PSC);
+            /* Set input capture filter */
+            Timer_Handle->pTimer->CCMR1 &= ~(0x0F << TIM_CCMR1_IC1F);
+            Timer_Handle->pTimer->CCMR1 |= (IC_Handle.ic_filter << TIM_CCMR1_IC1F);
+            /* Enable interrupt */
+            Timer_Handle->pTimer->DIER |= (1 << TIM_DIER_CC1IE);
+            /* Enable capture/compare 1 channel */
+            Timer_Handle->pTimer->CCER |= (1 << TIM_CCER_CC1E);
+            break;
+        case CHANNEL2:
+            /* Set polarity value */
+            Timer_Handle->pTimer->CCER &= ~(0x05 << TIM_CCER_CC2P);
+            Timer_Handle->pTimer->CCER |= (IC_Handle.ic_polarity << TIM_CCER_CC2P);
+            /* Set input capture selection */
+            Timer_Handle->pTimer->CCMR1 &= ~(0x03 << TIM_CCMR1_CC2S);
+            Timer_Handle->pTimer->CCMR1 |= (IC_Handle.ic_select << TIM_CCMR1_CC2S);
+            /* Set input capture prescaler */
+            Timer_Handle->pTimer->CCMR1 &= ~(0x03 << TIM_CCMR1_IC2PSC);
+            Timer_Handle->pTimer->CCMR1 |= (IC_Handle.ic_prescaler << TIM_CCMR1_IC2PSC);
+            /* Set input capture filter */
+            Timer_Handle->pTimer->CCMR1 &= ~(0x0F << TIM_CCMR1_IC2F);
+            Timer_Handle->pTimer->CCMR1 |= (IC_Handle.ic_filter << TIM_CCMR1_IC2F);
+            /* Enable interrupt */
+            Timer_Handle->pTimer->DIER |= (1 << TIM_DIER_CC2IE);
+            /* Enable capture/compare 2 channel */
+            Timer_Handle->pTimer->CCER |= (1 << TIM_CCER_CC2E);
+            break;
+        case CHANNEL3:
+            /* Set polarity value */
+            Timer_Handle->pTimer->CCER &= ~(0x05 << TIM_CCER_CC3P);
+            Timer_Handle->pTimer->CCER |= (IC_Handle.ic_polarity << TIM_CCER_CC3P);
+            /* Set input capture selection */
+            Timer_Handle->pTimer->CCMR2 &= ~(0x03 << TIM_CCMR2_CC3S);
+            Timer_Handle->pTimer->CCMR2 |= (IC_Handle.ic_select << TIM_CCMR2_CC3S);
+            /* Set input capture prescaler */
+            Timer_Handle->pTimer->CCMR2 &= ~(0x03 << TIM_CCMR2_IC3PSC);
+            Timer_Handle->pTimer->CCMR2 |= (IC_Handle.ic_prescaler << TIM_CCMR2_IC3PSC);
+            /* Set input capture filter */
+            Timer_Handle->pTimer->CCMR2 &= ~(0x0F << TIM_CCMR2_IC3F);
+            Timer_Handle->pTimer->CCMR2 |= (IC_Handle.ic_filter << TIM_CCMR2_IC3F);
+            /* Enable interrupt */
+            Timer_Handle->pTimer->DIER |= (1 << TIM_DIER_CC3IE);
+            /* Enable capture/compare 3 channel */
+            Timer_Handle->pTimer->CCER |= (1 << TIM_CCER_CC3E);
+            break;
+        case CHANNEL4:
+            /* Set polarity value */
+            Timer_Handle->pTimer->CCER &= ~(0x05 << TIM_CCER_CC4P);
+            Timer_Handle->pTimer->CCER |= (IC_Handle.ic_polarity << TIM_CCER_CC4P);
+            /* Set input capture selection */
+            Timer_Handle->pTimer->CCMR2 &= ~(0x03 << TIM_CCMR2_CC4S);
+            Timer_Handle->pTimer->CCMR2 |= (IC_Handle.ic_select << TIM_CCMR2_CC4S);
+            /* Set input capture prescaler */
+            Timer_Handle->pTimer->CCMR2 &= ~(0x03 << TIM_CCMR2_IC4PSC);
+            Timer_Handle->pTimer->CCMR2 |= (IC_Handle.ic_prescaler << TIM_CCMR2_IC4PSC);
+            /* Set input capture filter */
+            Timer_Handle->pTimer->CCMR2 &= ~(0x0F << TIM_CCMR2_IC4F);
+            Timer_Handle->pTimer->CCMR2 |= (IC_Handle.ic_filter << TIM_CCMR2_IC4F);
+            /* Enable interrupt */
+            Timer_Handle->pTimer->DIER |= (1 << TIM_DIER_CC4IE);
+            /* Enable capture/compare 4 channel */
+            Timer_Handle->pTimer->CCER |= (1 << TIM_CCER_CC4E);
+            break;
+        default:
+            break;
+    }
+}
+
+uint32_t Timer_ICGetValue(Timer_Handle_t* Timer_Handle, CC_Channel_t channel){
+
+    uint32_t ret_val = 0;
+
+    switch(channel){
+        case CHANNEL1:
+            ret_val = Timer_Handle->pTimer->CCR1;
+            break;
+        case CHANNEL2:
+            ret_val = Timer_Handle->pTimer->CCR2;
+            break;
+        case CHANNEL3:
+            ret_val = Timer_Handle->pTimer->CCR3;
+            break;
+        case CHANNEL4:
+            ret_val = Timer_Handle->pTimer->CCR4;
+            break;
+        default:
+            break;
+    }
+
+    return ret_val;
 }
 
 void Timer_PerClkCtrl(Timer_Num_t timer_num, uint8_t en_or_di){
@@ -185,16 +299,45 @@ void Timer_IRQConfig(uint8_t IRQNumber, uint8_t en_or_di){
 
 void Timer_IRQHandling(Timer_Handle_t* Timer_Handle){
 
-    /* Check if TIM interrupt happened */
-    if(Timer_Handle->pTimer->SR & (0x0001 << TIM_SR_UIF)){
+    /* Check if TIM update interrupt happened */
+    if(Timer_Handle->pTimer->SR & (1 << TIM_SR_UIF)){
         /* Clear UIF bit in SR register */
         Timer_Handle->pTimer->SR &= ~(1 << TIM_SR_UIF);
         /* Call application callback */
-        Timer_ApplicationEventCallback();
+        Timer_ApplicationEventCallback(TIMER_UIF_EVENT);
+    }
+
+    /* Check if capture/compare interrupt happened */
+    if(Timer_Handle->pTimer->SR & (1 << TIM_SR_CC1IF)){
+        /* Clear CC1IF bit in SR register */
+        Timer_Handle->pTimer->SR &= ~(1 << TIM_SR_CC1IF);
+        /* Call application callback */
+        Timer_ApplicationEventCallback(TIMER_CC1IF_EVENT);
+    }
+    else if(Timer_Handle->pTimer->SR & (1 << TIM_SR_CC2IF)){
+        /* Clear CC2IF bit in SR register */
+        Timer_Handle->pTimer->SR &= ~(1 << TIM_SR_CC2IF);
+        /* Call application callback */
+        Timer_ApplicationEventCallback(TIMER_CC2IF_EVENT);
+    }
+    else if(Timer_Handle->pTimer->SR & (1 << TIM_SR_CC3IF)){
+        /* Clear CC3IF bit in SR register */
+        Timer_Handle->pTimer->SR &= ~(1 << TIM_SR_CC3IF);
+        /* Call application callback */
+        Timer_ApplicationEventCallback(TIMER_CC3IF_EVENT);
+    }
+    else if(Timer_Handle->pTimer->SR & (1 << TIM_SR_CC4IF)){
+        /* Clear CC4IF bit in SR register */
+        Timer_Handle->pTimer->SR &= ~(1 << TIM_SR_CC4IF);
+        /* Call application callback */
+        Timer_ApplicationEventCallback(TIMER_CC4IF_EVENT);
+    }
+    else{
+        /* do nothing */
     }
 }
 
-__attribute__((weak)) void Timer_ApplicationEventCallback(void){
+__attribute__((weak)) void Timer_ApplicationEventCallback(Timer_Event_t timer_event){
 
     /* This is a weak implementation. The application may override this function */
 }

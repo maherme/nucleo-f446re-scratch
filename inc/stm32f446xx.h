@@ -775,6 +775,10 @@ typedef struct
  * @{
  */
 #define TIM_DIER_UIE        0   /**< @brief Update interrupt enable */
+#define TIM_DIER_CC1IE      1   /**< @brief Capture/Compare 1 interrupt enable */
+#define TIM_DIER_CC2IE      2   /**< @brief Capture/Compare 2 interrupt enable */
+#define TIM_DIER_CC3IE      3   /**< @brief Capture/Compare 3 interrupt enable */
+#define TIM_DIER_CC4IE      4   /**< @brief Capture/Compare 4 interrupt enable */
 #define TIM_DIER_UDE        8   /**< @brief Update DMA request enable */
 /** @} */
 
@@ -783,6 +787,10 @@ typedef struct
  * @{
  */
 #define TIM_SR_UIF          0   /**< @brief Update interrupt flag */
+#define TIM_SR_CC1IF        1   /**< @brief Capture/Compare 1 interrupt flag */
+#define TIM_SR_CC2IF        2   /**< @brief Capture/Compare 2 interrupt flag */
+#define TIM_SR_CC3IF        3   /**< @brief Capture/Compare 3 interrupt flag */
+#define TIM_SR_CC4IF        4   /**< @brief Capture/Compare 4 interrupt flag */
 /** @} */
 
 /**
@@ -791,6 +799,44 @@ typedef struct
  */
 #define TIM_EGR_UG          0   /**< @brief Update generation */
 /** @} */
+
+/**
+ * @name Bit position definition TIM capture/compare mode register 1.
+ * @{
+ */
+#define TIM_CCMR1_CC1S      0   /**< @brief Capture/compare 1 selection */
+#define TIM_CCMR1_IC1PSC    2   /**< @brief Input capture 1 prescaler */
+#define TIM_CCMR1_IC1F      4   /**< @brief Input capture 1 filter */
+#define TIM_CCMR1_CC2S      8   /**< @brief Capture/compare 2 selection */
+#define TIM_CCMR1_IC2PSC    10  /**< @brief Input capture 2 prescaler */
+#define TIM_CCMR1_IC2F      12  /**< @brief Input capture 2 filter */
+/** @} */
+
+/**
+ * @name Bit position definition TIM capture/compare mode register 2.
+ * @{
+ */
+#define TIM_CCMR2_CC3S      0   /**< @brief Capture/compare 3 selection */
+#define TIM_CCMR2_IC3PSC    2   /**< @brief Input capture 3 prescaler */
+#define TIM_CCMR2_IC3F      4   /**< @brief Input capture 3 filter */
+#define TIM_CCMR2_CC4S      8   /**< @brief Capture/compare 4 selection */
+#define TIM_CCMR2_IC4PSC    10  /**< @brief Input capture 4 prescaler */
+#define TIM_CCMR2_IC4F      12  /**< @brief Input capture 4 filter */
+/** @} */
+
+/**
+ * @name Bit position definition TIM capture/compare enable register.
+ * @{
+ */
+#define TIM_CCER_CC1E       0   /**< @brief Capture/compare 1 enable */
+#define TIM_CCER_CC1P       1   /**< @brief Capture/compare 1 polarity */
+#define TIM_CCER_CC2E       4   /**< @brief Capture/compare 2 enable */
+#define TIM_CCER_CC2P       5   /**< @brief Capture/compare 2 polarity */
+#define TIM_CCER_CC3E       8   /**< @brief Capture/compare 3 enable */
+#define TIM_CCER_CC3P       9   /**< @brief Capture/compare 3 polarity */
+#define TIM_CCER_CC4E       12  /**< @brief Capture/compare 4 enable */
+#define TIM_CCER_CC4P       13  /**< @brief Capture/compare 4 polarity */
+/** @{ */
 
 /**
  * @name Bit position definition TIM counter register.
@@ -1182,31 +1228,43 @@ typedef struct
  * @name IRQ (Interrupt Request) number.
  * @{
  */
-#define IRQ_NO_EXTI0        6   /**< @brief Interrupt Number for EXTI0 */
-#define IRQ_NO_EXTI1        7   /**< @brief Interrupt Number for EXTI1 */
-#define IRQ_NO_EXTI2        8   /**< @brief Interrupt Number for EXTI2 */
-#define IRQ_NO_EXTI3        9   /**< @brief Interrupt Number for EXTI3 */
-#define IRQ_NO_EXTI4        10  /**< @brief Interrupt Number for EXTI4 */
-#define IRQ_NO_EXTI9_5      23  /**< @brief Interrupt Number for EXTI5 to EXTI9 */
-#define IRQ_NO_EXTI15_10    40  /**< @brief Interrupt Number for EXTI10 to EXTI15 */
-#define IRQ_NO_SPI1         35  /**< @brief Interrupt Number for SPI1 */
-#define IRQ_NO_SPI2         36  /**< @brief Interrupt Number for SPI2 */
-#define IRQ_NO_SPI3         51  /**< @brief Interrupt Number for SPI3 */
-#define IRQ_NO_SPI4         84  /**< @brief Interrupt Number for SPI4 */
-#define IRQ_NO_I2C1_EV      31  /**< @brief Interrupt Number for I2C1 EV */
-#define IRQ_NO_I2C1_ER      32  /**< @brief Interrupt Number for I2C1 ER */
-#define IRQ_NO_I2C2_EV      33  /**< @brief Interrupt Number for I2C2 EV */
-#define IRQ_NO_I2C2_ER      34  /**< @brief Interrupt Number for I2C2 ER */
-#define IRQ_NO_I2C3_EV      72  /**< @brief Interrupt Number for I2C3 EV */
-#define IRQ_NO_I2C3_ER      73  /**< @brief Interrupt Number for I2C3 ER */
-#define IRQ_NO_USART1       37  /**< @brief Interrupt Number for USART1 */
-#define IRQ_NO_USART2       38  /**< @brief Interrupt Number for USART2 */
-#define IRQ_NO_USART3       39  /**< @brief Interrupt Number for USART3 */
-#define IRQ_NO_UART4        52  /**< @brief Interrupt Number for UART4 */
-#define IRQ_NO_UART5        53  /**< @brief Interrupt Number for UART5 */
-#define IRQ_NO_USART6       71  /**< @brief Interrupt Number for USART6 */
-#define IRQ_NO_TIM6_DAC     54  /**< @brief Interrupt Number for TIM6 or DAC */
-#define IRQ_NO_TIM7         55  /**< @brief Interrupt Number for TIM7 */
+#define IRQ_NO_EXTI0                6   /**< @brief Interrupt Num for EXTI0 */
+#define IRQ_NO_EXTI1                7   /**< @brief Interrupt Num for EXTI1 */
+#define IRQ_NO_EXTI2                8   /**< @brief Interrupt Num for EXTI2 */
+#define IRQ_NO_EXTI3                9   /**< @brief Interrupt Num for EXTI3 */
+#define IRQ_NO_EXTI4                10  /**< @brief Interrupt Num for EXTI4 */
+#define IRQ_NO_EXTI9_5              23  /**< @brief Interrupt Num for EXTI5 to EXTI9 */
+#define IRQ_NO_EXTI15_10            40  /**< @brief Interrupt Num for EXTI10 to EXTI15 */
+#define IRQ_NO_SPI1                 35  /**< @brief Interrupt Num for SPI1 */
+#define IRQ_NO_SPI2                 36  /**< @brief Interrupt Num for SPI2 */
+#define IRQ_NO_SPI3                 51  /**< @brief Interrupt Num for SPI3 */
+#define IRQ_NO_SPI4                 84  /**< @brief Interrupt Num for SPI4 */
+#define IRQ_NO_I2C1_EV              31  /**< @brief Interrupt Num for I2C1 EV */
+#define IRQ_NO_I2C1_ER              32  /**< @brief Interrupt Num for I2C1 ER */
+#define IRQ_NO_I2C2_EV              33  /**< @brief Interrupt Num for I2C2 EV */
+#define IRQ_NO_I2C2_ER              34  /**< @brief Interrupt Num for I2C2 ER */
+#define IRQ_NO_I2C3_EV              72  /**< @brief Interrupt Num for I2C3 EV */
+#define IRQ_NO_I2C3_ER              73  /**< @brief Interrupt Num for I2C3 ER */
+#define IRQ_NO_USART1               37  /**< @brief Interrupt Num for USART1 */
+#define IRQ_NO_USART2               38  /**< @brief Interrupt Num for USART2 */
+#define IRQ_NO_USART3               39  /**< @brief Interrupt Num for USART3 */
+#define IRQ_NO_UART4                52  /**< @brief Interrupt Num for UART4 */
+#define IRQ_NO_UART5                53  /**< @brief Interrupt Num for UART5 */
+#define IRQ_NO_USART6               71  /**< @brief Interrupt Num for USART6 */
+#define IRQ_NO_TIM1_BRK_TIM9        24  /**< @brief Interrupt Num for TIM1 BRK and TIM9 global */
+#define IRQ_NO_TIM1_UP_TIM10        25  /**< @brief Interrupt Num for TIM1 UP and TIM10 global */
+#define IRQ_NO_TIM1_TRG_COM_TIM11   26  /**< @brief Interrupt Num for TIM1 TRG and COM and TIM 11 global */
+#define IRQ_NO_TIM1_CC              27  /**< @brief Interrupt Num for TIM1 Capture/Compare */
+#define IRQ_NO_TIM2                 28  /**< @brief Interrupt Num for TIM2 */
+#define IRQ_NO_TIM3                 29  /**< @brief Interrupt Num for TIM3 */
+#define IRQ_NO_TIM4                 30  /**< @brief Interrupt Num for TIM4 */
+#define IRQ_NO_TIM8_BRK_TIM12       43  /**< @brief Interrupt Num for TIM8 BRK and TIM12 global */
+#define IRQ_NO_TIM8_UP_TIM13        44  /**< @brief Interrupt Num for TIM8 UP and TIM13 global */
+#define IRQ_NO_TIM8_TRG_COM_TIM14   45  /**< @brief Interrupt Num for TIM8 TRG and COM and TIM14 global */
+#define IRQ_NO_TIM8_CC              46  /**< @brief Interrupt Num for TIM8 Capture/Compare */
+#define IRQ_NO_TIM5                 50  /**< @brief Interrupt Num for TIM5 */
+#define IRQ_NO_TIM6_DAC             54  /**< @brief Interrupt Num for TIM6 or DAC */
+#define IRQ_NO_TIM7                 55  /**< @brief Interrupt Num for TIM7 */
 /** @} */
 
 /**
