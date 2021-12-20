@@ -7,18 +7,19 @@
 *       - void    Timer6_Config(void)
 *       - void    Timer2_Config(void)
 *       - void    Timer2_Process(void)
+*       - void    Timer5_Config(void)
+*       - void    Timer5_Process(void)
 *
 * @note
 *       For further information about functions refer to the corresponding header file.
 **/
 
+#include <stdio.h>
 #include "test_timer.h"
 #include "timer_driver.h"
 #include "gpio_driver.h"
 #include "rcc_driver.h"
 #include "stm32f446xx.h"
-
-#include <stdio.h>
 
 /** @brief Handler structure for Timer peripheral */
 Timer_Handle_t Timer = {0};
@@ -26,6 +27,8 @@ Timer_Handle_t Timer = {0};
 static uint8_t capture_done = 0;
 /** @brief Array for storing captured values by input capture */
 static uint32_t input_capture[2] = {0};
+/** @brief Variable for setting output compare frequency to 40Hz */
+static uint32_t pulse_value = 100000;
 
 /***********************************************************************************************************/
 /*                                       Static Function Prototypes                                        */
@@ -117,6 +120,49 @@ void Timer2_Process(void){
     }
 }
 
+void Timer5_Config(void){
+
+    OC_Handle_t OC = {0};
+    GPIO_Handle_t GpioOC = {0};
+    RCC_Config_t RCC_Cfg = {0};
+
+    /* Set configuration */
+    RCC_Cfg.clk_source = RCC_CLK_SOURCE_HSE;
+    RCC_Cfg.hse_mode = RCC_HSE_BYPASS;
+    /* Set clock */
+    RCC_SetSystemClock(RCC_Cfg);
+
+    /* Configure the basic timer function */
+    Timer.tim_num = TIMER5;
+    Timer.pTimer = TIM5;
+    Timer.prescaler = 0;
+    Timer.period = 0xFFFFFFFF;  /* Set timer for counting until its maximum capacity (32 bits) */
+    Timer_Init(&Timer);
+
+    /* Configure the output compare function */
+    OC.oc_mode = OC_MODE_TOGGLE;
+    OC.oc_polarity = CC_POLARITY_RISING;
+    OC.oc_pulse = pulse_value;
+    Timer_OCInit(&Timer, OC, CHANNEL1);
+
+    /* Configure the GPIO */
+    GpioOC.pGPIOx = GPIOA;
+    GpioOC.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_0;
+    GpioOC.GPIO_PinConfig.GPIO_PinMode = GPIO_MODE_ALTFN;
+    GpioOC.GPIO_PinConfig.GPIO_PinSpeed = GPIO_SPEED_HIGH;
+    GpioOC.GPIO_PinConfig.GPIO_PinPuPdControl = GPIO_NO_PULL;
+    GpioOC.GPIO_PinConfig.GPIO_PinAltFunMode = 2;
+    GPIO_Init(&GpioOC);
+
+    /* Enable interrupt */
+    Timer_IRQConfig(IRQ_NO_TIM5, ENABLE);
+    /* Start timer */
+    Timer_Start(&Timer);
+}
+
+void Timer5_Process(void){
+}
+
 /***********************************************************************************************************/
 /*                               Weak Function Overwrite Definitions                                       */
 /***********************************************************************************************************/
@@ -129,24 +175,37 @@ void TIM2_Handler(void){
     Timer_IRQHandling(&Timer);
 }
 
-void Timer_ApplicationEventCallback(Timer_Event_t timer_event){
+void TIM5_Handler(void){
+    Timer_IRQHandling(&Timer);
+}
+
+void Timer_ApplicationEventCallback(Timer_Num_t tim_num, Timer_Event_t timer_event){
 
     static uint8_t count = 1;
+    static uint32_t ccr_content = 0;
 
     if(timer_event == TIMER_UIF_EVENT){
-        GPIO_ToggleOutputPin(GPIOA, GPIO_PIN_NO_5);
+        if(tim_num == TIMER6){
+            GPIO_ToggleOutputPin(GPIOA, GPIO_PIN_NO_5);
+        }
     }
     else if(timer_event == TIMER_CC1IF_EVENT){
-        if(!capture_done){
-            if(count == 1){
-                input_capture[0] = Timer_ICGetValue(&Timer, CHANNEL1);
-                count++;
+        if(tim_num == TIMER2){
+            if(!capture_done){
+                if(count == 1){
+                    input_capture[0] = Timer_CCGetValue(&Timer, CHANNEL1);
+                    count++;
+                }
+                else if(count == 2){
+                    input_capture[1] = Timer_CCGetValue(&Timer, CHANNEL1);
+                    count = 1;
+                    capture_done = 1;
+                }
             }
-            else if(count == 2){
-                input_capture[1] = Timer_ICGetValue(&Timer, CHANNEL1);
-                count = 1;
-                capture_done = 1;
-            }
+        }
+        else if(tim_num == TIMER5){
+            ccr_content = Timer_CCGetValue(&Timer, CHANNEL1);
+            Timer_CCSetValue(&Timer, CHANNEL1, ccr_content + pulse_value);
         }
     }
 }

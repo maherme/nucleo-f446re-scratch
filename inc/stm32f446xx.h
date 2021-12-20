@@ -810,6 +810,8 @@ typedef struct
 #define TIM_CCMR1_CC2S      8   /**< @brief Capture/compare 2 selection */
 #define TIM_CCMR1_IC2PSC    10  /**< @brief Input capture 2 prescaler */
 #define TIM_CCMR1_IC2F      12  /**< @brief Input capture 2 filter */
+#define TIM_CCMR1_OC1M      4   /**< @brief Output compare 1 mode */
+#define TIM_CCMR1_OC2M      12  /**< @brief Output compare 2 mode */
 /** @} */
 
 /**
@@ -822,6 +824,8 @@ typedef struct
 #define TIM_CCMR2_CC4S      8   /**< @brief Capture/compare 4 selection */
 #define TIM_CCMR2_IC4PSC    10  /**< @brief Input capture 4 prescaler */
 #define TIM_CCMR2_IC4F      12  /**< @brief Input capture 4 filter */
+#define TIM_CCMR2_OC3M      4   /**< @brief Output compare 3 mode */
+#define TIM_CCMR2_OC4M      12  /**< @brief Output compare 4 mode */
 /** @} */
 
 /**

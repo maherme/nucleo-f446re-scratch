@@ -7,6 +7,8 @@
 *       - void    Timer6_Config(void)
 *       - void    Timer2_Config(void)
 *       - void    Timer2_Process(void)
+*       - void    Timer5_Config(void)
+*       - void    Timer5_Process(void)
 **/
 
 #ifndef TEST_TIMER_H
@@ -31,5 +33,17 @@ void Timer2_Config(void);
  * @return void.
  */
 void Timer2_Process(void);
+
+/**
+ * @brief Function to initialize and configure TIM5 peripheral.
+ * @return void.
+ */
+void Timer5_Config(void);
+
+/**
+ * @brief Function to perform the TIM5 test in main loop.
+ * @return void.
+ */
+void Timer5_Process(void);
 
 #endif /* TEST_TIMER_H */

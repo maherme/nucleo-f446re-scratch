@@ -91,7 +91,8 @@ void test_init(void){
 
 #if TEST_TIMER
     //Timer6_Config();
-    Timer2_Config();
+    //Timer2_Config();
+    Timer5_Config();
 #endif
 }
 
@@ -107,7 +108,7 @@ void test_process(void){
 #endif
 
 #if TEST_TIMER
-    Timer2_Process();
+    //Timer2_Process();
 #endif
 }
 

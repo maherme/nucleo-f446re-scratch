@@ -7,7 +7,8 @@
 *       - void     Timer_Init(Timer_Handle_t* Timer_Handle)
 *       - void     Timer_Start(Timer_Handle_t* Timer_Handle)
 *       - void     Timer_ICInit(Timer_Handle_t* Timer_Handle, IC_Handle_t IC_Handle, CC_Channel_t channel)
-*       - uint32_t Timer_ICGetValue(Timer_Handle_t* Timer_Handle, CC_Channel_t channel)
+*       - uint32_t Timer_CCGetValue(Timer_Handle_t* Timer_Handle, CC_Channel_t channel)
+*       - void     Timer_CCSetValue(Timer_Handle_t* Timer_Handle, CC_Channel_t channel, uint32_t value)
 *       - void     Timer_PerClkCtrl(Timer_Num_t timer_num, uint8_t en_or_di)
 *       - void     Timer_IRQConfig(uint8_t IRQNumber, uint8_t en_or_di)
 *       - void     Timer_IRQHandling(Timer_Handle_t* Timer_Handle)
@@ -47,6 +48,20 @@
 #define IC_PRESCALER_2      0X01    /**< @brief Capture is done once every 2 events */
 #define IC_PRESCALER_4      0x02    /**< @brief Capture is done once every 4 events */
 #define IC_PRESCALER_8      0x03    /**< @brief Capture is done once every 8 events */
+/** @} */
+
+/**
+ * @defgroup OC_MODE Output compare mode.
+ * @{
+ */
+#define OC_MODE_TIMING          0x00    /**< @brief Timing mode */
+#define OC_MODE_ACTIVE          0x01    /**< @brief Active mode */
+#define OC_MODE_INACTIVE        0x02    /**< @brief Inactive mode */
+#define OC_MODE_TOGGLE          0x03    /**< @brief Toggle mode */
+#define OC_MODE_FORCED_INACTIVE 0x04    /**< @brief Forced inactive mode */
+#define OC_MODE_FORCED_ACTIVE   0x05    /**< @brief Forced active mode */
+#define OC_MODE_PWM1            0x06    /**< @brief PWM mode 1 */
+#define OC_MODE_PWM2            0x07    /**< @brief PWM mode 2 */
 /** @} */
 
 /**
@@ -115,6 +130,16 @@ typedef struct
     uint8_t ic_filter;          /**< Input capture filter (0 means no filter) */
 }IC_Handle_t;
 
+/**
+ * @brief Configuration structure for output capture timer peripheral.
+ */
+typedef struct
+{
+    uint8_t oc_mode;            /**< Possible values from @ref OC_MODE */
+    uint8_t oc_polarity;        /**< Possible values from @ref CC_POLARITY */
+    uint32_t oc_pulse;          /**< Pulse count duration */
+}OC_Handle_t;
+
 /***********************************************************************************************************/
 /*                                       APIs Supported                                                    */
 /***********************************************************************************************************/
@@ -143,12 +168,30 @@ void Timer_Start(Timer_Handle_t* Timer_Handle);
 void Timer_ICInit(Timer_Handle_t* Timer_Handle, IC_Handle_t IC_Handle, CC_Channel_t channel);
 
 /**
+ * @brief Function to initialize the output capture channel of a timer peripheral.
+ * @param[in] Timer_Handle handle structure for managing the timer peripheral.
+ * @param[in] OC_Handle handle configuration for output capture.
+ * @param[in] channel channel number to be configured.
+ * @return void
+ */
+void Timer_OCInit(Timer_Handle_t* Timer_Handle, OC_Handle_t OC_Handle, CC_Channel_t channel);
+
+/**
  * @brief Function to get capture/compare value.
  * @param[in] Timer_Handle handle structure for managing the timer peripheral.
  * @param[in] channel channel number to be configured.
  * @return capture/compare value.
  */
-uint32_t Timer_ICGetValue(Timer_Handle_t* Timer_Handle, CC_Channel_t channel);
+uint32_t Timer_CCGetValue(Timer_Handle_t* Timer_Handle, CC_Channel_t channel);
+
+/**
+ * @brief Function to set capture/compare value.
+ * @param[in] Timer_Handle handle structure for managing the timer peripheral.
+ * @param[in] channel channel number to be configured.
+ * @param[in] value is the value to be set.
+ * @return void.
+ */
+void Timer_CCSetValue(Timer_Handle_t* Timer_Handle, CC_Channel_t channel, uint32_t value);
 
 /**
  * @brief Function to control the peripheral clock of the timer peripheral.
@@ -177,6 +220,6 @@ void Timer_IRQHandling(Timer_Handle_t* Timer_Handle);
  * @brief Function for application callback.
  * @return void.
  */
-void Timer_ApplicationEventCallback(Timer_Event_t timer_event);
+void Timer_ApplicationEventCallback(Timer_Num_t tim_num, Timer_Event_t timer_event);
 
 #endif /* TIMER_DRIVER_H */
