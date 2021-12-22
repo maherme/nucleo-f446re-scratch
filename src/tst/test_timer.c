@@ -7,8 +7,7 @@
 *       - void    Timer6_Config(void)
 *       - void    Timer2_Config(void)
 *       - void    Timer2_Process(void)
-*       - void    Timer5_Config(void)
-*       - void    Timer5_Process(void)
+*       - void    Timer4_Config(void)
 *
 * @note
 *       For further information about functions refer to the corresponding header file.
@@ -27,8 +26,14 @@ Timer_Handle_t Timer = {0};
 static uint8_t capture_done = 0;
 /** @brief Array for storing captured values by input capture */
 static uint32_t input_capture[2] = {0};
-/** @brief Variable for setting output compare frequency to 40Hz */
-static uint32_t pulse_value = 100000;
+/** @brief Variable for setting output compare frequency to 80Hz with a timer clock of 8MHz*/
+static uint32_t pulse_value1 = 50000;
+/** @brief Variable for setting output compare frequency to 160Hz with a timer clock of 8MHz */
+static uint32_t pulse_value2 = 25000;
+/** @brief Variable for setting output compare frequency to 320Hz with a timer clock of 8MHz */
+static uint32_t pulse_value3 = 12500;
+/** @brief Variable for setting output compare frequency to 640Hz with a timer clock of 8MHz */
+static uint32_t pulse_value4 = 6250;
 
 /***********************************************************************************************************/
 /*                                       Static Function Prototypes                                        */
@@ -120,7 +125,7 @@ void Timer2_Process(void){
     }
 }
 
-void Timer5_Config(void){
+void Timer4_Config(void){
 
     OC_Handle_t OC = {0};
     GPIO_Handle_t GpioOC = {0};
@@ -133,34 +138,43 @@ void Timer5_Config(void){
     RCC_SetSystemClock(RCC_Cfg);
 
     /* Configure the basic timer function */
-    Timer.tim_num = TIMER5;
-    Timer.pTimer = TIM5;
+    Timer.tim_num = TIMER4;
+    Timer.pTimer = TIM4;
     Timer.prescaler = 0;
-    Timer.period = 0xFFFFFFFF;  /* Set timer for counting until its maximum capacity (32 bits) */
+    Timer.period = 0xFFFF;  /* Set timer for counting until its maximum capacity (32 bits) */
     Timer_Init(&Timer);
 
     /* Configure the output compare function */
     OC.oc_mode = OC_MODE_TOGGLE;
     OC.oc_polarity = CC_POLARITY_RISING;
-    OC.oc_pulse = pulse_value;
+    OC.oc_pulse = pulse_value1;
     Timer_OCInit(&Timer, OC, CHANNEL1);
+    OC.oc_pulse = pulse_value2;
+    Timer_OCInit(&Timer, OC, CHANNEL2);
+    OC.oc_pulse = pulse_value3;
+    Timer_OCInit(&Timer, OC, CHANNEL3);
+    OC.oc_pulse = pulse_value4;
+    Timer_OCInit(&Timer, OC, CHANNEL4);
 
     /* Configure the GPIO */
-    GpioOC.pGPIOx = GPIOA;
-    GpioOC.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_0;
+    GpioOC.pGPIOx = GPIOB;
+    GpioOC.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_6;
     GpioOC.GPIO_PinConfig.GPIO_PinMode = GPIO_MODE_ALTFN;
     GpioOC.GPIO_PinConfig.GPIO_PinSpeed = GPIO_SPEED_HIGH;
     GpioOC.GPIO_PinConfig.GPIO_PinPuPdControl = GPIO_NO_PULL;
     GpioOC.GPIO_PinConfig.GPIO_PinAltFunMode = 2;
     GPIO_Init(&GpioOC);
+    GpioOC.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_7;
+    GPIO_Init(&GpioOC);
+    GpioOC.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_8;
+    GPIO_Init(&GpioOC);
+    GpioOC.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_9;
+    GPIO_Init(&GpioOC);
 
     /* Enable interrupt */
-    Timer_IRQConfig(IRQ_NO_TIM5, ENABLE);
+    Timer_IRQConfig(IRQ_NO_TIM4, ENABLE);
     /* Start timer */
     Timer_Start(&Timer);
-}
-
-void Timer5_Process(void){
 }
 
 /***********************************************************************************************************/
@@ -175,14 +189,14 @@ void TIM2_Handler(void){
     Timer_IRQHandling(&Timer);
 }
 
-void TIM5_Handler(void){
+void TIM4_Handler(void){
     Timer_IRQHandling(&Timer);
 }
 
 void Timer_ApplicationEventCallback(Timer_Num_t tim_num, Timer_Event_t timer_event){
 
     static uint8_t count = 1;
-    static uint32_t ccr_content = 0;
+    uint32_t ccr_content = 0;
 
     if(timer_event == TIMER_UIF_EVENT){
         if(tim_num == TIMER6){
@@ -203,10 +217,31 @@ void Timer_ApplicationEventCallback(Timer_Num_t tim_num, Timer_Event_t timer_eve
                 }
             }
         }
-        else if(tim_num == TIMER5){
+        else if(tim_num == TIMER4){
             ccr_content = Timer_CCGetValue(&Timer, CHANNEL1);
-            Timer_CCSetValue(&Timer, CHANNEL1, ccr_content + pulse_value);
+            Timer_CCSetValue(&Timer, CHANNEL1, ccr_content + pulse_value1);
         }
+    }
+    else if(timer_event == TIMER_CC2IF_EVENT){
+        if(tim_num == TIMER4){
+            ccr_content = Timer_CCGetValue(&Timer, CHANNEL2);
+            Timer_CCSetValue(&Timer, CHANNEL2, ccr_content + pulse_value2);
+        }
+    }
+    else if(timer_event == TIMER_CC3IF_EVENT){
+        if(tim_num == TIMER4){
+            ccr_content = Timer_CCGetValue(&Timer, CHANNEL3);
+            Timer_CCSetValue(&Timer, CHANNEL3, ccr_content + pulse_value3);
+        }
+    }
+    else if(timer_event == TIMER_CC4IF_EVENT){
+        if(tim_num == TIMER4){
+            ccr_content = Timer_CCGetValue(&Timer, CHANNEL4);
+            Timer_CCSetValue(&Timer, CHANNEL4, ccr_content + pulse_value4);
+        }
+    }
+    else{
+        /* do nothing */
     }
 }
 

@@ -92,7 +92,7 @@ void test_init(void){
 #if TEST_TIMER
     //Timer6_Config();
     //Timer2_Config();
-    Timer5_Config();
+    Timer4_Config();
 #endif
 }
 

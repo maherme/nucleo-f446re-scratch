@@ -7,8 +7,7 @@
 *       - void    Timer6_Config(void)
 *       - void    Timer2_Config(void)
 *       - void    Timer2_Process(void)
-*       - void    Timer5_Config(void)
-*       - void    Timer5_Process(void)
+*       - void    Timer4_Config(void)
 **/
 
 #ifndef TEST_TIMER_H
@@ -22,7 +21,7 @@ void Timer6_Config(void);
 
 /**
  * @brief Function to initialize and configure TIM2 peripheral for testing the input capture functionality.
- *        This test consit on generating a signal using the LSE (32.768KHz) and MCO1 (output pin PA8), and
+ *        This test consist on generating a signal using the LSE (32.768KHz) and MCO1 (output pin PA8), and
  *        capture this signal using the capture/compare channel 1 of TIM2 peripheral (input pin PA0).
  * @return void.
  */
@@ -35,15 +34,11 @@ void Timer2_Config(void);
 void Timer2_Process(void);
 
 /**
- * @brief Function to initialize and configure TIM5 peripheral.
+ * @brief Function to initialize and configure TIM4 peripheral for testing the output capture functionality.
+ *        This test consist on generating 4 signals of 80Hz, 160Hz, 320Hz and 640Hz using the 4 channel of
+ *        the TIM4 peripheral.
  * @return void.
  */
-void Timer5_Config(void);
-
-/**
- * @brief Function to perform the TIM5 test in main loop.
- * @return void.
- */
-void Timer5_Process(void);
+void Timer4_Config(void);
 
 #endif /* TEST_TIMER_H */
