@@ -5,6 +5,7 @@
 *
 * Public Functions:
 *       - void    delay(void)
+*       - void    delay_ms(uint16_t ms)
 **/
 
 #ifndef UTILS_H
@@ -15,5 +16,13 @@
  * @return void.
  */
 void delay(void);
+
+/**
+ * @brief Function to insert a delay in milliseconds.
+ * @param[in] ms is the number of milliseconds for the delay.
+ * @return void.
+ * @note This function uses the TIM2 peripheral.
+ */
+void delay_ms(uint16_t ms);
 
 #endif

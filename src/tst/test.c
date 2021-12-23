@@ -93,6 +93,7 @@ void test_init(void){
     //Timer6_Config();
     //Timer2_Config();
     Timer4_Config();
+    //Timer3_Config();
 #endif
 }
 
@@ -109,6 +110,7 @@ void test_process(void){
 
 #if TEST_TIMER
     //Timer2_Process();
+    //Timer3_Process();
 #endif
 }
 

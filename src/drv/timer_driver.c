@@ -6,6 +6,7 @@
 * Public Functions:
 *       - void     Timer_Init(Timer_Handle_t* Timer_Handle)
 *       - void     Timer_Start(Timer_Handle_t* Timer_Handle)
+*       - void     Timer_Stop(Timer_Handle_t* Timer_Handle)
 *       - void     Timer_ICInit(Timer_Handle_t* Timer_Handle, IC_Handle_t IC_Handle, CC_Channel_t channel)
 *       - uint32_t Timer_CCGetValue(Timer_Handle_t* Timer_Handle, CC_Channel_t channel)
 *       - void     Timer_CCSetValue(Timer_Handle_t* Timer_Handle, CC_Channel_t channel, uint32_t value)
@@ -54,6 +55,12 @@ void Timer_Start(Timer_Handle_t* Timer_Handle){
     Timer_Handle->pTimer->SR &= ~(1 << TIM_SR_UIF);
     /* Set counter enable */
     Timer_Handle->pTimer->CR1 |= (1 << TIM_CR1_CEN);
+}
+
+void Timer_Stop(Timer_Handle_t* Timer_Handle){
+
+    /* Set counter disable */
+    Timer_Handle->pTimer->CR1 &= ~(1 << TIM_CR1_CEN);
 }
 
 void Timer_ICInit(Timer_Handle_t* Timer_Handle, IC_Handle_t IC_Handle, CC_Channel_t channel){
@@ -162,6 +169,9 @@ uint32_t Timer_CCGetValue(Timer_Handle_t* Timer_Handle, CC_Channel_t channel){
 
 void Timer_CCSetValue(Timer_Handle_t* Timer_Handle, CC_Channel_t channel, uint32_t value){
 
+    /* Disable timer */
+    Timer_Handle->pTimer->CR1 &= ~(1 << TIM_CR1_CEN);
+
     switch(channel){
         case CHANNEL1:
             Timer_Handle->pTimer->CCR1 &= ~(0xFFFFFFFF);
@@ -182,9 +192,16 @@ void Timer_CCSetValue(Timer_Handle_t* Timer_Handle, CC_Channel_t channel, uint32
         default:
             break;
     }
+
+    /* Enable timer */
+    Timer_Handle->pTimer->CR1 |= (1 << TIM_CR1_CEN);
+
 }
 
 void Timer_OCInit(Timer_Handle_t* Timer_Handle, OC_Handle_t OC_Handle, CC_Channel_t channel){
+
+    /* Disable update event interrupt */
+    Timer_Handle->pTimer->DIER &= ~(1 << TIM_DIER_UIE);
 
     switch(channel){
         case CHANNEL1:
@@ -199,6 +216,8 @@ void Timer_OCInit(Timer_Handle_t* Timer_Handle, OC_Handle_t OC_Handle, CC_Channe
             /* Set initial pulse value */
             Timer_Handle->pTimer->CCR1 &= ~(0xFFFFFFFF);
             Timer_Handle->pTimer->CCR1 |= OC_Handle.oc_pulse;
+            /* Enable preload */
+            Timer_Handle->pTimer->CCMR1 |= (OC_Handle.oc_preload << TIM_CCMR1_OC1PE);
             /* Enable interrupt */
             Timer_Handle->pTimer->DIER |= (1 << TIM_DIER_CC1IE);
             /* Enable capture/compare 1 channel */
@@ -216,6 +235,8 @@ void Timer_OCInit(Timer_Handle_t* Timer_Handle, OC_Handle_t OC_Handle, CC_Channe
             /* Set initial pulse value */
             Timer_Handle->pTimer->CCR2 &= ~(0xFFFFFFFF);
             Timer_Handle->pTimer->CCR2 |= OC_Handle.oc_pulse;
+            /* Enable preload */
+            Timer_Handle->pTimer->CCMR1 |= (OC_Handle.oc_preload << TIM_CCMR1_OC2PE);
             /* Enable interrupt */
             Timer_Handle->pTimer->DIER |= (1 << TIM_DIER_CC2IE);
             /* Enable capture/compare 2 channel */
@@ -233,6 +254,8 @@ void Timer_OCInit(Timer_Handle_t* Timer_Handle, OC_Handle_t OC_Handle, CC_Channe
             /* Set initial pulse value */
             Timer_Handle->pTimer->CCR3 &= ~(0xFFFFFFFF);
             Timer_Handle->pTimer->CCR3 |= OC_Handle.oc_pulse;
+            /* Enable preload */
+            Timer_Handle->pTimer->CCMR2 |= (OC_Handle.oc_preload << TIM_CCMR2_OC3PE);
             /* Enable interrupt */
             Timer_Handle->pTimer->DIER |= (1 << TIM_DIER_CC3IE);
             /* Enable capture/compare 3 channel */
@@ -250,6 +273,8 @@ void Timer_OCInit(Timer_Handle_t* Timer_Handle, OC_Handle_t OC_Handle, CC_Channe
             /* Set initial pulse value */
             Timer_Handle->pTimer->CCR4 &= ~(0xFFFFFFFF);
             Timer_Handle->pTimer->CCR4 |= OC_Handle.oc_pulse;
+            /* Enable preload */
+            Timer_Handle->pTimer->CCMR2 |= (OC_Handle.oc_preload << TIM_CCMR2_OC4PE);
             /* Enable interrupt */
             Timer_Handle->pTimer->DIER |= (1 << TIM_DIER_CC4IE);
             /* Enable capture/compare 4 channel */

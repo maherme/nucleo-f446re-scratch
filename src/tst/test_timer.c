@@ -8,6 +8,8 @@
 *       - void    Timer2_Config(void)
 *       - void    Timer2_Process(void)
 *       - void    Timer4_Config(void)
+*       - void    Timer5_Config(void)
+*       - void    Timer5_Process(void)
 *
 * @note
 *       For further information about functions refer to the corresponding header file.
@@ -19,6 +21,7 @@
 #include "gpio_driver.h"
 #include "rcc_driver.h"
 #include "stm32f446xx.h"
+#include "utils.h"
 
 /** @brief Handler structure for Timer peripheral */
 Timer_Handle_t Timer = {0};
@@ -141,12 +144,13 @@ void Timer4_Config(void){
     Timer.tim_num = TIMER4;
     Timer.pTimer = TIM4;
     Timer.prescaler = 0;
-    Timer.period = 0xFFFF;  /* Set timer for counting until its maximum capacity (32 bits) */
+    Timer.period = 0xFFFF;  /* Set timer for counting until its maximum capacity (16 bits) */
     Timer_Init(&Timer);
 
     /* Configure the output compare function */
     OC.oc_mode = OC_MODE_TOGGLE;
     OC.oc_polarity = CC_POLARITY_RISING;
+    OC.oc_preload = OC_PRELOAD_DISABLE;
     OC.oc_pulse = pulse_value1;
     Timer_OCInit(&Timer, OC, CHANNEL1);
     OC.oc_pulse = pulse_value2;
@@ -163,6 +167,7 @@ void Timer4_Config(void){
     GpioOC.GPIO_PinConfig.GPIO_PinSpeed = GPIO_SPEED_HIGH;
     GpioOC.GPIO_PinConfig.GPIO_PinPuPdControl = GPIO_NO_PULL;
     GpioOC.GPIO_PinConfig.GPIO_PinAltFunMode = 2;
+    GpioOC.GPIO_PinConfig.GPIO_PinOPType = GPIO_OP_TYPE_PP;
     GPIO_Init(&GpioOC);
     GpioOC.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_7;
     GPIO_Init(&GpioOC);
@@ -175,6 +180,61 @@ void Timer4_Config(void){
     Timer_IRQConfig(IRQ_NO_TIM4, ENABLE);
     /* Start timer */
     Timer_Start(&Timer);
+}
+
+void Timer3_Config(void){
+
+    OC_Handle_t PWM = {0};
+    GPIO_Handle_t GpioPWM = {0};
+    RCC_Config_t RCC_Cfg = {0};
+
+    /* Set configuration */
+    RCC_Cfg.clk_source = RCC_CLK_SOURCE_HSE;
+    RCC_Cfg.hse_mode = RCC_HSE_BYPASS;
+    /* Set clock */
+    RCC_SetSystemClock(RCC_Cfg);
+
+    /* Configure the basic timer function */
+    Timer.tim_num = TIMER3;
+    Timer.pTimer = TIM3;
+    Timer.prescaler = 0;
+    Timer.period = 8000 - 1;  /* Set timer for counting 1ms */
+    Timer_Init(&Timer);
+
+    /* Configure the output compare function */
+    PWM.oc_mode = OC_MODE_PWM1;
+    PWM.oc_polarity = CC_POLARITY_RISING;
+    PWM.oc_pulse = 0;
+    PWM.oc_preload = OC_PRELOAD_ENABLE;
+    Timer_OCInit(&Timer, PWM, CHANNEL1);
+
+    /* Configure the GPIO */
+    GpioPWM.pGPIOx = GPIOA;
+    GpioPWM.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_6;
+    GpioPWM.GPIO_PinConfig.GPIO_PinMode = GPIO_MODE_ALTFN;
+    GpioPWM.GPIO_PinConfig.GPIO_PinSpeed = GPIO_SPEED_HIGH;
+    GpioPWM.GPIO_PinConfig.GPIO_PinPuPdControl = GPIO_NO_PULL;
+    GpioPWM.GPIO_PinConfig.GPIO_PinAltFunMode = 2;
+    GPIO_Init(&GpioPWM);
+
+    /* Start timer */
+    Timer_Start(&Timer);
+}
+
+void Timer3_Process(void){
+
+    static uint16_t brightness = 0;
+
+    while(brightness < Timer.period){
+        brightness += 10;
+        Timer_CCSetValue(&Timer, CHANNEL1, brightness);
+        delay_ms(1);
+    }
+    while(brightness > 0){
+        brightness -= 10;
+        Timer_CCSetValue(&Timer, CHANNEL1, brightness);
+        delay_ms(1);
+    }
 }
 
 /***********************************************************************************************************/
@@ -220,6 +280,9 @@ void Timer_ApplicationEventCallback(Timer_Num_t tim_num, Timer_Event_t timer_eve
         else if(tim_num == TIMER4){
             ccr_content = Timer_CCGetValue(&Timer, CHANNEL1);
             Timer_CCSetValue(&Timer, CHANNEL1, ccr_content + pulse_value1);
+        }
+        else{
+            /* do nothing */
         }
     }
     else if(timer_event == TIMER_CC2IF_EVENT){

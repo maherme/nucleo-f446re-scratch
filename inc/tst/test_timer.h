@@ -8,6 +8,8 @@
 *       - void    Timer2_Config(void)
 *       - void    Timer2_Process(void)
 *       - void    Timer4_Config(void)
+*       - void    Timer3_Config(void)
+*       - void    Timer3_Process(void)
 **/
 
 #ifndef TEST_TIMER_H
@@ -40,5 +42,17 @@ void Timer2_Process(void);
  * @return void.
  */
 void Timer4_Config(void);
+
+/**
+ * @brief Function to initialize and configure TIM3 peripheral.
+ * @return void.
+ */
+void Timer3_Config(void);
+
+/**
+ * @brief Function to perform the TIM3 test in main loop.
+ * @return void.
+ */
+void Timer3_Process(void);
 
 #endif /* TEST_TIMER_H */

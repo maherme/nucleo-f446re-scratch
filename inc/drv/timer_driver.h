@@ -6,6 +6,7 @@
 * Public Functions:
 *       - void     Timer_Init(Timer_Handle_t* Timer_Handle)
 *       - void     Timer_Start(Timer_Handle_t* Timer_Handle)
+*       - void     Timer_Stop(Timer_Handle_t* Timer_Handle)
 *       - void     Timer_ICInit(Timer_Handle_t* Timer_Handle, IC_Handle_t IC_Handle, CC_Channel_t channel)
 *       - uint32_t Timer_CCGetValue(Timer_Handle_t* Timer_Handle, CC_Channel_t channel)
 *       - void     Timer_CCSetValue(Timer_Handle_t* Timer_Handle, CC_Channel_t channel, uint32_t value)
@@ -62,6 +63,14 @@
 #define OC_MODE_FORCED_ACTIVE   0x05    /**< @brief Forced active mode */
 #define OC_MODE_PWM1            0x06    /**< @brief PWM mode 1 */
 #define OC_MODE_PWM2            0x07    /**< @brief PWM mode 2 */
+/** @} */
+
+/**
+ * @defgroup OC_PRELOAD Output compare preload enable.
+ * @{
+ */
+#define OC_PRELOAD_DISABLE      0x00    /**< @brief Preload disable */
+#define OC_PRELOAD_ENABLE       0x01    /**< @brief Preload enable */
 /** @} */
 
 /**
@@ -138,6 +147,7 @@ typedef struct
     uint8_t oc_mode;            /**< Possible values from @ref OC_MODE */
     uint8_t oc_polarity;        /**< Possible values from @ref CC_POLARITY */
     uint32_t oc_pulse;          /**< Pulse count duration */
+    uint8_t oc_preload;         /**< Possible values from @ref OC_PRELOAD */
 }OC_Handle_t;
 
 /***********************************************************************************************************/
@@ -157,6 +167,13 @@ void Timer_Init(Timer_Handle_t* Timer_Handle);
  * @return void
  */
 void Timer_Start(Timer_Handle_t* Timer_Handle);
+
+/**
+ * @brief Function to stop working the timer peripheral.
+ * @param[in] Timer_Handle handle structure for managing the timer peripheral.
+ * @return void
+ */
+void Timer_Stop(Timer_Handle_t* Timer_Handle);
 
 /**
  * @brief Function to initialize the input capture channel of a timer peripheral.
