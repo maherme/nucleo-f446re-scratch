@@ -44,13 +44,15 @@ void Timer2_Process(void);
 void Timer4_Config(void);
 
 /**
- * @brief Function to initialize and configure TIM3 peripheral.
+ * @brief Function to initialize and configure TIM3 peripheral as PWM and connect it to the pin PA6 for
+ *        generating a PWM signal.
  * @return void.
  */
 void Timer3_Config(void);
 
 /**
- * @brief Function to perform the TIM3 test in main loop.
+ * @brief Function to perform the TIM3 test in main loop. This test consist on generating a variable PWM
+ *        signal which powers an external LED for controlling the brightness.
  * @return void.
  */
 void Timer3_Process(void);
