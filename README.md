@@ -116,3 +116,20 @@ PLL Output Clock: 180000000
 ```
 Snapshot of GPIO PA8 (using MCO1 with LSE crystal) (D0 channel) and PC9 (using MCO2 with HSE clock and prescaler set to 4) (D1 channel) using a logic analyzer when SetMCO_LSE_HSE() API is executed:
 ![Alt text](doc/img/nucleo-rcc-mco-lse-hse-test.png)
+
+### Test Timer Driver
+You need to set TEST_TIMER to 1 in the [test.c](src/tst/test.c) file for enabling the code to test the Timer peripheral driver.
+- If you use Timer6 related APIs you will test a basic timer (TIM6) which generates an interrupt for toggling a LED.
+- If you use Timer2 related APIs you will test the input capture functionality (TIM2), if you introduce a clock signal in the GPIO PA0 the frequency will be calculated and showed using the semihosting console. For this test the MCO1 is configured using the LSE crystal and output using GPIO PA8. So connect the GPIO PA8 to PA0 and you will see this output console:
+```console
+Starting program!!!
+Frequency: 0.001863
+Frequency: 32786.885246
+Frequency: 32786.885246
+Frequency: 32786.885246
+...
+```
+- If you use Timer4 related APIs you will test the output compare functionality (TIM4). A four different clock sources will be generated through GPIO PB6, PB7, PB8 and PB9. If you use a logic analyzer you should get a result as the following:
+![Alt text](doc/img/nucleo-timeroc-test.png)
+- If you use Timer3 related APIs you will test the PWM functionality (TIM3). In this test an external LED connected to GPIO PA6 is controlled, the brightness of the LED is changed using a PWM which duty-cycle is modified during a period of time. You can connect the external LED as follow:
+<p align="center"><img src="doc/img/nucleo-pwm-test.png" width="456" height="497"></p>
