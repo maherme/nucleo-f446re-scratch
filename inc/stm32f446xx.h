@@ -923,7 +923,174 @@ typedef struct
  * @name Bit position definition TIM auto-reload register.
  * @{
  */
-#define TIM_ARR             0   /**< brief Auto-reload value */
+#define TIM_ARR             0   /**< @brief Auto-reload value */
+/** @} */
+
+/**
+ * @name Bit position definition DMA low interrupt status register
+ * @{
+ */
+#define DMA_LISR_FEIF0      0   /**< @brief Stream0 FIFO error interrupt flag */
+#define DMA_LISR_DMEIF0     2   /**< @brief Stream0 direct mode error interrupt flag */
+#define DMA_LISR_TEIF0      3   /**< @brief Stream0 transfer error interrupt flag */
+#define DMA_LISR_HTIF0      4   /**< @brief Stream0 half transfer interrupt flag */
+#define DMA_LISR_TCIF0      5   /**< @brief Stream0 transfer complete interrupt flag */
+#define DMA_LISR_FEIF1      6   /**< @brief Stream1 FIFO error interrupt flag */
+#define DMA_LISR_DMEIF1     8   /**< @brief Stream1 direct mode error interrupt flag */
+#define DMA_LISR_TEIF1      9   /**< @brief Stream1 transfer error interrupt flag */
+#define DMA_LISR_HTIF1      10  /**< @brief Stream1 half transfer interrupt flag */
+#define DMA_LISR_TCIF1      11  /**< @brief Stream1 transfer complete interrupt flag */
+#define DMA_LISR_FEIF2      16  /**< @brief Stream2 FIFO error interrupt flag */
+#define DMA_LISR_DMEIF2     18  /**< @brief Stream2 direct mode error interrupt flag */
+#define DMA_LISR_TEIF2      19  /**< @brief Stream2 transfer error interrupt flag */
+#define DMA_LISR_HTIF2      20  /**< @brief Stream2 half transfer interrupt flag */
+#define DMA_LISR_TCIF2      21  /**< @brief Stream2 transfer complete interrupt flag */
+#define DMA_LISR_FEIF3      22  /**< @brief Stream3 FIFO error interrupt flag */
+#define DMA_LISR_DMEIF3     24  /**< @brief Stream3 direct mode error interrupt flag */
+#define DMA_LISR_TEIF3      25  /**< @brief Stream3 transfer error interrupt flag */
+#define DMA_LISR_HTIF3      26  /**< @brief Stream3 half transfer interrupt flag */
+#define DMA_LISR_TCIF3      27  /**< @brief Stream3 transfer complete interrupt flag */
+/** @} */
+
+/**
+ * @name Bit position definition DMA high interrupt status register
+ * @{
+ */
+#define DMA_LISR_FEIF4      0   /**< @brief Stream4 FIFO error interrupt flag */
+#define DMA_LISR_DMEIF4     2   /**< @brief Stream4 direct mode error interrupt flag */
+#define DMA_LISR_TEIF4      3   /**< @brief Stream4 transfer error interrupt flag */
+#define DMA_LISR_HTIF4      4   /**< @brief Stream4 half transfer interrupt flag */
+#define DMA_LISR_TCIF4      5   /**< @brief Stream4 transfer complete interrupt flag */
+#define DMA_LISR_FEIF5      6   /**< @brief Stream5 FIFO error interrupt flag */
+#define DMA_LISR_DMEIF5     8   /**< @brief Stream5 direct mode error interrupt flag */
+#define DMA_LISR_TEIF5      9   /**< @brief Stream5 transfer error interrupt flag */
+#define DMA_LISR_HTIF5      10  /**< @brief Stream5 half transfer interrupt flag */
+#define DMA_LISR_TCIF5      11  /**< @brief Stream5 transfer complete interrupt flag */
+#define DMA_LISR_FEIF6      16  /**< @brief Stream6 FIFO error interrupt flag */
+#define DMA_LISR_DMEIF6     18  /**< @brief Stream6 direct mode error interrupt flag */
+#define DMA_LISR_TEIF6      19  /**< @brief Stream6 transfer error interrupt flag */
+#define DMA_LISR_HTIF6      20  /**< @brief Stream6 half transfer interrupt flag */
+#define DMA_LISR_TCIF6      21  /**< @brief Stream6 transfer complete interrupt flag */
+#define DMA_LISR_FEIF7      22  /**< @brief Stream7 FIFO error interrupt flag */
+#define DMA_LISR_DMEIF7     24  /**< @brief Stream7 direct mode error interrupt flag */
+#define DMA_LISR_TEIF7      25  /**< @brief Stream7 transfer error interrupt flag */
+#define DMA_LISR_HTIF7      26  /**< @brief Stream7 half transfer interrupt flag */
+#define DMA_LISR_TCIF7      27  /**< @brief Stream7 transfer complete interrupt flag */
+/** @} */
+
+/**
+ * @name Bit position definition DMA low interrupt flat clear register
+ * @{
+ */
+#define DMA_LIFCR_CFEIF0    0   /**< @brief Stream0 clear FIFO error interrupt flag */
+#define DMA_LIFCR_CDMEIF0   2   /**< @brief Stream0 clear direct mode error interrupt flag */
+#define DMA_LIFCR_CTEIF0    3   /**< @brief Stream0 clear transfer error interrupt flag */
+#define DMA_LIFCR_CHTIF0    4   /**< @brief Stream0 clear half transfer interrupt flag */
+#define DMA_LIFCR_CTCIF0    5   /**< @brief Stream0 clear transfer complete interrupt flag */
+#define DMA_LIFCR_CFEIF1    6   /**< @brief Stream1 clear FIFO error interrupt flag */
+#define DMA_LIFCR_CDMEIF1   8   /**< @brief Stream1 clear direct mode error interrupt flag */
+#define DMA_LIFCR_CTEIF1    9   /**< @brief Stream1 clear transfer error interrupt flag */
+#define DMA_LIFCR_CHTIF1    10  /**< @brief Stream1 clear half transfer interrupt flag */
+#define DMA_LIFCR_CTCIF1    11  /**< @brief Stream1 clear transfer complete interrupt flag */
+#define DMA_LIFCR_CFEIF2    16  /**< @brief Stream2 clear FIFO error interrupt flag */
+#define DMA_LIFCR_CDMEIF2   18  /**< @brief Stream2 clear direct mode error interrupt flag */
+#define DMA_LIFCR_CTEIF2    19  /**< @brief Stream2 clear transfer error interrupt flag */
+#define DMA_LIFCR_CHTIF2    20  /**< @brief Stream2 clear half transfer interrupt flag */
+#define DMA_LIFCR_CTCIF2    21  /**< @brief Stream2 clear transfer complete interrupt flag */
+#define DMA_LIFCR_CFEIF3    22  /**< @brief Stream3 clear FIFO error interrupt flag */
+#define DMA_LIFCR_CDMEIF3   24  /**< @brief Stream3 clear direct mode error interrupt flag */
+#define DMA_LIFCR_CTEIF3    25  /**< @brief Stream3 clear transfer error interrupt flag */
+#define DMA_LIFCR_CHTIF3    26  /**< @brief Stream3 clear half transfer interrupt flag */
+#define DMA_LIFCR_CTCIF3    27  /**< @brief Stream3 clear transfer complete interrupt flag */
+/** @} */
+
+/**
+ * @name Bit position definition DMA high interrupt status register
+ * @{
+ */
+#define DMA_HIFCR_CFEIF4    0   /**< @brief Stream4 clear FIFO error interrupt flag */
+#define DMA_HIFCR_CDMEIF4   2   /**< @brief Stream4 clear direct mode error interrupt flag */
+#define DMA_HIFCR_CTEIF4    3   /**< @brief Stream4 clear transfer error interrupt flag */
+#define DMA_HIFCR_CHTIF4    4   /**< @brief Stream4 clear half transfer interrupt flag */
+#define DMA_HIFCR_CTCIF4    5   /**< @brief Stream4 clear transfer complete interrupt flag */
+#define DMA_HIFCR_CFEIF5    6   /**< @brief Stream5 clear FIFO error interrupt flag */
+#define DMA_HIFCR_CDMEIF5   8   /**< @brief Stream5 clear direct mode error interrupt flag */
+#define DMA_HIFCR_CTEIF5    9   /**< @brief Stream5 clear transfer error interrupt flag */
+#define DMA_HIFCR_CHTIF5    10  /**< @brief Stream5 clear half transfer interrupt flag */
+#define DMA_HIFCR_CTCIF5    11  /**< @brief Stream5 clear transfer complete interrupt flag */
+#define DMA_HIFCR_CFEIF6    16  /**< @brief Stream6 clear FIFO error interrupt flag */
+#define DMA_HIFCR_CDMEIF6   18  /**< @brief Stream6 clear direct mode error interrupt flag */
+#define DMA_HIFCR_CTEIF6    19  /**< @brief Stream6 clear transfer error interrupt flag */
+#define DMA_HIFCR_CHTIF6    20  /**< @brief Stream6 clear half transfer interrupt flag */
+#define DMA_HIFCR_CTCIF6    21  /**< @brief Stream6 clear transfer complete interrupt flag */
+#define DMA_HIFCR_CFEIF7    22  /**< @brief Stream7 clear FIFO error interrupt flag */
+#define DMA_HIFCR_CDMEIF7   24  /**< @brief Stream7 clear direct mode error interrupt flag */
+#define DMA_HIFCR_CTEIF7    25  /**< @brief Stream7 clear transfer error interrupt flag */
+#define DMA_HIFCR_CHTIF7    26  /**< @brief Stream7 clear half transfer interrupt flag */
+#define DMA_HIFCR_CTCIF7    27  /**< @brief Stream7 clear transfer complete interrupt flag */
+/** @} */
+
+/**
+ * @name Bit position definition DMA stream configuration register
+ * @{
+ */
+#define DMA_SCR_EN          0   /**< @brief Stream enable */
+#define DMA_SCR_DMEIE       1   /**< @brief Direct mode error interrupt enable */
+#define DMA_SCR_TEIE        2   /**< @brief Transfer error interrupt enable */
+#define DMA_SCR_HTIE        3   /**< @brief Half transfer interrupt enable */
+#define DMA_SCR_TCIE        4   /**< @brief Transfer complete interrupt enable */
+#define DMA_SCR_PFCTRL      5   /**< @brief Peripheral flow control */
+#define DMA_SCR_DIR         6   /**< @brief Data transfer direction */
+#define DMA_SCR_CIRC        8   /**< @brief Circular mode */
+#define DMA_SCR_PINC        9   /**< @brief Peripheral increment mode */
+#define DMA_SCR_MINC        10  /**< @brief Memory increment mode */
+#define DMA_SCR_PSIZE       11  /**< @brief Peripheral data size */
+#define DMA_SCR_MSIZE       13  /**< @brief Memory data size */
+#define DMA_SCR_PINCOS      15  /**< @brief Peripheral increment offset size */
+#define DMA_SCR_PL          16  /**< @brief Priority level */
+#define DMA_SCR_DBM         18  /**< @brief Double-buffer mode */
+#define DMA_SCR_CT          19  /**< @brief Current target */
+#define DMA_SCR_PBURST      21  /**< @brief Peripheral burst transfer configuration */
+#define DMA_SCR_MBURST      23  /**< @brief Memory burst transfer configuration */
+#define DMA_SCR_CHSEL       25  /**< @brief Channel selection */
+/** @} */
+
+/**
+ * @name Bit position definition DMA stream number of data register
+ * @{
+ */
+#define DMA_SNDTR_NDT       0   /**< @brief Number of data items to transfer */
+/** @} */
+
+/**
+ * @name Bit position definition DMA stream peripheral address register
+ * @{
+ */
+#define DMA_SPAR_PAR        0   /**< @brief Peripheral address */
+/** @} */
+
+/**
+ * @name Bit position definition DMA stream memory 0 address register
+ * @{
+ */
+#define DMA_SM0AR_M0A       0   /**< @brief Memory 0 address */
+/** @} */
+
+/**
+ * @name Bit position definition DMA stream memory 1 address register
+ * @{
+ */
+#define DMA_SM1AR_M1A       0   /**< @brief Memory 1 address */
+/** @} */
+
+/**
+ * @name Bit position definition DMA stream FIFO control register
+ * @{
+ */
+#define DMA_SFCR_FTH        0   /**< @brief FIFO threshold selection */
+#define DMA_SFCR_DMDIS      2   /**< @brief Direct mode disable */
+#define DMA_SFCR_FS         3   /**< @brief FIFO status */
+#define DMA_SFCR_FEIE       7   /**< @brief FIFO error interrupt enable */
 /** @} */
 
 /***********************************************************************************************************/
