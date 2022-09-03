@@ -1,7 +1,7 @@
 # NUCLEO-F446RE from Scratch
 This is an embedded project for [NUCLEO-F446RE](https://www.st.com/en/evaluation-tools/nucleo-f446re.html) board, based on [STM32F446RE](https://www.st.com/en/microcontrollers-microprocessors/stm32f446re.html) microcontroller.
 
-It contains drivers for GPIO, SPI, I2C and USART peripherals.
+It contains drivers for GPIO, SPI, I2C, USART, RCC and TIMER peripherals.
 
 ## OpenOCD
 You can use OpenOCD (Open On-Chip Debugger) for programming or debugging this project. You can starting OpenOCD typing:
@@ -95,3 +95,24 @@ In this diagram:
 | UART RX                | PC11       | GPIO 0      |
 
 Warning!!! You need to disconnect the cable from GPIO0 (RX PIN) of Arduino board before programming the sketch; in other way the programming process will fail.
+
+### Test Reset and Clock Control (RCC) Driver
+You need to set TEST_RCC to 1 in the [test.c](src/tst/test.c) file for enabling the code to test the RCC peripheral driver.
+Each API of the test enable and cofigure a different clock configuration, SetHSEBypass() and SetPLLMax() APIs will show you the configuration set using the semihosting console, while SetMCO_LSE_HSE() and SetMCO_PLL() will send two clock signals through the GPIO PA8 and PA9.
+
+Console output when SetHSEBypass() API is executed:
+```console
+Starting program!!!
+PCLK1 Value: 8000000
+PCLK2 Value: 8000000
+PLL Output Clock: 96000000
+```
+Console output when SetPLLBypass() API is executed:
+```console
+Starting program!!!
+PCLK1 Value: 45000000
+PCLK2 Value: 90000000
+PLL Output Clock: 180000000
+```
+Snapshot of GPIO PA8 (using MCO1 with LSE crystal) (D0 channel) and PC9 (using MCO2 with HSE clock and prescaler set to 4) (D1 channel) using a logic analyzer when SetMCO_LSE_HSE() API is executed:
+![Alt text](doc/img/nucleo-rcc-mco-lse-hse-test.png)
