@@ -988,6 +988,9 @@ typedef struct
 #define TIM12       ((TIM_RegDef_t*)TIM12_BASEADDR)         /**< @brief TIM12 base addr reg definition */
 #define TIM13       ((TIM_RegDef_t*)TIM13_BASEADDR)         /**< @brief TIM13 base addr reg definition */
 #define TIM14       ((TIM_RegDef_t*)TIM14_BASEADDR)         /**< @brief TIM14 base addr reg definition */
+
+#define DMA1        ((DMA_RegDef_t*)DMA1_BASEADDR)          /**< @brief DMA1 base addr reg definition */
+#define DMA2        ((DMA_RegDef_t*)DMA2_BASEADDR)          /**< @brief DMA2 base addr reg definition */
 /** @} */
 
 /***********************************************************************************************************/
