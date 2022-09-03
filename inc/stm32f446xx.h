@@ -1328,6 +1328,13 @@ typedef struct
 #define IRQ_NO_EXTI2                8   /**< @brief Interrupt Num for EXTI2 */
 #define IRQ_NO_EXTI3                9   /**< @brief Interrupt Num for EXTI3 */
 #define IRQ_NO_EXTI4                10  /**< @brief Interrupt Num for EXTI4 */
+#define IRQ_NO_DMA1_STREAM0         11  /**< @brief Interrupt Num for DMA1 Stream0 */
+#define IRQ_NO_DMA1_STREAM1         12  /**< @brief Interrupt Num for DMA1 Stream1 */
+#define IRQ_NO_DMA1_STREAM2         13  /**< @brief Interrupt Num for DMA1 Stream2 */
+#define IRQ_NO_DMA1_STREAM3         14  /**< @brief Interrupt Num for DMA1 Stream3 */
+#define IRQ_NO_DMA1_STREAM4         15  /**< @brief Interrupt Num for DMA1 Stream4 */
+#define IRQ_NO_DMA1_STREAM5         16  /**< @brief Interrupt Num for DMA1 Stream5 */
+#define IRQ_NO_DMA1_STREAM6         17  /**< @brief Interrupt Num for DMA1 Stream6 */
 #define IRQ_NO_EXTI9_5              23  /**< @brief Interrupt Num for EXTI5 to EXTI9 */
 #define IRQ_NO_EXTI15_10            40  /**< @brief Interrupt Num for EXTI10 to EXTI15 */
 #define IRQ_NO_SPI1                 35  /**< @brief Interrupt Num for SPI1 */
@@ -1357,9 +1364,18 @@ typedef struct
 #define IRQ_NO_TIM8_UP_TIM13        44  /**< @brief Interrupt Num for TIM8 UP and TIM13 global */
 #define IRQ_NO_TIM8_TRG_COM_TIM14   45  /**< @brief Interrupt Num for TIM8 TRG and COM and TIM14 global */
 #define IRQ_NO_TIM8_CC              46  /**< @brief Interrupt Num for TIM8 Capture/Compare */
+#define IRQ_DMA1_STREAM7            47  /**< @brief Interrupt Num for DMA1 Stream7 */
 #define IRQ_NO_TIM5                 50  /**< @brief Interrupt Num for TIM5 */
 #define IRQ_NO_TIM6_DAC             54  /**< @brief Interrupt Num for TIM6 or DAC */
 #define IRQ_NO_TIM7                 55  /**< @brief Interrupt Num for TIM7 */
+#define IRQ_DMA2_STREAM0            56  /**< @brief Interrupt Num for DMA2 Stream0 */
+#define IRQ_DMA2_STREAM1            57  /**< @brief Interrupt Num for DMA2 Stream1 */
+#define IRQ_DMA2_STREAM2            58  /**< @brief Interrupt Num for DMA2 Stream2 */
+#define IRQ_DMA2_STREAM3            59  /**< @brief Interrupt Num for DMA2 Stream3 */
+#define IRQ_DMA2_STREAM4            60  /**< @brief Interrupt Num for DMA2 Stream4 */
+#define IRQ_DMA2_STREAM5            68  /**< @brief Interrupt Num for DMA2 Stream5 */
+#define IRQ_DMA2_STREAM6            69  /**< @brief Interrupt Num for DMA2 Stream6 */
+#define IRQ_DMA2_STREAM7            70  /**< @brief Interrupt Num for DMA2 Stream7 */
 /** @} */
 
 /**
