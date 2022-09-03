@@ -1084,6 +1084,14 @@ typedef struct
 /** @} */
 
 /**
+ * @name Clock enable macros for DMA peripheral
+ * @{
+ */
+#define DMA1_PCLK_EN()      (RCC->AHB1ENR |= (1 << 21)) /**< @brief Clock enable for DMA1 */
+#define DMA2_PCLK_EN()      (RCC->AHB1ENR |= (1 << 22)) /**< @brief Clock enable for DMA2 */
+/** @} */
+
+/**
  * @name Clock disable macros for GPIOx peripheral.
  * @{
  */
@@ -1166,9 +1174,16 @@ typedef struct
  * @name Clock disable macros for PWR peripheral.
  * @{
  */
-#define PWR_PCLK_DI()       (RCC->APB1ENR &= ~(1 << 28))    /**< @brief Clock enable for PWR */
+#define PWR_PCLK_DI()       (RCC->APB1ENR &= ~(1 << 28))    /**< @brief Clock disable for PWR */
 /** @} */
 
+/**
+ * @name Clock disable macros for DMA peripheral
+ * @{
+ */
+#define DMA1_PCLK_DI()      (RCC->AHB1ENR &= ~(1 << 21))    /**< @brief Clock disable for DMA1 */
+#define DMA2_PCLK_DI()      (RCC->AHB1ENR &= ~(1 << 22))    /**< @brief Clock disable for DMA2 */
+/** @} */
 
 /**
  * @name Reset macros GPIOx peripheral.
@@ -1288,6 +1303,16 @@ typedef struct
 #define TIM13_REG_RESET()   do{(RCC->APB1RSTR |= (1 << 7)); (RCC->APB1RSTR &= ~(1 << 7));}while(0)
 /** @brief Reset macro for TIM14 */
 #define TIM14_REG_RESET()   do{(RCC->APB1RSTR |= (1 << 8)); (RCC->APB1RSTR &= ~(1 << 8));}while(0)
+/** @} */
+
+/**
+ * @name Reset macros DMA peripheral
+ * @{
+ */
+/** @brief Reset macro for DMA1 */
+#define DMA1_REG_RESET()    do((RCC->AHB1RSTR |= (1 << 21)); (RCC->AHB1RSTR &= ~(1 << 21));}while(0)
+/** @brief Reset macro for DMA2 */
+#define DMA2_REG_RESET()    do((RCC->AHB1RSTR |= (1 << 22)); (RCC->AHB1RSTR &= ~(1 << 22));}while(0)
 /** @} */
 
 /***********************************************************************************************************/
