@@ -109,7 +109,23 @@
 #define FLASHINTR_BASEADDR  (AHB1_BASEADDR + 0x3C00)    /**< @brief Base address of flash interface regist */
 #define BKPSRAM_BASEADDR    (AHB1_BASEADDR + 0x4000)    /**< @brief Base address of BKPSRAM */
 #define DMA1_BASEADDR       (AHB1_BASEADDR + 0x6000)    /**< @brief Base address of DMA1 */
+#define DMA1_STR0_BASEADDR  (AHB1_BASEADDR + 0x6010)    /**< @brief Base address of DMA1 stream 0 */
+#define DMA1_STR1_BASEADDR  (AHB1_BASEADDR + 0x6028)    /**< @brief Base address of DMA1 stream 1 */
+#define DMA1_STR2_BASEADDR  (AHB1_BASEADDR + 0x6040)    /**< @brief Base address of DMA1 stream 2 */
+#define DMA1_STR3_BASEADDR  (AHB1_BASEADDR + 0x6058)    /**< @brief Base address of DMA1 stream 3 */
+#define DMA1_STR4_BASEADDR  (AHB1_BASEADDR + 0x6070)    /**< @brief Base address of DMA1 stream 4 */
+#define DMA1_STR5_BASEADDR  (AHB1_BASEADDR + 0x6088)    /**< @brief Base address of DMA1 stream 5 */
+#define DMA1_STR6_BASEADDR  (AHB1_BASEADDR + 0x60A0)    /**< @brief Base address of DMA1 stream 6 */
+#define DMA1_STR7_BASEADDR  (AHB1_BASEADDR + 0x60B8)    /**< @brief Base address of DMA1 stream 7 */
 #define DMA2_BASEADDR       (AHB1_BASEADDR + 0x6400)    /**< @brief Base address of DMA2 */
+#define DMA2_STR0_BASEADDR  (AHB1_BASEADDR + 0x6410)    /**< @brief Base address of DMA2 stream 0 */
+#define DMA2_STR1_BASEADDR  (AHB1_BASEADDR + 0x6428)    /**< @brief Base address of DMA2 stream 1 */
+#define DMA2_STR2_BASEADDR  (AHB1_BASEADDR + 0x6440)    /**< @brief Base address of DMA2 stream 2 */
+#define DMA2_STR3_BASEADDR  (AHB1_BASEADDR + 0x6458)    /**< @brief Base address of DMA2 stream 3 */
+#define DMA2_STR4_BASEADDR  (AHB1_BASEADDR + 0x6470)    /**< @brief Base address of DMA2 stream 4 */
+#define DMA2_STR5_BASEADDR  (AHB1_BASEADDR + 0x6488)    /**< @brief Base address of DMA2 stream 5 */
+#define DMA2_STR6_BASEADDR  (AHB1_BASEADDR + 0x64A0)    /**< @brief Base address of DMA2 stream 6 */
+#define DMA2_STR7_BASEADDR  (AHB1_BASEADDR + 0x64B8)    /**< @brief Base address of DMA2 stream 7 */
 #define USBOTGHS_BASEADDR   (AHB1_BASEADDR + 0x40000)   /**< @brief Base address of USB OTG HS */
 /** @} */
 
@@ -408,55 +424,20 @@ typedef struct
     volatile uint32_t HISR;         /**< @brief High interrupt status register      Address offset 0x04 */
     volatile uint32_t LIFCR;        /**< @brief Low interrupt flag clear register   Address offset 0x08 */
     volatile uint32_t HIFCR;        /**< @brief High interrupt flag clear register  Address offset 0x0C */
-    volatile uint32_t S0CR;         /**< @brief Stream 0 configuration register     Address offset 0x10 */
-    volatile uint32_t S0NDTR;       /**< @brief Stream 0 number of data register    Address offset 0x14 */
-    volatile uint32_t S0PAR;        /**< @brief Stream 0 peripheral addr register   Address offset 0x18 */
-    volatile uint32_t S0M0AR;       /**< @brief Stream 0 memory 0 address register  Address offset 0x1C */
-    volatile uint32_t S0M1AR;       /**< @brief Stream 0 memory 1 address register  Address offset 0x20 */
-    volatile uint32_t S0FCR;        /**< @brief Stream 0 FIFO control register      Address offset 0x24 */
-    volatile uint32_t S1CR;         /**< @brief Stream 1 configuration register     Address offset 0x28 */
-    volatile uint32_t S1NDTR;       /**< @brief Stream 1 number of data register    Address offset 0x2C */
-    volatile uint32_t S1PAR;        /**< @brief Stream 1 peripheral addr register   Address offset 0x30 */
-    volatile uint32_t S1M0AR;       /**< @brief Stream 1 memory 0 address register  Address offset 0x34 */
-    volatile uint32_t S1M1AR;       /**< @brief Stream 1 memory 1 address register  Address offset 0x38 */
-    volatile uint32_t S1FCR;        /**< @brief Stream 1 FIFO control register      Address offset 0x3C */
-    volatile uint32_t S2CR;         /**< @brief Stream 2 configuration register     Address offset 0x40 */
-    volatile uint32_t S2NDTR;       /**< @brief Stream 2 number of data register    Address offset 0x44 */
-    volatile uint32_t S2PAR;        /**< @brief Stream 2 peripheral addr register   Address offset 0x48 */
-    volatile uint32_t S2M0AR;       /**< @brief Stream 2 memory 0 address register  Address offset 0x4C */
-    volatile uint32_t S2M1AR;       /**< @brief Stream 2 memory 1 address register  Address offset 0x50 */
-    volatile uint32_t S2FCR;        /**< @brief Stream 2 FIFO control register      Address offset 0x54 */
-    volatile uint32_t S3CR;         /**< @brief Stream 3 configuration register     Address offset 0x58 */
-    volatile uint32_t S3NDTR;       /**< @brief Stream 3 number of data register    Address offset 0x5C */
-    volatile uint32_t S3PAR;        /**< @brief Stream 3 peripheral addr register   Address offset 0x60 */
-    volatile uint32_t S3M0AR;       /**< @brief Stream 3 memory 0 address register  Address offset 0x64 */
-    volatile uint32_t S3M1AR;       /**< @brief Stream 3 memory 1 address register  Address offset 0x68 */
-    volatile uint32_t S3FCR;        /**< @brief Stream 3 FIFO control register      Address offset 0x6C */
-    volatile uint32_t S4CR;         /**< @brief Stream 4 configuration register     Address offset 0x70 */
-    volatile uint32_t S4NDTR;       /**< @brief Stream 4 number of data register    Address offset 0x74 */
-    volatile uint32_t S4PAR;        /**< @brief Stream 4 peripheral addr register   Address offset 0x78 */
-    volatile uint32_t S4M0AR;       /**< @brief Stream 4 memory 0 address register  Address offset 0x7C */
-    volatile uint32_t S4M1AR;       /**< @brief Stream 4 memory 1 address register  Address offset 0x80 */
-    volatile uint32_t S4FCR;        /**< @brief Stream 4 FIFO control register      Address offset 0x84 */
-    volatile uint32_t S5CR;         /**< @brief Stream 5 configuration register     Address offset 0x88 */
-    volatile uint32_t S5NDTR;       /**< @brief Stream 5 number of data register    Address offset 0x8C */
-    volatile uint32_t S5PAR;        /**< @brief Stream 5 peripheral addr register   Address offset 0x90 */
-    volatile uint32_t S5M0AR;       /**< @brief Stream 5 memory 0 address register  Address offset 0x94 */
-    volatile uint32_t S5M1AR;       /**< @brief Stream 5 memory 1 address register  Address offset 0x98 */
-    volatile uint32_t S5FCR;        /**< @brief Stream 5 FIFO control register      Address offset 0x9C */
-    volatile uint32_t S6CR;         /**< @brief Stream 6 configuration register     Address offset 0xA0 */
-    volatile uint32_t S6NDTR;       /**< @brief Stream 6 number of data register    Address offset 0xA4 */
-    volatile uint32_t S6PAR;        /**< @brief Stream 6 peripheral addr register   Address offset 0xA8 */
-    volatile uint32_t S6M0AR;       /**< @brief Stream 6 memory 0 address register  Address offset 0xAC */
-    volatile uint32_t S6M1AR;       /**< @brief Stream 6 memory 1 address register  Address offset 0xB0 */
-    volatile uint32_t S6FCR;        /**< @brief Stream 6 FIFO control register      Address offset 0xB4 */
-    volatile uint32_t S7CR;         /**< @brief Stream 7 configuration register     Address offset 0xB8 */
-    volatile uint32_t S7NDTR;       /**< @brief Stream 7 number of data register    Address offset 0xBC */
-    volatile uint32_t S7PAR;        /**< @brief Stream 7 peripheral addr register   Address offset 0xC0 */
-    volatile uint32_t S7M0AR;       /**< @brief Stream 7 memory 0 address register  Address offset 0xC4 */
-    volatile uint32_t S7M1AR;       /**< @brief Stream 7 memory 1 address register  Address offset 0xC8 */
-    volatile uint32_t S7FCR;        /**< @brief Stream 7 FIFO control register      Address offset 0xCC */
 }DMA_RegDef_t;
+
+/**
+ * @brief Peripheral register definition structure for DMA stream
+ */
+typedef struct
+{
+    volatile uint32_t CR;           /**< @brief Configuration register     Address offset 0x10 */
+    volatile uint32_t NDTR;         /**< @brief Number of data register    Address offset 0x14 */
+    volatile uint32_t PAR;          /**< @brief Peripheral addr register   Address offset 0x18 */
+    volatile uint32_t M0AR;         /**< @brief Memory 0 address register  Address offset 0x1C */
+    volatile uint32_t M1AR;         /**< @brief Memory 1 address register  Address offset 0x20 */
+    volatile uint32_t FCR;          /**< @brief FIFO control register      Address offset 0x24 */
+}DMA_Stream_RegDef_t;
 
 /***********************************************************************************************************/
 /*                          Bit Position Definition of Peripheral Register                                 */
