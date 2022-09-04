@@ -1477,9 +1477,9 @@ typedef struct
  * @{
  */
 /** @brief Reset macro for DMA1 */
-#define DMA1_REG_RESET()    do((RCC->AHB1RSTR |= (1 << 21)); (RCC->AHB1RSTR &= ~(1 << 21));}while(0)
+#define DMA1_REG_RESET()    do{(RCC->AHB1RSTR |= (1 << 21)); (RCC->AHB1RSTR &= ~(1 << 21));}while(0)
 /** @brief Reset macro for DMA2 */
-#define DMA2_REG_RESET()    do((RCC->AHB1RSTR |= (1 << 22)); (RCC->AHB1RSTR &= ~(1 << 22));}while(0)
+#define DMA2_REG_RESET()    do{(RCC->AHB1RSTR |= (1 << 22)); (RCC->AHB1RSTR &= ~(1 << 22));}while(0)
 /** @} */
 
 /***********************************************************************************************************/
