@@ -7,6 +7,7 @@
 *       - void    DMA_Init(DMA_Handle_t* pDMA_Handle)
 *       - void    DMA_DeInit(DMA_RegDef_t* pDMAx)
 *       - void    DMA_PerClkCtrl(DMA_RegDef_t* pDMAx, uint8_t en_or_di)
+*       - void    DMA_Stream_Init(DMA_Stream_Handle_t* pDMA_Stream_Handle)
 */
 
 #ifndef DMA_DRIVER_H
@@ -114,7 +115,7 @@ typedef struct
 
 /**
  * @brief Function to initialize DMA peripheral.
- * @param[in] pDMA handle structure for the DMA peripheral.
+ * @param[in] pDMA_Handle handle structure for the DMA peripheral.
  * @return void
  */
 void DMA_Init(DMA_Handle_t* pDMA_Handle);
@@ -133,5 +134,12 @@ void DMA_DeInit(DMA_RegDef_t* pDMAx);
  * @return void
  */
 void DMA_PerClkCtrl(DMA_RegDef_t* pDMAx, uint8_t en_or_di);
+
+/**
+ * @brief Function to initialize Stream of DMA.
+ * @param[in] pDMA_Stream_Handle handle structure for the DMA peripheral.
+ * @return void
+ */
+void DMA_Stream_Init(DMA_Stream_Handle_t* pDMA_Stream_Handle);
 
 #endif /* DMA_DRIVER_H */

@@ -7,6 +7,7 @@
 *       - void    DMA_Init(DMA_Handle_t* pDMA_Handle)
 *       - void    DMA_DeInit(DMA_RegDef_t* pDMAx)
 *       - void    DMA_PerClkCtrl(DMA_RegDef_t* pDMAx, uint8_t en_or_di)
+*       - void    DMA_Stream_Init(DMA_Stream_Handle_t* pDMA_Stream_Handle)
 *
 * @note
 *       For further information about functions refer to the corresponding header file.
