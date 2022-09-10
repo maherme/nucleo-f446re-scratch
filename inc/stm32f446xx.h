@@ -1138,7 +1138,23 @@ typedef struct
 #define TIM14       ((TIM_RegDef_t*)TIM14_BASEADDR)         /**< @brief TIM14 base addr reg definition */
 
 #define DMA1        ((DMA_RegDef_t*)DMA1_BASEADDR)          /**< @brief DMA1 base addr reg definition */
+#define DMA1_STR0   ((DMA_Stream_RegDef_t*)DMA1_STR0_BASEADDR)  /**< @brief DMA1 str0 base addr reg def */
+#define DMA1_STR1   ((DMA_Stream_RegDef_t*)DMA1_STR1_BASEADDR)  /**< @brief DMA1 str1 base addr reg def */
+#define DMA1_STR2   ((DMA_Stream_RegDef_t*)DMA1_STR2_BASEADDR)  /**< @brief DMA1 str2 base addr reg def */
+#define DMA1_STR3   ((DMA_Stream_RegDef_t*)DMA1_STR3_BASEADDR)  /**< @brief DMA1 str3 base addr reg def */
+#define DMA1_STR4   ((DMA_Stream_RegDef_t*)DMA1_STR4_BASEADDR)  /**< @brief DMA1 str4 base addr reg def */
+#define DMA1_STR5   ((DMA_Stream_RegDef_t*)DMA1_STR5_BASEADDR)  /**< @brief DMA1 str5 base addr reg def */
+#define DMA1_STR6   ((DMA_Stream_RegDef_t*)DMA1_STR6_BASEADDR)  /**< @brief DMA1 str6 base addr reg def */
+#define DMA1_STR7   ((DMA_Stream_RegDef_t*)DMA1_STR7_BASEADDR)  /**< @brief DMA1 str7 base addr reg def */
 #define DMA2        ((DMA_RegDef_t*)DMA2_BASEADDR)          /**< @brief DMA2 base addr reg definition */
+#define DMA2_STR0   ((DMA_Stream_RegDef_t*)DMA2_STR0_BASEADDR)  /**< @brief DMA2 str0 base addr reg def */
+#define DMA2_STR1   ((DMA_Stream_RegDef_t*)DMA2_STR1_BASEADDR)  /**< @brief DMA2 str1 base addr reg def */
+#define DMA2_STR2   ((DMA_Stream_RegDef_t*)DMA2_STR2_BASEADDR)  /**< @brief DMA2 str2 base addr reg def */
+#define DMA2_STR3   ((DMA_Stream_RegDef_t*)DMA2_STR3_BASEADDR)  /**< @brief DMA2 str3 base addr reg def */
+#define DMA2_STR4   ((DMA_Stream_RegDef_t*)DMA2_STR4_BASEADDR)  /**< @brief DMA2 str4 base addr reg def */
+#define DMA2_STR5   ((DMA_Stream_RegDef_t*)DMA2_STR5_BASEADDR)  /**< @brief DMA2 str5 base addr reg def */
+#define DMA2_STR6   ((DMA_Stream_RegDef_t*)DMA2_STR6_BASEADDR)  /**< @brief DMA2 str6 base addr reg def */
+#define DMA2_STR7   ((DMA_Stream_RegDef_t*)DMA2_STR7_BASEADDR)  /**< @brief DMA2 str7 base addr reg def */
 /** @} */
 
 /***********************************************************************************************************/

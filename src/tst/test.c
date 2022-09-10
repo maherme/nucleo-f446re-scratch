@@ -22,6 +22,7 @@
 #include "test_usart.h"
 #include "test_rcc.h"
 #include "test_timer.h"
+#include "test_dma.h"
 #include "utils.h"
 
 /**
@@ -32,7 +33,8 @@
 #define TEST_I2C    0   /**< @brief Set to 1 for enabling the I2C test */
 #define TEST_USART  0   /**< @brief Set to 1 for enabling the USART test */
 #define TEST_RCC    0   /**< @brief Set to 1 for enabling the RCC test */
-#define TEST_TIMER  1   /**< @brief Set to 1 for enabling the Timer test */
+#define TEST_TIMER  0   /**< @brief Set to 1 for enabling the Timer test */
+#define TEST_DMA    1   /**< @brief Set to 1 for enabling the DMA test */
 /** @} */
 
 /***********************************************************************************************************/
@@ -78,7 +80,7 @@ void test_init(void){
 #endif
 
 #if TEST_USART
-    /* Configure and initialise USART2 peripheral */
+    /* Configure and initialise USART3 peripheral */
     USART3_Config();
 #endif
 
@@ -94,6 +96,10 @@ void test_init(void){
     //Timer2_Config();
     Timer4_Config();
     //Timer3_Config();
+#endif
+
+#if TEST_DMA
+    DMA1_Config();
 #endif
 }
 
@@ -152,6 +158,11 @@ void EXTI15_10_Handler(void){
     /* Send USART data */
     //USART3_SendHello();
     USART3_TxRx();
+#endif
+
+#if TEST_DMA
+    /* Send USART request to DMA controller */
+    DMA1_USART3_Request();
 #endif
 
     /* Toggle LED */

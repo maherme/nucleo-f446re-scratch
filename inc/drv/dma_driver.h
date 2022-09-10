@@ -82,8 +82,10 @@ typedef struct
     uint32_t dst_addr;                      /**< Destination address */
     uint16_t num_data_register;             /**< Number of data items to transfer */
     DMA_Stream_Dir_t direction;             /**< Data transfer direction */
-    DMA_Stream_Dsize_t msize;               /** < Memory data size */
+    DMA_Stream_Dsize_t msize;               /**< Memory data size */
+    uint8_t minc;                           /**< Memory increment mode, use ENABLE or DISABLE */
     DMA_Stream_Dsize_t psize;               /**< Peripheral data size */
+    uint8_t pinc;                           /**< Peripheral increment mode, use ENABLE or DISABLE */
     DMA_Stream_Mode_t mode;                 /**< Direct of FIFO mode option */
     DMA_Stream_FIFO_Thres_t FIFO_thres;     /**< FIFO threshold selection */
     uint8_t circular_mode;                  /**< Use ENABLE or DISABLE */

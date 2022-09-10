@@ -83,10 +83,20 @@ void DMA_Stream_Init(DMA_Stream_Handle_t* pDMA_Stream_Handle){
     pDMA_Stream_Handle->pStreamx->CR &= ~(0x3 << DMA_SCR_MSIZE);
     pDMA_Stream_Handle->pStreamx->CR |= (pDMA_Stream_Handle->Stream_Config.msize << DMA_SCR_MSIZE);
 
+    /* Set memory increment mode */
+    pDMA_Stream_Handle->pStreamx->CR &= ~(0x1 << DMA_SCR_MINC);
+    pDMA_Stream_Handle->pStreamx->CR |= (pDMA_Stream_Handle->Stream_Config.minc << DMA_SCR_MINC);
+
     /* Set peripheral data size */
     if(pDMA_Stream_Handle->Stream_Config.direction != M2M){
         pDMA_Stream_Handle->pStreamx->CR &= ~(0x3 << DMA_SCR_PSIZE);
         pDMA_Stream_Handle->pStreamx->CR |= (pDMA_Stream_Handle->Stream_Config.psize << DMA_SCR_PSIZE);
+    }
+
+    /* Set peripheral increment mode */
+    if(pDMA_Stream_Handle->Stream_Config.direction != M2M){
+        pDMA_Stream_Handle->pStreamx->CR &= ~(0x1 << DMA_SCR_PINC);
+        pDMA_Stream_Handle->pStreamx->CR |= (pDMA_Stream_Handle->Stream_Config.pinc << DMA_SCR_PINC);
     }
 
     /* Set circular mode */
