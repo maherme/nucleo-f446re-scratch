@@ -69,6 +69,9 @@ void DMA1_Config(void){
     USART3_GPIOInit();
     USART3_Init(&USART3Handle);
 
+    /* Enable the USART3 peripheral */
+    USART_Enable(USART3, ENABLE);
+
     DMA1_Init(&DMA1Handle);
     DMA1_Stream3_Init(&Stream3Handle);
 }
