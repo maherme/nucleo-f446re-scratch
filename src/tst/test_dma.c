@@ -85,6 +85,7 @@ void DMA1_USART3_Request(void){
 
     /* Prepare Stream and DMA for a transmission or retransmission */
     DMA_Stream_Set_NDTR(&Stream3Handle, (uint32_t)sizeof(test_data));
+    DMA_Clear_Half_Transfer_Int_Flag(DMA1Handle.pDMAx, STREAM3);
     DMA_Clear_Transfer_Compl_Int_Flag(DMA1Handle.pDMAx, STREAM3);
     DMA_Stream_Enable(&Stream3Handle);
 

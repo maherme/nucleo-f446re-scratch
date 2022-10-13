@@ -11,6 +11,7 @@
 *       - void    DMA_Stream_Enable(DMA_Stream_Handle_t* pDMA_Stream_Handle){
 *       - void    DMA_Stream_Set_NDTR(DMA_Stream_Handle_t* pDMA_Stream_Handle, uint32_t ndtr)
 *       - void    DMA_Clear_Transfer_Compl_Int_Flag(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stream_Num)
+*       - void    DMA_Clear_Half_Transfer_Int_Flag(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stream_Num)
 * @note
 *       For further information about functions refer to the corresponding header file.
 **/
@@ -165,6 +166,38 @@ void DMA_Clear_Transfer_Compl_Int_Flag(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Str
         break;
     case STREAM7:
         pDMAx->HIFCR |= (1 << DMA_HIFCR_CTCIF7);
+        break;
+    default:
+        break;
+    }
+}
+
+void DMA_Clear_Half_Transfer_Int_Flag(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stream_Num){
+
+    switch(Stream_Num){
+    case STREAM0:
+        pDMAx->LIFCR |= (1 << DMA_LIFCR_CHTIF0);
+        break;
+    case STREAM1:
+        pDMAx->LIFCR |= (1 << DMA_LIFCR_CHTIF1);
+        break;
+    case STREAM2:
+        pDMAx->LIFCR |= (1 << DMA_LIFCR_CHTIF2);
+        break;
+    case STREAM3:
+        pDMAx->LIFCR |= (1 << DMA_LIFCR_CHTIF3);
+        break;
+    case STREAM4:
+        pDMAx->HIFCR |= (1 << DMA_HIFCR_CHTIF4);
+        break;
+    case STREAM5:
+        pDMAx->HIFCR |= (1 << DMA_HIFCR_CHTIF5);
+        break;
+    case STREAM6:
+        pDMAx->HIFCR |= (1 << DMA_HIFCR_CHTIF6);
+        break;
+    case STREAM7:
+        pDMAx->HIFCR |= (1 << DMA_HIFCR_CHTIF7);
         break;
     default:
         break;
