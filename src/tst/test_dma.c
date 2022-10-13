@@ -16,6 +16,8 @@
 #include "usart_driver.h"
 #include "gpio_driver.h"
 
+#include <stdio.h>
+
 /** @brief Handler structure for DMA peripheral */
 DMA_Handle_t DMA1Handle;
 /** @brief Handler structure for DMA stream */
@@ -81,6 +83,12 @@ void DMA1_USART3_Request(void){
     USART_RegDef_t* pUSART3;
     pUSART3 = USART3;
 
+    /* Prepare Stream and DMA for a transmission or retransmission */
+    DMA_Stream_Set_NDTR(&Stream3Handle, (uint32_t)sizeof(test_data));
+    DMA_Clear_Transfer_Compl_Int_Flag(DMA1Handle.pDMAx, STREAM3);
+    DMA_Stream_Enable(&Stream3Handle);
+
+    /* Set DMA enable transmitter bit */
     pUSART3->CR3 |= (1 << USART_CR3_DMAT);
 }
 

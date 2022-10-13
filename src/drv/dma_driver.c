@@ -8,7 +8,9 @@
 *       - void    DMA_DeInit(DMA_RegDef_t* pDMAx)
 *       - void    DMA_PerClkCtrl(DMA_RegDef_t* pDMAx, uint8_t en_or_di)
 *       - void    DMA_Stream_Init(DMA_Stream_Handle_t* pDMA_Stream_Handle)
-*
+*       - void    DMA_Stream_Enable(DMA_Stream_Handle_t* pDMA_Stream_Handle){
+*       - void    DMA_Stream_Set_NDTR(DMA_Stream_Handle_t* pDMA_Stream_Handle, uint32_t ndtr)
+*       - void    DMA_Clear_Transfer_Compl_Int_Flag(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stream_Num)
 * @note
 *       For further information about functions refer to the corresponding header file.
 **/
@@ -121,6 +123,50 @@ void DMA_Stream_Init(DMA_Stream_Handle_t* pDMA_Stream_Handle){
         pDMA_Stream_Handle->pStreamx->FCR |= (pDMA_Stream_Handle->Stream_Config.FIFO_thres << DMA_SFCR_FTH);
     }
 
-    /* Enable de stream */
+    /* Enable stream */
     pDMA_Stream_Handle->pStreamx->CR |= (1 << DMA_SCR_EN);
+}
+
+void DMA_Stream_Enable(DMA_Stream_Handle_t* pDMA_Stream_Handle){
+
+    /* Enable stream */
+    pDMA_Stream_Handle->pStreamx->CR |= (1 << DMA_SCR_EN);
+}
+
+void DMA_Stream_Set_NDTR(DMA_Stream_Handle_t* pDMA_Stream_Handle, uint32_t ndtr){
+
+    /* Set NDTR value */
+    pDMA_Stream_Handle->pStreamx->NDTR = ndtr;
+}
+
+void DMA_Clear_Transfer_Compl_Int_Flag(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stream_Num){
+
+    switch(Stream_Num){
+    case STREAM0:
+        pDMAx->LIFCR |= (1 << DMA_LIFCR_CTCIF0);
+        break;
+    case STREAM1:
+        pDMAx->LIFCR |= (1 << DMA_LIFCR_CTCIF1);
+        break;
+    case STREAM2:
+        pDMAx->LIFCR |= (1 << DMA_LIFCR_CTCIF2);
+        break;
+    case STREAM3:
+        pDMAx->LIFCR |= (1 << DMA_LIFCR_CTCIF3);
+        break;
+    case STREAM4:
+        pDMAx->HIFCR |= (1 << DMA_HIFCR_CTCIF4);
+        break;
+    case STREAM5:
+        pDMAx->HIFCR |= (1 << DMA_HIFCR_CTCIF5);
+        break;
+    case STREAM6:
+        pDMAx->HIFCR |= (1 << DMA_HIFCR_CTCIF6);
+        break;
+    case STREAM7:
+        pDMAx->HIFCR |= (1 << DMA_HIFCR_CTCIF7);
+        break;
+    default:
+        break;
+    }
 }

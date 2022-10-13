@@ -8,6 +8,8 @@
 *       - void    DMA_DeInit(DMA_RegDef_t* pDMAx)
 *       - void    DMA_PerClkCtrl(DMA_RegDef_t* pDMAx, uint8_t en_or_di)
 *       - void    DMA_Stream_Init(DMA_Stream_Handle_t* pDMA_Stream_Handle)
+*       - void    DMA_Stream_Enable(DMA_Stream_Handle_t* pDMA_Stream_Handle){
+*       - void    DMA_Stream_Set_NDTR(DMA_Stream_Handle_t* pDMA_Stream_Handle, uint32_t ndtr)
 */
 
 #ifndef DMA_DRIVER_H
@@ -65,6 +67,21 @@ typedef enum
     HIGH,       /**< High level */
     VERY_HIGH   /**< Maximum level */
 }DMA_Stream_Priority_t;
+
+/**
+ * @brief Enum for selecting the stream number of DMA
+ */
+typedef enum
+{
+	STREAM0,
+	STREAM1,
+	STREAM2,
+	STREAM3,
+	STREAM4,
+	STREAM5,
+	STREAM6,
+	STREAM7
+}DMA_Stream_Num_t;
 
 /**
  * @brief Configuration structure for DMA peripheral.
@@ -143,5 +160,28 @@ void DMA_PerClkCtrl(DMA_RegDef_t* pDMAx, uint8_t en_or_di);
  * @return void
  */
 void DMA_Stream_Init(DMA_Stream_Handle_t* pDMA_Stream_Handle);
+
+/**
+ * @brief Function to enable the Stream of DMA.
+ * @param[in] pDMA_Stream_Handle handle structure for the DMA peripheral.
+ * @return void
+ */
+void DMA_Stream_Enable(DMA_Stream_Handle_t* pDMA_Stream_Handle);
+
+/**
+ * @brief Function to set the number of data to be transfered.
+ * @param[in] pDMA_Stream_Handle handle structure for the DMA peripheral.
+ * @param[in] ndtr is the number of data to be transfered.
+ * @return void
+ */
+void DMA_Stream_Set_NDTR(DMA_Stream_Handle_t* pDMA_Stream_Handle, uint32_t ndtr);
+
+/**
+ * @brief Function to clear the transfer complete interrupt flag.
+ * @param[in] pDMAx the base address of the DMAx peripheral.
+ * @param[in] Stream_Num is the number of stream for clearing flag.
+ * @return void
+ */
+void DMA_Clear_Transfer_Compl_Int_Flag(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stream_Num);
 
 #endif /* DMA_DRIVER_H */
