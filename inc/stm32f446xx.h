@@ -937,26 +937,26 @@ typedef struct
  * @name Bit position definition DMA high interrupt status register
  * @{
  */
-#define DMA_LISR_FEIF4      0   /**< @brief Stream4 FIFO error interrupt flag */
-#define DMA_LISR_DMEIF4     2   /**< @brief Stream4 direct mode error interrupt flag */
-#define DMA_LISR_TEIF4      3   /**< @brief Stream4 transfer error interrupt flag */
-#define DMA_LISR_HTIF4      4   /**< @brief Stream4 half transfer interrupt flag */
-#define DMA_LISR_TCIF4      5   /**< @brief Stream4 transfer complete interrupt flag */
-#define DMA_LISR_FEIF5      6   /**< @brief Stream5 FIFO error interrupt flag */
-#define DMA_LISR_DMEIF5     8   /**< @brief Stream5 direct mode error interrupt flag */
-#define DMA_LISR_TEIF5      9   /**< @brief Stream5 transfer error interrupt flag */
-#define DMA_LISR_HTIF5      10  /**< @brief Stream5 half transfer interrupt flag */
-#define DMA_LISR_TCIF5      11  /**< @brief Stream5 transfer complete interrupt flag */
-#define DMA_LISR_FEIF6      16  /**< @brief Stream6 FIFO error interrupt flag */
-#define DMA_LISR_DMEIF6     18  /**< @brief Stream6 direct mode error interrupt flag */
-#define DMA_LISR_TEIF6      19  /**< @brief Stream6 transfer error interrupt flag */
-#define DMA_LISR_HTIF6      20  /**< @brief Stream6 half transfer interrupt flag */
-#define DMA_LISR_TCIF6      21  /**< @brief Stream6 transfer complete interrupt flag */
-#define DMA_LISR_FEIF7      22  /**< @brief Stream7 FIFO error interrupt flag */
-#define DMA_LISR_DMEIF7     24  /**< @brief Stream7 direct mode error interrupt flag */
-#define DMA_LISR_TEIF7      25  /**< @brief Stream7 transfer error interrupt flag */
-#define DMA_LISR_HTIF7      26  /**< @brief Stream7 half transfer interrupt flag */
-#define DMA_LISR_TCIF7      27  /**< @brief Stream7 transfer complete interrupt flag */
+#define DMA_HISR_FEIF4      0   /**< @brief Stream4 FIFO error interrupt flag */
+#define DMA_HISR_DMEIF4     2   /**< @brief Stream4 direct mode error interrupt flag */
+#define DMA_HISR_TEIF4      3   /**< @brief Stream4 transfer error interrupt flag */
+#define DMA_HISR_HTIF4      4   /**< @brief Stream4 half transfer interrupt flag */
+#define DMA_HISR_TCIF4      5   /**< @brief Stream4 transfer complete interrupt flag */
+#define DMA_HISR_FEIF5      6   /**< @brief Stream5 FIFO error interrupt flag */
+#define DMA_HISR_DMEIF5     8   /**< @brief Stream5 direct mode error interrupt flag */
+#define DMA_HISR_TEIF5      9   /**< @brief Stream5 transfer error interrupt flag */
+#define DMA_HISR_HTIF5      10  /**< @brief Stream5 half transfer interrupt flag */
+#define DMA_HISR_TCIF5      11  /**< @brief Stream5 transfer complete interrupt flag */
+#define DMA_HISR_FEIF6      16  /**< @brief Stream6 FIFO error interrupt flag */
+#define DMA_HISR_DMEIF6     18  /**< @brief Stream6 direct mode error interrupt flag */
+#define DMA_HISR_TEIF6      19  /**< @brief Stream6 transfer error interrupt flag */
+#define DMA_HISR_HTIF6      20  /**< @brief Stream6 half transfer interrupt flag */
+#define DMA_HISR_TCIF6      21  /**< @brief Stream6 transfer complete interrupt flag */
+#define DMA_HISR_FEIF7      22  /**< @brief Stream7 FIFO error interrupt flag */
+#define DMA_HISR_DMEIF7     24  /**< @brief Stream7 direct mode error interrupt flag */
+#define DMA_HISR_TEIF7      25  /**< @brief Stream7 transfer error interrupt flag */
+#define DMA_HISR_HTIF7      26  /**< @brief Stream7 half transfer interrupt flag */
+#define DMA_HISR_TCIF7      27  /**< @brief Stream7 transfer complete interrupt flag */
 /** @} */
 
 /**

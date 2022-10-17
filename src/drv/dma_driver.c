@@ -4,17 +4,22 @@
 * @brief File containing the APIs for configuring the DMA peripheral.
 *
 * Public Functions:
-*       - void    DMA_Init(DMA_Handle_t* pDMA_Handle)
-*       - void    DMA_DeInit(DMA_RegDef_t* pDMAx)
-*       - void    DMA_PerClkCtrl(DMA_RegDef_t* pDMAx, uint8_t en_or_di)
-*       - void    DMA_Stream_Init(DMA_Stream_Handle_t* pDMA_Stream_Handle)
-*       - void    DMA_Stream_Enable(DMA_Stream_Handle_t* pDMA_Stream_Handle){
-*       - void    DMA_Stream_Set_NDTR(DMA_Stream_Handle_t* pDMA_Stream_Handle, uint32_t ndtr)
-*       - void    DMA_Clear_Transfer_Compl_Int_Flag(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stream_Num)
-*       - void    DMA_Clear_Half_Transfer_Int_Flag(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stream_Num)
-*       - void    DMA_Clear_Transfer_Error_Int_Flag(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stream_Num);
-*       - void    DMA_Clear_Direct_Mode_Error_Int_Flag(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stream_Num)
-*       - void    DMA_Clear_FIFO_Error_Int_Flag(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stream_Num)
+*       - void      DMA_Init(DMA_Handle_t* pDMA_Handle)
+*       - void      DMA_DeInit(DMA_RegDef_t* pDMAx)
+*       - void      DMA_PerClkCtrl(DMA_RegDef_t* pDMAx, uint8_t en_or_di)
+*       - void      DMA_Stream_Init(DMA_Stream_Handle_t* pDMA_Stream_Handle)
+*       - void      DMA_Stream_Enable(DMA_Stream_Handle_t* pDMA_Stream_Handle){
+*       - void      DMA_Stream_Set_NDTR(DMA_Stream_Handle_t* pDMA_Stream_Handle, uint32_t ndtr)
+*       - void      DMA_Clear_Transfer_Compl_Int_Flag(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stream_Num)
+*       - void      DMA_Clear_Half_Transfer_Int_Flag(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stream_Num)
+*       - void      DMA_Clear_Transfer_Error_Int_Flag(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stream_Num)
+*       - void      DMA_Clear_Direct_Mode_Error_Int_Flag(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stream_Num)
+*       - void      DMA_Clear_FIFO_Error_Int_Flag(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stream_Num)
+*       - uint32_t  DMA_Get_Transfer_Compl_Int_Flag(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stream_Num)
+*       - uint32_t  DMA_Get_Half_Transfer_Int_Flag(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stream_Num)
+*       - uint32_t  DMA_Get_Transfer_Error_Int_Flag(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stream_Num)
+*       - uint32_t  DMA_Get_Direct_Mode_Error_Int_Flag(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stream_Num)
+*       - uint32_t  DMA_Get_FIFO_Error_Int_Flag(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stream_Num)
 * @note
 *       For further information about functions refer to the corresponding header file.
 **/
@@ -301,4 +306,184 @@ void DMA_Clear_FIFO_Error_Int_Flag(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stream_
     default:
         break;
     }
+}
+
+uint32_t DMA_Get_Transfer_Compl_Int_Flag(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stream_Num){
+
+    uint32_t ret = 0;
+
+    switch(Stream_Num){
+    case STREAM0:
+        ret = pDMAx->LISR & (1 << DMA_LISR_TCIF0);
+        break;
+    case STREAM1:
+        ret = pDMAx->LISR & (1 << DMA_LISR_TCIF1);
+        break;
+    case STREAM2:
+        ret = pDMAx->LISR & (1 << DMA_LISR_TCIF2);
+        break;
+    case STREAM3:
+        ret = pDMAx->LISR & (1 << DMA_LISR_TCIF3);
+        break;
+    case STREAM4:
+        ret = pDMAx->HISR & (1 << DMA_HISR_TCIF4);
+        break;
+    case STREAM5:
+        ret = pDMAx->HISR & (1 << DMA_HISR_TCIF5);
+        break;
+    case STREAM6:
+        ret = pDMAx->HISR & (1 << DMA_HISR_TCIF6);
+        break;
+    case STREAM7:
+        ret = pDMAx->HISR & (1 << DMA_HISR_TCIF7);
+        break;
+    default:
+        break;
+    }
+
+    return ret;
+}
+
+uint32_t DMA_Get_Half_Transfer_Int_Flag(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stream_Num){
+
+    uint32_t ret = 0;
+
+    switch(Stream_Num){
+    case STREAM0:
+        ret = pDMAx->LISR & (1 << DMA_LISR_HTIF0);
+        break;
+    case STREAM1:
+        ret = pDMAx->LISR & (1 << DMA_LISR_HTIF1);
+        break;
+    case STREAM2:
+        ret = pDMAx->LISR & (1 << DMA_LISR_HTIF2);
+        break;
+    case STREAM3:
+        ret = pDMAx->LISR & (1 << DMA_LISR_HTIF3);
+        break;
+    case STREAM4:
+        ret = pDMAx->HISR & (1 << DMA_HISR_HTIF4);
+        break;
+    case STREAM5:
+        ret = pDMAx->HISR & (1 << DMA_HISR_HTIF5);
+        break;
+    case STREAM6:
+        ret = pDMAx->HISR & (1 << DMA_HISR_HTIF6);
+        break;
+    case STREAM7:
+        ret = pDMAx->HISR & (1 << DMA_HISR_HTIF7);
+        break;
+    default:
+        break;
+    }
+
+    return ret;
+}
+
+uint32_t DMA_Get_Transfer_Error_Int_Flag(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stream_Num){
+
+    uint32_t ret = 0;
+
+    switch(Stream_Num){
+    case STREAM0:
+        ret = pDMAx->LISR & (1 << DMA_LISR_TEIF0);
+        break;
+    case STREAM1:
+        ret = pDMAx->LISR & (1 << DMA_LISR_TEIF1);
+        break;
+    case STREAM2:
+        ret = pDMAx->LISR & (1 << DMA_LISR_TEIF2);
+        break;
+    case STREAM3:
+        ret = pDMAx->LISR & (1 << DMA_LISR_TEIF3);
+        break;
+    case STREAM4:
+        ret = pDMAx->HISR & (1 << DMA_HISR_TEIF4);
+        break;
+    case STREAM5:
+        ret = pDMAx->HISR & (1 << DMA_HISR_TEIF5);
+        break;
+    case STREAM6:
+        ret = pDMAx->HISR & (1 << DMA_HISR_TEIF6);
+        break;
+    case STREAM7:
+        ret = pDMAx->HISR & (1 << DMA_HISR_TEIF7);
+        break;
+    default:
+        break;
+    }
+
+    return ret;
+}
+
+uint32_t DMA_Get_Direct_Mode_Error_Int_Flag(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stream_Num){
+
+    uint32_t ret = 0;
+
+    switch(Stream_Num){
+    case STREAM0:
+        ret = pDMAx->LISR & (1 << DMA_LISR_DMEIF0);
+        break;
+    case STREAM1:
+        ret = pDMAx->LISR & (1 << DMA_LISR_DMEIF1);
+        break;
+    case STREAM2:
+        ret = pDMAx->LISR & (1 << DMA_LISR_DMEIF2);
+        break;
+    case STREAM3:
+        ret = pDMAx->LISR & (1 << DMA_LISR_DMEIF3);
+        break;
+    case STREAM4:
+        ret = pDMAx->HISR & (1 << DMA_HISR_DMEIF4);
+        break;
+    case STREAM5:
+        ret = pDMAx->HISR & (1 << DMA_HISR_DMEIF5);
+        break;
+    case STREAM6:
+        ret = pDMAx->HISR & (1 << DMA_HISR_DMEIF6);
+        break;
+    case STREAM7:
+        ret = pDMAx->HISR & (1 << DMA_HISR_DMEIF7);
+        break;
+    default:
+        break;
+    }
+
+    return ret;
+}
+
+uint32_t DMA_Get_FIFO_Error_Int_Flag(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stream_Num){
+
+    uint32_t ret = 0;
+
+    switch(Stream_Num){
+    case STREAM0:
+        ret = pDMAx->LISR & (1 << DMA_LISR_FEIF0);
+        break;
+    case STREAM1:
+        ret = pDMAx->LISR & (1 << DMA_LISR_FEIF1);
+        break;
+    case STREAM2:
+        ret = pDMAx->LISR & (1 << DMA_LISR_FEIF2);
+        break;
+    case STREAM3:
+        ret = pDMAx->LISR & (1 << DMA_LISR_FEIF3);
+        break;
+    case STREAM4:
+        ret = pDMAx->HISR & (1 << DMA_HISR_FEIF4);
+        break;
+    case STREAM5:
+        ret = pDMAx->HISR & (1 << DMA_HISR_FEIF5);
+        break;
+    case STREAM6:
+        ret = pDMAx->HISR & (1 << DMA_HISR_FEIF6);
+        break;
+    case STREAM7:
+        ret = pDMAx->HISR & (1 << DMA_HISR_FEIF7);
+        break;
+    default:
+        break;
+    }
+
+    return ret;
 }
