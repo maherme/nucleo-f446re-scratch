@@ -11,6 +11,9 @@
 *       - void    DMA_Stream_Enable(DMA_Stream_Handle_t* pDMA_Stream_Handle){
 *       - void    DMA_Stream_Set_NDTR(DMA_Stream_Handle_t* pDMA_Stream_Handle, uint32_t ndtr)
 *       - void    DMA_Clear_Half_Transfer_Int_Flag(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stream_Num)
+*       - void    DMA_Clear_Transfer_Error_Int_Flag(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stream_Num);
+*       - void    DMA_Clear_Direct_Mode_Error_Int_Flag(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stream_Num)
+*       - void    DMA_Clear_FIFO_Error_Int_Flag(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stream_Num)
 */
 
 #ifndef DMA_DRIVER_H
@@ -192,5 +195,29 @@ void DMA_Clear_Transfer_Compl_Int_Flag(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Str
  * @return void
  */
 void DMA_Clear_Half_Transfer_Int_Flag(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stream_Num);
+
+/**
+ * @brief Function to clear the transfer error interrupt flag.
+ * @param[in] pDMAx the base address of the DMAx peripheral.
+ * @param[in] Stream_Num is the number of stream for clearing flag.
+ * @return void
+ */
+void DMA_Clear_Transfer_Error_Int_Flag(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stream_Num);
+
+/**
+ * @brief Function to clear the direct mode error interrupt flag.
+ * @param[in] pDMAx the base address of the DMAx peripheral.
+ * @param[in] Stream_Num is the number of stream for clearing flag.
+ * @return void
+ */
+void DMA_Clear_Direct_Mode_Error_Int_Flag(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stream_Num);
+
+/**
+ * @brief Function to clear the FIFO error interrupt flag.
+ * @param[in] pDMAx the base address of the DMAx peripheral.
+ * @param[in] Stream_Num is the number of stream for clearing flag.
+ * @return void
+ */
+void DMA_Clear_FIFO_Error_Int_Flag(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stream_Num);
 
 #endif /* DMA_DRIVER_H */
