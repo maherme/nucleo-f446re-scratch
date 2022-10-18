@@ -133,3 +133,18 @@ Frequency: 32786.885246
 ![Alt text](doc/img/nucleo-timeroc-test.png)
 - If you use Timer3 related APIs you will test the PWM functionality (TIM3). In this test an external LED connected to GPIO PA6 is controlled, the brightness of the LED is changed using a PWM which duty-cycle is modified during a period of time. You can connect the external LED as follow:
 <p align="center"><img src="doc/img/nucleo-pwm-test.png" width="456" height="497"></p>
+
+### Test DMA Driver
+You need to set TEST_DMA to 1 in the [test.c](src/tst/test.c) file for enabling the code to test the DMA peripheral driver.
+
+In this test the DMA1 Stream3 is used for sending a string stored in FLASH memory to the USART3 peripheral for transmitting.
+
+The request for sending the string is done using the external button (B1 in nucleo board) interrupt, which also toggle a LED (LD2 in nucleo board).
+
+For watching the string you need to connect an USB to RS232 cable converter between the nucleo board and your PC. You can use a software like minicom in your PC for monitoring the UART (115200 8N1).
+
+The USART3 pins are configured as follow:
+| PIN Functionality      | Nucleo PIN |
+|:----------------------:|:----------:|
+| UART TX                | PC10       |
+| UART RX                | PC11       |
