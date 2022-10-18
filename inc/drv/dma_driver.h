@@ -19,6 +19,9 @@
 *       - uint32_t  DMA_Get_Transfer_Error_Int_Flag(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stream_Num)
 *       - uint32_t  DMA_Get_Direct_Mode_Error_Int_Flag(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stream_Num)
 *       - uint32_t  DMA_Get_FIFO_Error_Int_Flag(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stream_Num)
+*       - void      DMA_IRQHandling(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stream_Num)
+*       - void      DMA_IRQConfig(uint8_t IRQNumber, uint8_t en_or_di)
+*       - void      DMA_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority)
 */
 
 #ifndef DMA_DRIVER_H
@@ -93,6 +96,18 @@ typedef enum
 }DMA_Stream_Num_t;
 
 /**
+ * @brief Enum for selecting the application event callback of DMA interrupt
+ */
+typedef enum
+{
+    TRANSFER_COMPLETE,
+    HALF_TRANSFER,
+    TRANSFER_ERROR,
+    DIRECT_MODE_ERROR,
+    FIFO_ERROR
+}DMA_App_Event_t;
+
+/**
  * @brief Configuration structure for DMA peripheral.
  */
 typedef struct
@@ -117,6 +132,11 @@ typedef struct
     uint8_t circular_mode;                  /**< Use ENABLE or DISABLE */
     DMA_Stream_Priority_t priority;         /**< Priority level */
     uint8_t ch_number;                      /**< Channel number */
+    uint8_t HTIE;                           /**< Half Transfer Interrupt Enable */
+    uint8_t TCIE;                           /**< Transfer Complete Interrupt Enable */
+    uint8_t TEIE;                           /**< Transfer Error Interrupt Enable */
+    uint8_t FEIE;                           /**< FIFO overrun/underrun Error Interrupt Enable */
+    uint8_t DMEIE;                          /**< Direct Mode Error Interrupt Enable */
 }DMA_Stream_Config_t;
 
 /**
@@ -269,5 +289,29 @@ uint32_t  DMA_Get_Direct_Mode_Error_Int_Flag(DMA_RegDef_t* pDMAx, DMA_Stream_Num
  * @return not 0 if flag is set
  */
 uint32_t  DMA_Get_FIFO_Error_Int_Flag(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stream_Num);
+
+/**
+ * @brief Function for handling the DMA interrupts.
+ * @param[in] pDMAx the base address of the DMAx peripheral.
+ * @param[in] Stream_Num is the number of stream for clearing flag.
+ * @return void
+ */
+void DMA_IRQHandling(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stream_Num);
+
+/**
+ * @brief Function to configure the IRQ number of the DMA.
+ * @param[in] IRQNumber number of the interrupt.
+ * @param[in] en_or_di for enable or disable.
+ * @return void
+ */
+void DMA_IRQConfig(uint8_t IRQNumber, uint8_t en_or_di);
+
+/**
+ * @brief Function to configure the IRQ number of the DMA.
+ * @param[in] IRQNumber number of the interrupt.
+ * @param[in] IRQPriority priority of the interrupt.
+ * @return void
+ */
+void DMA_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority);
 
 #endif /* DMA_DRIVER_H */

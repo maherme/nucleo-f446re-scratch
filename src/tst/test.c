@@ -161,8 +161,10 @@ void EXTI15_10_Handler(void){
 #endif
 
 #if TEST_DMA
-    /* Send USART request to DMA controller */
-    DMA1_USART3_Request();
+    /* Send USART request to DMA controller if interrupts are disabled */
+    //DMA1_USART3_Request();
+    /* Send USART request to DMA controller if interrupts are enabled */
+    DMA1_USART3_Request_IT();
 #endif
 
     /* Toggle LED */

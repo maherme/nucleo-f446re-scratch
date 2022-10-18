@@ -20,11 +20,58 @@
 *       - uint32_t  DMA_Get_Transfer_Error_Int_Flag(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stream_Num)
 *       - uint32_t  DMA_Get_Direct_Mode_Error_Int_Flag(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stream_Num)
 *       - uint32_t  DMA_Get_FIFO_Error_Int_Flag(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stream_Num)
+*       - void      DMA_IRQHandling(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stream_Num)
+*       - void      DMA_IRQConfig(uint8_t IRQNumber, uint8_t en_or_di)
+*       - void      DMA_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority)
 * @note
 *       For further information about functions refer to the corresponding header file.
 **/
 
 #include "dma_driver.h"
+
+/***********************************************************************************************************/
+/*                                       Static Function Prototypes                                        */
+/***********************************************************************************************************/
+
+/**
+ * @brief Function to manage the transfer complete interrupt.
+ * @param[in] pDMAx the base address of the DMAx peripheral.
+ * @param[in] Stream_Num is the number of stream for clearing flag.
+ * @return void
+ */
+static void Transfer_Complete_Callback(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stream_Num);
+
+/**
+ * @brief Function to manage the half transfer interrupt.
+ * @param[in] pDMAx the base address of the DMAx peripheral.
+ * @param[in] Stream_Num is the number of stream for clearing flag.
+ * @return void
+ */
+static void Half_Transfer_Callback(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stream_Num);
+
+/**
+ * @brief Function to manage the transfer error interrupt.
+ * @param[in] pDMAx the base address of the DMAx peripheral.
+ * @param[in] Stream_Num is the number of stream for clearing flag.
+ * @return void
+ */
+static void Transfer_Error_Callback(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stream_Num);
+
+/**
+ * @brief Function to manage the direct mode error interrupt.
+ * @param[in] pDMAx the base address of the DMAx peripheral.
+ * @param[in] Stream_Num is the number of stream for clearing flag.
+ * @return void
+ */
+static void Direct_Mode_Error_Callback(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stream_Num);
+
+/**
+ * @brief Function to manage the FIFO error interrupt.
+ * @param[in] pDMAx the base address of the DMAx peripheral.
+ * @param[in] Stream_Num is the number of stream for clearing flag.
+ * @return void
+ */
+static void FIFO_Error_Callback(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stream_Num);
 
 /***********************************************************************************************************/
 /*                                       Public API Definitions                                            */
@@ -132,8 +179,30 @@ void DMA_Stream_Init(DMA_Stream_Handle_t* pDMA_Stream_Handle){
         pDMA_Stream_Handle->pStreamx->FCR |= (pDMA_Stream_Handle->Stream_Config.FIFO_thres << DMA_SFCR_FTH);
     }
 
-    /* Enable stream */
-    pDMA_Stream_Handle->pStreamx->CR |= (1 << DMA_SCR_EN);
+    /* Set Half Transfer IE */
+    if(pDMA_Stream_Handle->Stream_Config.HTIE == ENABLE){
+        pDMA_Stream_Handle->pStreamx->CR |= (1 << DMA_SCR_HTIE);
+    }
+
+    /* Set Transfer Complete IE */
+    if(pDMA_Stream_Handle->Stream_Config.TCIE == ENABLE){
+        pDMA_Stream_Handle->pStreamx->CR |= (1 << DMA_SCR_TCIE);
+    }
+
+    /* Set Transfer Error IE */
+    if(pDMA_Stream_Handle->Stream_Config.TEIE == ENABLE){
+        pDMA_Stream_Handle->pStreamx->CR |= (1 << DMA_SCR_TEIE);
+    }
+
+    /* Set FIFO Error IE */
+    if(pDMA_Stream_Handle->Stream_Config.FEIE == ENABLE){
+        pDMA_Stream_Handle->pStreamx->FCR |= (1 << DMA_SFCR_FEIE);
+    }
+
+    /* Set Direct Mode Error IE */
+    if(pDMA_Stream_Handle->Stream_Config.DMEIE == ENABLE){
+        pDMA_Stream_Handle->pStreamx->CR |= (1 << DMA_SCR_DMEIE);
+    }
 }
 
 void DMA_Stream_Enable(DMA_Stream_Handle_t* pDMA_Stream_Handle){
@@ -486,4 +555,438 @@ uint32_t DMA_Get_FIFO_Error_Int_Flag(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Strea
     }
 
     return ret;
+}
+
+void DMA_IRQHandling(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stream_Num){
+
+    if(DMA_Get_Transfer_Compl_Int_Flag(pDMAx, Stream_Num)){
+        DMA_Clear_Transfer_Compl_Int_Flag(pDMAx, Stream_Num);
+        Transfer_Complete_Callback(pDMAx, Stream_Num);
+    }
+    else if(DMA_Get_Half_Transfer_Int_Flag(pDMAx, Stream_Num)){
+        DMA_Clear_Half_Transfer_Int_Flag(pDMAx, Stream_Num);
+        Half_Transfer_Callback(pDMAx, Stream_Num);
+    }
+    else if(DMA_Get_Transfer_Error_Int_Flag(pDMAx, Stream_Num)){
+        DMA_Clear_Transfer_Error_Int_Flag(pDMAx, Stream_Num);
+        Transfer_Error_Callback(pDMAx, Stream_Num);
+    }
+    else if(DMA_Get_Direct_Mode_Error_Int_Flag(pDMAx, Stream_Num)){
+        DMA_Clear_Direct_Mode_Error_Int_Flag(pDMAx, Stream_Num);
+        Direct_Mode_Error_Callback(pDMAx, Stream_Num);
+    }
+    else if(DMA_Get_FIFO_Error_Int_Flag(pDMAx, Stream_Num)){
+        DMA_Clear_FIFO_Error_Int_Flag(pDMAx, Stream_Num);
+        FIFO_Error_Callback(pDMAx, Stream_Num);
+    }
+    else{
+    }
+}
+
+void DMA_IRQConfig(uint8_t IRQNumber, uint8_t en_or_di){
+
+    if(en_or_di == ENABLE){
+        if(IRQNumber <= 31){
+            /* Program ISER0 register */
+            *NVIC_ISER0 |= (1 << IRQNumber);
+        }
+        else if(IRQNumber > 31 && IRQNumber < 64){
+            /* Program ISER1 register */
+            *NVIC_ISER1 |= (1 << (IRQNumber % 32));
+        }
+        else if(IRQNumber >= 64 && IRQNumber < 96){
+            /* Program ISER2 register */
+            *NVIC_ISER2 |= (1 << (IRQNumber % 64));
+        }
+        else{
+            /* do nothing */
+        }
+    }
+    else{
+        if(IRQNumber <= 31){
+            /* Program ICER0 register */
+            *NVIC_ICER0 |= (1 << IRQNumber);
+        }
+        else if(IRQNumber > 31 && IRQNumber < 64){
+            /* Program ICER1 register */
+            *NVIC_ICER1 |= (1 << (IRQNumber % 32));
+        }
+        else if(IRQNumber >= 64 && IRQNumber < 96){
+            /* Program ICER2 register */
+            *NVIC_ICER2 |= (1 << (IRQNumber % 64));
+        }
+        else{
+            /* do nothing */
+        }
+    }
+}
+
+void DMA_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority){
+    /* Find out the IPR register */
+    uint8_t iprx = IRQNumber / 4;
+    uint8_t iprx_section = IRQNumber % 4;
+    uint8_t shift = (8*iprx_section) + (8 - NO_PR_BITS_IMPLEMENTED);
+
+    *(NVIC_PR_BASEADDR + iprx) |= (IRQPriority << shift);
+}
+
+/***********************************************************************************************************/
+/*                                       Weak Functions                                                    */
+/*            This is a weak implementation. The application may override this function                    */
+/***********************************************************************************************************/
+
+__attribute__((weak)) void DMA1_Stream0_AppEventCallback(DMA_App_Event_t app_event){}
+__attribute__((weak)) void DMA1_Stream1_AppEventCallback(DMA_App_Event_t app_event){}
+__attribute__((weak)) void DMA1_Stream2_AppEventCallback(DMA_App_Event_t app_event){}
+__attribute__((weak)) void DMA1_Stream3_AppEventCallback(DMA_App_Event_t app_event){}
+__attribute__((weak)) void DMA1_Stream4_AppEventCallback(DMA_App_Event_t app_event){}
+__attribute__((weak)) void DMA1_Stream5_AppEventCallback(DMA_App_Event_t app_event){}
+__attribute__((weak)) void DMA1_Stream6_AppEventCallback(DMA_App_Event_t app_event){}
+__attribute__((weak)) void DMA1_Stream7_AppEventCallback(DMA_App_Event_t app_event){}
+__attribute__((weak)) void DMA2_Stream0_AppEventCallback(DMA_App_Event_t app_event){}
+__attribute__((weak)) void DMA2_Stream1_AppEventCallback(DMA_App_Event_t app_event){}
+__attribute__((weak)) void DMA2_Stream2_AppEventCallback(DMA_App_Event_t app_event){}
+__attribute__((weak)) void DMA2_Stream3_AppEventCallback(DMA_App_Event_t app_event){}
+__attribute__((weak)) void DMA2_Stream4_AppEventCallback(DMA_App_Event_t app_event){}
+__attribute__((weak)) void DMA2_Stream5_AppEventCallback(DMA_App_Event_t app_event){}
+__attribute__((weak)) void DMA2_Stream6_AppEventCallback(DMA_App_Event_t app_event){}
+__attribute__((weak)) void DMA2_Stream7_AppEventCallback(DMA_App_Event_t app_event){}
+
+/***********************************************************************************************************/
+/*                                       Static Function Definitions                                       */
+/***********************************************************************************************************/
+
+void Transfer_Complete_Callback(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stream_Num){
+
+    if(pDMAx == DMA1){
+        switch(Stream_Num){
+        case STREAM0:
+            DMA1_Stream0_AppEventCallback(TRANSFER_COMPLETE);
+            break;
+        case STREAM1:
+            DMA1_Stream1_AppEventCallback(TRANSFER_COMPLETE);
+            break;
+        case STREAM2:
+            DMA1_Stream2_AppEventCallback(TRANSFER_COMPLETE);
+            break;
+        case STREAM3:
+            DMA1_Stream3_AppEventCallback(TRANSFER_COMPLETE);
+            break;
+        case STREAM4:
+            DMA1_Stream4_AppEventCallback(TRANSFER_COMPLETE);
+            break;
+        case STREAM5:
+            DMA1_Stream5_AppEventCallback(TRANSFER_COMPLETE);
+            break;
+        case STREAM6:
+            DMA1_Stream6_AppEventCallback(TRANSFER_COMPLETE);
+            break;
+        case STREAM7:
+            DMA1_Stream7_AppEventCallback(TRANSFER_COMPLETE);
+            break;
+        default:
+            break;
+        }
+    }
+    else if(pDMAx == DMA2){
+        switch(Stream_Num){
+        case STREAM0:
+            DMA2_Stream0_AppEventCallback(TRANSFER_COMPLETE);
+            break;
+        case STREAM1:
+            DMA2_Stream1_AppEventCallback(TRANSFER_COMPLETE);
+            break;
+        case STREAM2:
+            DMA2_Stream2_AppEventCallback(TRANSFER_COMPLETE);
+            break;
+        case STREAM3:
+            DMA2_Stream3_AppEventCallback(TRANSFER_COMPLETE);
+            break;
+        case STREAM4:
+            DMA2_Stream4_AppEventCallback(TRANSFER_COMPLETE);
+            break;
+        case STREAM5:
+            DMA2_Stream5_AppEventCallback(TRANSFER_COMPLETE);
+            break;
+        case STREAM6:
+            DMA2_Stream6_AppEventCallback(TRANSFER_COMPLETE);
+            break;
+        case STREAM7:
+            DMA2_Stream7_AppEventCallback(TRANSFER_COMPLETE);
+            break;
+        default:
+            break;
+        }
+    }
+    else{
+        /* do nothing */
+    }
+}
+
+void Half_Transfer_Callback(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stream_Num){
+
+    if(pDMAx == DMA1){
+        switch(Stream_Num){
+        case STREAM0:
+            DMA1_Stream0_AppEventCallback(HALF_TRANSFER);
+            break;
+        case STREAM1:
+            DMA1_Stream1_AppEventCallback(HALF_TRANSFER);
+            break;
+        case STREAM2:
+            DMA1_Stream2_AppEventCallback(HALF_TRANSFER);
+            break;
+        case STREAM3:
+            DMA1_Stream3_AppEventCallback(HALF_TRANSFER);
+            break;
+        case STREAM4:
+            DMA1_Stream4_AppEventCallback(HALF_TRANSFER);
+            break;
+        case STREAM5:
+            DMA1_Stream5_AppEventCallback(HALF_TRANSFER);
+            break;
+        case STREAM6:
+            DMA1_Stream6_AppEventCallback(HALF_TRANSFER);
+            break;
+        case STREAM7:
+            DMA1_Stream7_AppEventCallback(HALF_TRANSFER);
+            break;
+        default:
+            break;
+        }
+    }
+    else if(pDMAx == DMA2){
+        switch(Stream_Num){
+        case STREAM0:
+            DMA2_Stream0_AppEventCallback(HALF_TRANSFER);
+            break;
+        case STREAM1:
+            DMA2_Stream1_AppEventCallback(HALF_TRANSFER);
+            break;
+        case STREAM2:
+            DMA2_Stream2_AppEventCallback(HALF_TRANSFER);
+            break;
+        case STREAM3:
+            DMA2_Stream3_AppEventCallback(HALF_TRANSFER);
+            break;
+        case STREAM4:
+            DMA2_Stream4_AppEventCallback(HALF_TRANSFER);
+            break;
+        case STREAM5:
+            DMA2_Stream5_AppEventCallback(HALF_TRANSFER);
+            break;
+        case STREAM6:
+            DMA2_Stream6_AppEventCallback(HALF_TRANSFER);
+            break;
+        case STREAM7:
+            DMA2_Stream7_AppEventCallback(HALF_TRANSFER);
+            break;
+        default:
+            break;
+        }
+    }
+    else{
+        /* do nothing */
+    }
+}
+
+void Transfer_Error_Callback(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stream_Num){
+
+    if(pDMAx == DMA1){
+        switch(Stream_Num){
+        case STREAM0:
+            DMA1_Stream0_AppEventCallback(TRANSFER_ERROR);
+            break;
+        case STREAM1:
+            DMA1_Stream1_AppEventCallback(TRANSFER_ERROR);
+            break;
+        case STREAM2:
+            DMA1_Stream2_AppEventCallback(TRANSFER_ERROR);
+            break;
+        case STREAM3:
+            DMA1_Stream3_AppEventCallback(TRANSFER_ERROR);
+            break;
+        case STREAM4:
+            DMA1_Stream4_AppEventCallback(TRANSFER_ERROR);
+            break;
+        case STREAM5:
+            DMA1_Stream5_AppEventCallback(TRANSFER_ERROR);
+            break;
+        case STREAM6:
+            DMA1_Stream6_AppEventCallback(TRANSFER_ERROR);
+            break;
+        case STREAM7:
+            DMA1_Stream7_AppEventCallback(TRANSFER_ERROR);
+            break;
+        default:
+            break;
+        }
+    }
+    else if(pDMAx == DMA2){
+        switch(Stream_Num){
+        case STREAM0:
+            DMA2_Stream0_AppEventCallback(TRANSFER_ERROR);
+            break;
+        case STREAM1:
+            DMA2_Stream1_AppEventCallback(TRANSFER_ERROR);
+            break;
+        case STREAM2:
+            DMA2_Stream2_AppEventCallback(TRANSFER_ERROR);
+            break;
+        case STREAM3:
+            DMA2_Stream3_AppEventCallback(TRANSFER_ERROR);
+            break;
+        case STREAM4:
+            DMA2_Stream4_AppEventCallback(TRANSFER_ERROR);
+            break;
+        case STREAM5:
+            DMA2_Stream5_AppEventCallback(TRANSFER_ERROR);
+            break;
+        case STREAM6:
+            DMA2_Stream6_AppEventCallback(TRANSFER_ERROR);
+            break;
+        case STREAM7:
+            DMA2_Stream7_AppEventCallback(TRANSFER_ERROR);
+            break;
+        default:
+            break;
+        }
+    }
+    else{
+        /* do nothing */
+    }
+}
+
+void Direct_Mode_Error_Callback(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stream_Num){
+
+    if(pDMAx == DMA1){
+        switch(Stream_Num){
+        case STREAM0:
+            DMA1_Stream0_AppEventCallback(DIRECT_MODE_ERROR);
+            break;
+        case STREAM1:
+            DMA1_Stream1_AppEventCallback(DIRECT_MODE_ERROR);
+            break;
+        case STREAM2:
+            DMA1_Stream2_AppEventCallback(DIRECT_MODE_ERROR);
+            break;
+        case STREAM3:
+            DMA1_Stream3_AppEventCallback(DIRECT_MODE_ERROR);
+            break;
+        case STREAM4:
+            DMA1_Stream4_AppEventCallback(DIRECT_MODE_ERROR);
+            break;
+        case STREAM5:
+            DMA1_Stream5_AppEventCallback(DIRECT_MODE_ERROR);
+            break;
+        case STREAM6:
+            DMA1_Stream6_AppEventCallback(DIRECT_MODE_ERROR);
+            break;
+        case STREAM7:
+            DMA1_Stream7_AppEventCallback(DIRECT_MODE_ERROR);
+            break;
+        default:
+            break;
+        }
+    }
+    else if(pDMAx == DMA2){
+        switch(Stream_Num){
+        case STREAM0:
+            DMA2_Stream0_AppEventCallback(DIRECT_MODE_ERROR);
+            break;
+        case STREAM1:
+            DMA2_Stream1_AppEventCallback(DIRECT_MODE_ERROR);
+            break;
+        case STREAM2:
+            DMA2_Stream2_AppEventCallback(DIRECT_MODE_ERROR);
+            break;
+        case STREAM3:
+            DMA2_Stream3_AppEventCallback(DIRECT_MODE_ERROR);
+            break;
+        case STREAM4:
+            DMA2_Stream4_AppEventCallback(DIRECT_MODE_ERROR);
+            break;
+        case STREAM5:
+            DMA2_Stream5_AppEventCallback(DIRECT_MODE_ERROR);
+            break;
+        case STREAM6:
+            DMA2_Stream6_AppEventCallback(DIRECT_MODE_ERROR);
+            break;
+        case STREAM7:
+            DMA2_Stream7_AppEventCallback(DIRECT_MODE_ERROR);
+            break;
+        default:
+            break;
+        }
+    }
+    else{
+        /* do nothing */
+    }
+}
+
+void FIFO_Error_Callback(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stream_Num){
+
+    if(pDMAx == DMA1){
+        switch(Stream_Num){
+        case STREAM0:
+            DMA1_Stream0_AppEventCallback(FIFO_ERROR);
+            break;
+        case STREAM1:
+            DMA1_Stream1_AppEventCallback(FIFO_ERROR);
+            break;
+        case STREAM2:
+            DMA1_Stream2_AppEventCallback(FIFO_ERROR);
+            break;
+        case STREAM3:
+            DMA1_Stream3_AppEventCallback(FIFO_ERROR);
+            break;
+        case STREAM4:
+            DMA1_Stream4_AppEventCallback(FIFO_ERROR);
+            break;
+        case STREAM5:
+            DMA1_Stream5_AppEventCallback(FIFO_ERROR);
+            break;
+        case STREAM6:
+            DMA1_Stream6_AppEventCallback(FIFO_ERROR);
+            break;
+        case STREAM7:
+            DMA1_Stream7_AppEventCallback(FIFO_ERROR);
+            break;
+        default:
+            break;
+        }
+    }
+    else if(pDMAx == DMA2){
+        switch(Stream_Num){
+        case STREAM0:
+            DMA2_Stream0_AppEventCallback(FIFO_ERROR);
+            break;
+        case STREAM1:
+            DMA2_Stream1_AppEventCallback(FIFO_ERROR);
+            break;
+        case STREAM2:
+            DMA2_Stream2_AppEventCallback(FIFO_ERROR);
+            break;
+        case STREAM3:
+            DMA2_Stream3_AppEventCallback(FIFO_ERROR);
+            break;
+        case STREAM4:
+            DMA2_Stream4_AppEventCallback(FIFO_ERROR);
+            break;
+        case STREAM5:
+            DMA2_Stream5_AppEventCallback(FIFO_ERROR);
+            break;
+        case STREAM6:
+            DMA2_Stream6_AppEventCallback(FIFO_ERROR);
+            break;
+        case STREAM7:
+            DMA2_Stream7_AppEventCallback(FIFO_ERROR);
+            break;
+        default:
+            break;
+        }
+    }
+    else{
+        /* do nothing */
+    }
 }

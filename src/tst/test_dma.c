@@ -6,6 +6,7 @@
 * Public Functions:
 *       - void      DMA1_Config(void)
 *       - void      DMA1_USART3_Request(void)
+*       - void      DMA1_USART3_Request_IT(void)
 *
 * @note
 *       For further information about functions refer to the corresponding header file.
@@ -58,6 +59,12 @@ static void USART3_Init(USART_Handle_t* pUSART_Handle);
  */
 static void USART3_GPIOInit(void);
 
+/**
+ * @brief Function to disable the USART3 to DMA request.
+ * @return void.
+ */
+static void DMA1_USART3_Disable_Request(void);
+
 /***********************************************************************************************************/
 /*                                       Public API Definitions                                            */
 /***********************************************************************************************************/
@@ -74,8 +81,15 @@ void DMA1_Config(void){
     /* Enable the USART3 peripheral */
     USART_Enable(USART3, ENABLE);
 
+    /* Cofigure the DMA1 Stream3 */
     DMA1_Init(&DMA1Handle);
     DMA1_Stream3_Init(&Stream3Handle);
+
+    /* DMA1 Stream3 interrupt configuration */
+    DMA_IRQConfig(IRQ_NO_DMA1_STREAM3, ENABLE);
+
+    /* Enable DMA1 Stream3 */
+    DMA_Stream_Enable(&Stream3Handle);
 }
 
 void DMA1_USART3_Request(void){
@@ -91,6 +105,50 @@ void DMA1_USART3_Request(void){
 
     /* Set DMA enable transmitter bit */
     pUSART3->CR3 |= (1 << USART_CR3_DMAT);
+}
+
+void DMA1_USART3_Request_IT(void){
+
+    USART_RegDef_t* pUSART3;
+    pUSART3 = USART3;
+
+    /* Set DMA enable transmitter bit */
+    pUSART3->CR3 |= (1 << USART_CR3_DMAT);
+}
+
+/***********************************************************************************************************/
+/*                               Weak Function Overwrite Definitions                                       */
+/***********************************************************************************************************/
+
+void DMA1_Stream3_Handler(void){
+    DMA_IRQHandling(DMA1Handle.pDMAx, STREAM3);
+}
+
+void DMA1_Stream3_AppEventCallback(DMA_App_Event_t app_event){
+
+    switch(app_event){
+        case TRANSFER_COMPLETE:
+            printf("Transfer Complete Interrupt Event\r\n");
+            /* Prepare Stream and DMA for a retransmission */
+            DMA_Stream_Set_NDTR(&Stream3Handle, (uint32_t)sizeof(test_data));
+            DMA1_USART3_Disable_Request();
+            DMA_Stream_Enable(&Stream3Handle);
+            break;
+        case HALF_TRANSFER:
+            printf("Half Transfer Interrupt Event\r\n");
+            break;
+        case TRANSFER_ERROR:
+            printf("Transfer Error Interrupt Event\r\n");
+            break;
+        case DIRECT_MODE_ERROR:
+            printf("Direct Mode Error Interrupt Event\r\n");
+            break;
+        case FIFO_ERROR:
+            printf("FIFO Error Interrupt Event\r\n");
+            break;
+        default:
+            break;
+    }
 }
 
 /***********************************************************************************************************/
@@ -126,6 +184,11 @@ static void DMA1_Stream3_Init(DMA_Stream_Handle_t* pStream_Handle){
     pStream_Handle->Stream_Config.circular_mode = DISABLE;
     pStream_Handle->Stream_Config.priority = LOW;
     pStream_Handle->Stream_Config.ch_number = 4;
+    pStream_Handle->Stream_Config.HTIE = ENABLE;
+    pStream_Handle->Stream_Config.TCIE = ENABLE;
+    pStream_Handle->Stream_Config.TEIE = ENABLE;
+    pStream_Handle->Stream_Config.FEIE = ENABLE;
+    pStream_Handle->Stream_Config.DMEIE = ENABLE;
 
     DMA_Stream_Init(pStream_Handle);
 }
@@ -165,4 +228,13 @@ static void USART3_GPIOInit(void){
     /* USART3 RX */
     USARTPins.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_11;
     GPIO_Init(&USARTPins);
+}
+
+void DMA1_USART3_Disable_Request(void){
+
+    USART_RegDef_t* pUSART3;
+    pUSART3 = USART3;
+
+    /* Unset DMA enable transmitter bit */
+    pUSART3->CR3 &= ~(1 << USART_CR3_DMAT);
 }
