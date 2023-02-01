@@ -16,6 +16,7 @@
 **/
 
 #include <stdio.h>
+#include "test.h"
 #include "test_timer.h"
 #include "timer_driver.h"
 #include "gpio_driver.h"
@@ -241,6 +242,8 @@ void Timer3_Process(void){
 /*                               Weak Function Overwrite Definitions                                       */
 /***********************************************************************************************************/
 
+#if !TEST_RTC
+
 void TIM6_DAC_Handler(void){
     Timer_IRQHandling(&Timer);
 }
@@ -307,6 +310,8 @@ void Timer_ApplicationEventCallback(Timer_Num_t tim_num, Timer_Event_t timer_eve
         /* do nothing */
     }
 }
+
+#endif
 
 /***********************************************************************************************************/
 /*                                       Static Function Definitions                                       */

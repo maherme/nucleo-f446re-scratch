@@ -23,19 +23,8 @@
 #include "test_rcc.h"
 #include "test_timer.h"
 #include "test_dma.h"
+#include "test_rtc.h"
 #include "utils.h"
-
-/**
- * @name Flags for enabling peripheral testing.
- * @{
- */
-#define TEST_SPI    0   /**< @brief Set to 1 for enabling the SPI test */
-#define TEST_I2C    0   /**< @brief Set to 1 for enabling the I2C test */
-#define TEST_USART  0   /**< @brief Set to 1 for enabling the USART test */
-#define TEST_RCC    0   /**< @brief Set to 1 for enabling the RCC test */
-#define TEST_TIMER  0   /**< @brief Set to 1 for enabling the Timer test */
-#define TEST_DMA    1   /**< @brief Set to 1 for enabling the DMA test */
-/** @} */
 
 /***********************************************************************************************************/
 /*                                       Static Function Prototypes                                        */
@@ -101,6 +90,10 @@ void test_init(void){
 #if TEST_DMA
     DMA1_Config();
 #endif
+
+#if TEST_RTC
+    RTC_Test_Config();
+#endif
 }
 
 void test_process(void){
@@ -165,6 +158,10 @@ void EXTI15_10_Handler(void){
     //DMA1_USART3_Request();
     /* Send USART request to DMA controller if interrupts are enabled */
     DMA1_USART3_Request_IT();
+#endif
+
+#if TEST_RTC
+    RTC_Test_Reset();
 #endif
 
     /* Toggle LED */
