@@ -1687,6 +1687,7 @@ typedef struct
 #define IRQ_DMA2_STREAM5            68  /**< @brief Interrupt Num for DMA2 Stream5 */
 #define IRQ_DMA2_STREAM6            69  /**< @brief Interrupt Num for DMA2 Stream6 */
 #define IRQ_DMA2_STREAM7            70  /**< @brief Interrupt Num for DMA2 Stream7 */
+#define IRQ_RTC_ALARM               41  /**< @brief Interrupt Num for RTC alarm */
 /** @} */
 
 /**

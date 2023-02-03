@@ -17,6 +17,11 @@
 *       - void RTC_GetAlarm(RTC_Alarm_t* alarm)
 *       - uint8_t RTC_CheckAlarm(RTC_AlarmSel_t alarm)
 *       - uint8_t RTC_ClearAlarm(RTC_AlarmSel_t alarm)
+*       - uint8_t RTC_DisableAlarm(RTC_AlarmSel_t alarm)
+*       - void RTC_Alarm_IRQHandling(void)
+*       - void RTC_IRQConfig(uint8_t IRQNumber, uint8_t en_or_di)
+*       - void RTC_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority)
+*       - void RTC_AlarmEventCallback(RTC_AlarmSel_t alarm)
 *
 * @note
 *       For further information about functions refer to the corresponding header file.
@@ -211,7 +216,13 @@ void RTC_SetAlarm(RTC_Alarm_t alarm){
             (alarm.MinuteUnits << RTC_ALRMxR_MNU) |
             (alarm.SecondsMask << RTC_ALRMxR_MSK1) |
             (alarm.SecondTens << RTC_ALRMxR_ST) |
-            (alarm.SeconUnits << RTC_ALRMxR_SU));
+            (alarm.SecondUnits << RTC_ALRMxR_SU));
+
+    /* Configure and enable the EXTI Line 17 in interrupt mode and select the rising edge sensitivity */
+    if(alarm.IRQ == 1){
+        EXTI->IMR |= (1 << 17);
+        EXTI->RTSR |= (1 << 17);
+    }
 
     RTC_Unlock();
 
@@ -226,6 +237,10 @@ void RTC_SetAlarm(RTC_Alarm_t alarm){
             RTC->ALRMAR = temp;
             /* Set ALRAE in the RTC_CR register to enable Alarm A */
             RTC->CR |= (1 << RTC_CR_ALRAE);
+            /* Set ALRAIE in the RTC CR register to enable Alarm A interrupt */
+            if(alarm.IRQ == 1){
+                RTC->CR |= (1 << RTC_CR_ALRAIE);
+            }
             break;
         case RTC_ALARM_B:
             /* Clear ALRBE in RTC_CR register to disable Alarm B */
@@ -237,6 +252,10 @@ void RTC_SetAlarm(RTC_Alarm_t alarm){
             RTC->ALRMBR = temp;
             /* Set ALRBE in the RTC_CR register to enable Alarm B */
             RTC->CR |= (1 << RTC_CR_ALRBE);
+            /* Set ALRBIE in the RTC CR register to enable Alarm B interrupt */
+            if(alarm.IRQ == 1){
+                RTC->CR |= (1 << RTC_CR_ALRBIE);
+            }
             break;
         default:
             break;
@@ -271,7 +290,7 @@ void RTC_GetAlarm(RTC_Alarm_t* alarm){
     alarm->MinuteUnits = (alarm_reg >> RTC_ALRMxR_MNU) & 0xF;
     alarm->SecondsMask = (alarm_reg >> RTC_ALRMxR_MSK1) & 0x1;
     alarm->SecondTens = (alarm_reg >> RTC_ALRMxR_ST) & 0x7;
-    alarm->SeconUnits = (alarm_reg >> RTC_ALRMxR_SU) & 0xF;
+    alarm->SecondUnits = (alarm_reg >> RTC_ALRMxR_SU) & 0xF;
 }
 
 uint8_t RTC_CheckAlarm(RTC_AlarmSel_t alarm){
@@ -314,6 +333,98 @@ uint8_t RTC_ClearAlarm(RTC_AlarmSel_t alarm){
     }
 
     return ret;
+}
+
+uint8_t RTC_DisableAlarm(RTC_AlarmSel_t alarm){
+
+    uint8_t ret = 0;
+
+    RTC_Unlock();
+
+    switch(alarm){
+        case RTC_ALARM_A:
+            RTC->CR &= ~(1 << RTC_CR_ALRAE);
+            break;
+        case RTC_ALARM_B:
+            RTC->CR &= ~(1 << RTC_CR_ALRBE);
+            break;
+        default:
+            ret = 1;
+            break;
+    }
+
+    return ret;
+}
+
+void RTC_Alarm_IRQHandling(void){
+
+    /* Clear the EXTI PR register corresponding to the Alarm (EXTI 17) */
+    if(EXTI->PR & (1 << 17)){
+        /* clear */
+        EXTI->PR |= (1 << 17);
+    }
+
+    if(RTC->ISR & (1 << RTC_ISR_ALRAF)){
+        RTC_AlarmEventCallback(RTC_ALARM_A);
+    }
+    else if(RTC->ISR & (1 << RTC_ISR_ALRBF)){
+        RTC_AlarmEventCallback(RTC_ALARM_B);
+    }
+    else{
+        /* do nothing */
+    }
+}
+
+void RTC_IRQConfig(uint8_t IRQNumber, uint8_t en_or_di){
+
+    if(en_or_di == ENABLE){
+        if(IRQNumber <= 31){
+            /* Program ISER0 register */
+            *NVIC_ISER0 |= (1 << IRQNumber);
+        }
+        else if(IRQNumber > 31 && IRQNumber < 64){
+            /* Program ISER1 register */
+            *NVIC_ISER1 |= (1 << (IRQNumber % 32));
+        }
+        else if(IRQNumber >= 64 && IRQNumber < 96){
+            /* Program ISER2 register */
+            *NVIC_ISER2 |= (1 << (IRQNumber % 64));
+        }
+        else{
+            /* do nothing */
+        }
+    }
+    else{
+        if(IRQNumber <= 31){
+            /* Program ICER0 register */
+            *NVIC_ICER0 |= (1 << IRQNumber);
+        }
+        else if(IRQNumber > 31 && IRQNumber < 64){
+            /* Program ICER1 register */
+            *NVIC_ICER1 |= (1 << (IRQNumber % 32));
+        }
+        else if(IRQNumber >= 64 && IRQNumber < 96){
+            /* Program ICER2 register */
+            *NVIC_ICER2 |= (1 << (IRQNumber % 64));
+        }
+        else{
+            /* do nothing */
+        }
+    }
+}
+
+void RTC_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority){
+    /* Find out the IPR register */
+    uint8_t iprx = IRQNumber / 4;
+    uint8_t iprx_section = IRQNumber % 4;
+    uint8_t shift = (8*iprx_section) + (8 - NO_PR_BITS_IMPLEMENTED);
+
+    *(NVIC_PR_BASEADDR + iprx) |= (IRQPriority << shift);
+}
+
+__attribute__((weak)) void RTC_AlarmEventCallback(RTC_AlarmSel_t alarm){
+
+    /* This is a weak implementation. The application may override this function */
 }
 
 /***********************************************************************************************************/

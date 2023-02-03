@@ -18,6 +18,9 @@
 #include "stm32f446xx.h"
 #include <stdio.h>
 
+/** @brief Set to 1 for testing using alarm interrupt */
+#define TEST_RTC_IRQ    1
+
 /** @brief Structure for RTC configuration */
 RTC_Config_t RTC_Cfg = {0};
 /** @brief Handler structure for Timer peripheral */
@@ -71,6 +74,10 @@ void RTC_Test_Config(void){
 
     RTC_Init(RTC_Cfg);
 
+#if TEST_RTC_IRQ
+    RTC_IRQConfig(IRQ_RTC_ALARM, ENABLE);
+#endif
+
     RTC_Test_Alarm_Init();
 
     RTC_Test_Timer6_Config();
@@ -108,25 +115,31 @@ static void RTC_Test_Alarm_Init(void){
     RTC_Alarm_t alarm_cfg = {0};
 
     alarm_cfg.AlarmSel = RTC_ALARM_A;
-    alarm_cfg.DateMask = 0;
+    alarm_cfg.DateMask = 1;
     alarm_cfg.WeekDaySelec = 0;
     alarm_cfg.DateTens = 0;
     alarm_cfg.DateUnits = 1;
-    alarm_cfg.HoursMask = 0;
+    alarm_cfg.HoursMask = 1;
     alarm_cfg.PM = 0;
     alarm_cfg.HourTens = 1;
     alarm_cfg.HourUnits = 2;
-    alarm_cfg.MinutesMask = 0;
+    alarm_cfg.MinutesMask = 1;
     alarm_cfg.MinuteTens = 0;
     alarm_cfg.MinuteUnits = 0;
     alarm_cfg.SecondsMask = 0;
     alarm_cfg.SecondTens = 0;
-    alarm_cfg.SeconUnits = 0;
+    alarm_cfg.SecondUnits = 0;
+#if !TEST_RTC_IRQ
+    alarm_cfg.IRQ = 0;
+#else
+    alarm_cfg.IRQ = 1;
+#endif
 
     RTC_SetAlarm(alarm_cfg);
 
     alarm_cfg.AlarmSel = RTC_ALARM_B;
-    alarm_cfg.MinuteUnits = 1;
+    alarm_cfg.SecondTens = 3;
+    alarm_cfg.SecondUnits = 0;
 
     RTC_SetAlarm(alarm_cfg);
 }
@@ -159,6 +172,7 @@ static void RTC_Test_Request(void){
             date.MonthTens, date.MonthUnits,
             date.DateTens, date.DateUnits);
 
+#if !TEST_RTC_IRQ
     if(RTC_CheckAlarm(RTC_ALARM_A) == 1){
         printf("ALARM A!!!\n");
         RTC_ClearAlarm(RTC_ALARM_A);
@@ -168,6 +182,7 @@ static void RTC_Test_Request(void){
         printf("ALARM B!!!\n");
         RTC_ClearAlarm(RTC_ALARM_B);
     }
+#endif
 }
 
 static void RTC_Test_Timer6_Config(void){
@@ -198,6 +213,31 @@ void Timer_ApplicationEventCallback(Timer_Num_t tim_num, Timer_Event_t timer_eve
         if(tim_num == TIMER6){
             RTC_Test_Request();
         }
+    }
+    else{
+        /* do nothing */
+    }
+}
+
+#endif
+
+#if TEST_RTC_IRQ
+
+void RTC_Alarm_Handler(void){
+
+    RTC_Alarm_IRQHandling();
+}
+
+void RTC_AlarmEventCallback(RTC_AlarmSel_t alarm){
+
+    if(alarm == RTC_ALARM_A){
+        printf("ALARM A!!!\n");
+        RTC_ClearAlarm(RTC_ALARM_A);
+        RTC_DisableAlarm(RTC_ALARM_A);
+    }
+    else if(alarm == RTC_ALARM_B){
+        printf("ALARM B!!!\n");
+        RTC_ClearAlarm(RTC_ALARM_B);
     }
     else{
         /* do nothing */
