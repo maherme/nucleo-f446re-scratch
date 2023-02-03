@@ -185,6 +185,7 @@ void RTC_GetDate(RTC_Date_t* date){
 
 void RTC_ClearRSF(void){
 
+    RTC_Unlock();
     RTC->ISR &= ~(1 << RTC_ISR_RSF);
 }
 
