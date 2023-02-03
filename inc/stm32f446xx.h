@@ -1177,6 +1177,34 @@ typedef struct
 #define RTC_ISR_RECALPF     16  /**< @brief Recalibration pending flag */
 /** @} */
 
+/**
+ * @name Bit position definition RTC prescaler register
+ * @{
+ */
+#define RTC_PRER_PREDIV_S   0   /**< @brief Synchronous prescaler factor */
+#define RTC_PRER_PREDIV_A   16  /**< @brief Asynchronous prescaler factor */
+/** @} */
+
+/**
+ * @name Bit position definition RTC alarm x register
+ * @{
+ */
+#define RTC_ALRMxR_SU       0   /**< @brief Second units in BCD format */
+#define RTC_ALRMxR_ST       4   /**< @brief Second tens in BCD format */
+#define RTC_ALRMxR_MSK1     7   /**< @brief Alarm x seconds mask */
+#define RTC_ALRMxR_MNU      8   /**< @brief Minute units in BCD format */
+#define RTC_ALRMxR_MNT      12  /**< @brief Minute tens in BCD format */
+#define RTC_ALRMxR_MSK2     15  /**< @brief Alarm x minutes mask */
+#define RTC_ALRMxR_HU       16  /**< @brief Hour units in BCD format */
+#define RTC_ALRMxR_HT       20  /**< @brief Hour tens in BCD format */
+#define RTC_ALRMxR_PM       22  /**< @brief AM/PM notation */
+#define RTC_ALRMxR_MSK3     23  /**< @brief Alarm x hours mask */
+#define RTC_ALRMxR_DU       24  /**< @brief Date units or day in BCD format */
+#define RTC_ALRMxR_DT       28  /**< @brief Date tens in BCD format */
+#define RTC_ALRMxR_WDSEL    30  /**< @brief Week day selection */
+#define RTC_ALRMxR_MSK4     31  /**< @brief Alarm x date mask */
+/** @} */
+
 /***********************************************************************************************************/
 /*          Peripheral definitions (peripheral base addresses typecasted to xxx_RegDef_t)                  */
 /***********************************************************************************************************/

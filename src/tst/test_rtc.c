@@ -34,6 +34,12 @@ Timer_Handle_t RTC_Test_Timer = {0};
 static void RTC_Test_Init(void);
 
 /**
+ * @brief Function for configuring and init the alarm in the RTC peripheral.
+ * @return void.
+ */
+static void RTC_Test_Alarm_Init(void);
+
+/**
  * @brief Function for configuring the timer TIM6
  * @return void.
  */
@@ -65,6 +71,8 @@ void RTC_Test_Config(void){
 
     RTC_Init(RTC_Cfg);
 
+    RTC_Test_Alarm_Init();
+
     RTC_Test_Timer6_Config();
 }
 
@@ -95,6 +103,34 @@ static void RTC_Test_Init(void){
     RTC_Cfg.RTC_Date.DateTens = 3;
 }
 
+static void RTC_Test_Alarm_Init(void){
+
+    RTC_Alarm_t alarm_cfg = {0};
+
+    alarm_cfg.AlarmSel = RTC_ALARM_A;
+    alarm_cfg.DateMask = 0;
+    alarm_cfg.WeekDaySelec = 0;
+    alarm_cfg.DateTens = 0;
+    alarm_cfg.DateUnits = 1;
+    alarm_cfg.HoursMask = 0;
+    alarm_cfg.PM = 0;
+    alarm_cfg.HourTens = 1;
+    alarm_cfg.HourUnits = 2;
+    alarm_cfg.MinutesMask = 0;
+    alarm_cfg.MinuteTens = 0;
+    alarm_cfg.MinuteUnits = 0;
+    alarm_cfg.SecondsMask = 0;
+    alarm_cfg.SecondTens = 0;
+    alarm_cfg.SeconUnits = 0;
+
+    RTC_SetAlarm(alarm_cfg);
+
+    alarm_cfg.AlarmSel = RTC_ALARM_B;
+    alarm_cfg.MinuteUnits = 1;
+
+    RTC_SetAlarm(alarm_cfg);
+}
+
 static void RTC_Test_Request(void){
 
     RTC_Time_t time = {0};
@@ -122,6 +158,16 @@ static void RTC_Test_Request(void){
             date.YearTens, date.YearUnits,
             date.MonthTens, date.MonthUnits,
             date.DateTens, date.DateUnits);
+
+    if(RTC_CheckAlarm(RTC_ALARM_A) == 1){
+        printf("ALARM A!!!\n");
+        RTC_ClearAlarm(RTC_ALARM_A);
+    }
+
+    if(RTC_CheckAlarm(RTC_ALARM_B) == 1){
+        printf("ALARM B!!!\n");
+        RTC_ClearAlarm(RTC_ALARM_B);
+    }
 }
 
 static void RTC_Test_Timer6_Config(void){

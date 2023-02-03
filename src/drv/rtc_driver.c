@@ -13,6 +13,10 @@
 *       - void RTC_GetDate(RTC_Date_t* date)
 *       - void RTC_ClearRSF(void)
 *       - uint8_t RTC_GetRSF(void)
+*       - void RTC_SetAlarm(RTC_Alarm_t alarm)
+*       - void RTC_GetAlarm(RTC_Alarm_t* alarm)
+*       - uint8_t RTC_CheckAlarm(RTC_AlarmSel_t alarm)
+*       - uint8_t RTC_ClearAlarm(RTC_AlarmSel_t alarm)
 *
 * @note
 *       For further information about functions refer to the corresponding header file.
@@ -185,6 +189,128 @@ uint8_t RTC_GetRSF(void){
 
     if(RTC->ISR & (1 << RTC_ISR_RSF)){
        ret = 1;
+    }
+
+    return ret;
+}
+
+void RTC_SetAlarm(RTC_Alarm_t alarm){
+
+    uint32_t temp = 0;
+
+    temp |= ((alarm.DateMask << RTC_ALRMxR_MSK4) |
+            (alarm.WeekDaySelec << RTC_ALRMxR_WDSEL) |
+            (alarm.DateTens << RTC_ALRMxR_DT) |
+            (alarm.DateUnits << RTC_ALRMxR_DU) |
+            (alarm.HoursMask << RTC_ALRMxR_MSK3) |
+            (alarm.PM << RTC_ALRMxR_PM) |
+            (alarm.HourTens << RTC_ALRMxR_HT) |
+            (alarm.HourUnits << RTC_ALRMxR_HU) |
+            (alarm.MinutesMask << RTC_ALRMxR_MSK2) |
+            (alarm.MinuteTens << RTC_ALRMxR_MNT) |
+            (alarm.MinuteUnits << RTC_ALRMxR_MNU) |
+            (alarm.SecondsMask << RTC_ALRMxR_MSK1) |
+            (alarm.SecondTens << RTC_ALRMxR_ST) |
+            (alarm.SeconUnits << RTC_ALRMxR_SU));
+
+    RTC_Unlock();
+
+    switch(alarm.AlarmSel){
+        case RTC_ALARM_A:
+            /* Clear ALRAE in RTC_CR register to disable Alarm A */
+            RTC->CR &= ~(1 << RTC_CR_ALRAE);
+            /* Poll ALRAWF in RTC_ISR until it is set to make sure the access to alarm reg is allowed */
+            while(!(RTC->ISR & (1 << RTC_ISR_ALRAWF)));
+            /* Set alarm A values */
+            RTC->ALRMAR &= ~(0xFFFFFFFF);
+            RTC->ALRMAR = temp;
+            /* Set ALRAE in the RTC_CR register to enable Alarm A */
+            RTC->CR |= (1 << RTC_CR_ALRAE);
+            break;
+        case RTC_ALARM_B:
+            /* Clear ALRBE in RTC_CR register to disable Alarm B */
+            RTC->CR &= ~(1 << RTC_CR_ALRBE);
+            /* Poll ALRBWF in RTC_ISR until it is set to make sure the access to alarm reg is allowed */
+            while(!(RTC->ISR & (1 << RTC_ISR_ALRBWF)));
+            /* Set alarm B values */
+            RTC->ALRMBR &= ~(0xFFFFFFFF);
+            RTC->ALRMBR = temp;
+            /* Set ALRBE in the RTC_CR register to enable Alarm B */
+            RTC->CR |= (1 << RTC_CR_ALRBE);
+            break;
+        default:
+            break;
+    }
+}
+
+void RTC_GetAlarm(RTC_Alarm_t* alarm){
+
+    uint32_t alarm_reg;
+
+    switch(alarm->AlarmSel){
+        case RTC_ALARM_A:
+            alarm_reg = RTC->ALRMAR;
+            break;
+        case RTC_ALARM_B:
+            alarm_reg = RTC->ALRMBR;
+            break;
+        default:
+            break;
+    }
+
+    alarm->DateMask = (alarm_reg >> RTC_ALRMxR_MSK4) & 0x1;
+    alarm->WeekDaySelec = (alarm_reg >> RTC_ALRMxR_WDSEL) & 0x1;
+    alarm->DateTens = (alarm_reg >> RTC_ALRMxR_DT) & 0x3;
+    alarm->DateUnits = (alarm_reg >> RTC_ALRMxR_DU) & 0xF;
+    alarm->HoursMask = (alarm_reg >> RTC_ALRMxR_MSK3) & 0x1;
+    alarm->PM = (alarm_reg >> RTC_ALRMxR_PM) & 0x1;
+    alarm->HourTens = (alarm_reg >> RTC_ALRMxR_HT) & 0x3;
+    alarm->HourUnits = (alarm_reg >> RTC_ALRMxR_HU) & 0xF;
+    alarm->MinutesMask = (alarm_reg >> RTC_ALRMxR_MSK2) & 0x1;
+    alarm->MinuteTens = (alarm_reg >> RTC_ALRMxR_MNT) & 0x7;
+    alarm->MinuteUnits = (alarm_reg >> RTC_ALRMxR_MNU) & 0xF;
+    alarm->SecondsMask = (alarm_reg >> RTC_ALRMxR_MSK1) & 0x1;
+    alarm->SecondTens = (alarm_reg >> RTC_ALRMxR_ST) & 0x7;
+    alarm->SeconUnits = (alarm_reg >> RTC_ALRMxR_SU) & 0xF;
+}
+
+uint8_t RTC_CheckAlarm(RTC_AlarmSel_t alarm){
+
+    uint8_t ret = 0;
+
+    switch(alarm){
+        case RTC_ALARM_A:
+            if(RTC->ISR & (1 << RTC_ISR_ALRAF)){
+                ret = 1;
+            }
+            break;
+        case RTC_ALARM_B:
+            if(RTC->ISR & (1 << RTC_ISR_ALRBF)){
+                ret = 1;
+            }
+            break;
+        default:
+            ret = 2;
+            break;
+    }
+
+    return ret;
+}
+
+uint8_t RTC_ClearAlarm(RTC_AlarmSel_t alarm){
+
+    uint8_t ret = 0;
+
+    switch(alarm){
+        case RTC_ALARM_A:
+            RTC->ISR &= ~(1 << RTC_ISR_ALRAF);
+            break;
+        case RTC_ALARM_B:
+            RTC->ISR &= ~(1 << RTC_ISR_ALRBF);
+            break;
+        default:
+            ret = 1;
+            break;
     }
 
     return ret;

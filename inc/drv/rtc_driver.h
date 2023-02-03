@@ -13,6 +13,10 @@
 *       - void RTC_GetDate(RTC_Date_t* date)
 *       - void RTC_ClearRSF(void)
 *       - uint8_t RTC_GetRSF(void)
+*       - void RTC_SetAlarm(RTC_Alarm_t alarm)
+*       - void RTC_GetAlarm(RTC_Alarm_t* alarm)
+*       - uint8_t RTC_CheckAlarm(RTC_AlarmSel_t alarm)
+*       - uint8_t RTC_ClearAlarm(RTC_AlarmSel_t alarm)
 */
 
 #ifndef RTC_DRIVER_H
@@ -66,6 +70,15 @@ typedef enum
 }RTC_ClkSource_t;
 
 /**
+ * @brief Possible options for RTC clock input source
+ */
+typedef enum
+{
+    RTC_ALARM_A,
+    RTC_ALARM_B
+}RTC_AlarmSel_t;
+
+/**
  * @brief Configuration structure regarding the time for RTC peripheral.
  */
 typedef struct
@@ -106,6 +119,28 @@ typedef struct
     RTC_Time_t RTC_Time;            /**< Struct with time configuration */
     RTC_Date_t RTC_Date;            /**< Struct with date configuration */
 }RTC_Config_t;
+
+/**
+ * @brief Configuration structure regarding the alarm for RTC peripheral.
+ */
+typedef struct
+{
+    RTC_AlarmSel_t AlarmSel;       /**< Possible values from ref RTC_AlarmSel_t */
+    uint8_t DateMask;               /**< Date mask */
+    uint8_t WeekDaySelec;           /**< Week day selection */
+    uint8_t DateTens;               /**< Date tens in BCD format */
+    uint8_t DateUnits;              /**< Date units in BCD format */
+    uint8_t HoursMask;              /**< Hours mask */
+    uint8_t PM;                     /**< AM/PM notation */
+    uint8_t HourTens;               /**< Hour tens in BCD format */
+    uint8_t HourUnits;              /**< Hour units in BCD format */
+    uint8_t MinutesMask;            /**< Minutes mask */
+    uint8_t MinuteTens;             /**< Minute tens in BCD format */
+    uint8_t MinuteUnits;            /**< Minute units in BCD format */
+    uint8_t SecondsMask;            /**< Seconds mask */
+    uint8_t SecondTens;             /**< Second tens in BCD format */
+    uint8_t SeconUnits;             /**< Second units in BCD format */
+}RTC_Alarm_t;
 
 /***********************************************************************************************************/
 /*                                       APIs Supported                                                    */
@@ -171,5 +206,36 @@ void RTC_ClearRSF(void);
  * @return RSF value (0 or 1)
  */
 uint8_t RTC_GetRSF(void);
+
+/**
+ * @brief Function to set alarm in the RTC peripheral.
+ * @param[in] structure with the alarm configuration
+ * @return void
+ */
+void RTC_SetAlarm(RTC_Alarm_t alarm);
+
+/**
+ * @brief Function to get alarm configuration from the RTC peripheral.
+ * @param[out] structure with the alarm configuration is stored
+ * @return void
+ */
+void RTC_GetAlarm(RTC_Alarm_t* alarm);
+
+/**
+ * @brief Function to check if the alarm reached the configured date and hour of the RTC peripheral.
+ * @param[out] possible values from RTC_AlarmSel_t
+ * @return 0 if ALRxF bit in the ISR register is unset
+ * @return 1 if ALRxF bit in the ISR register is set
+ * @return 2 if the RTC_AlarmSel_t is not a valid value
+ */
+uint8_t RTC_CheckAlarm(RTC_AlarmSel_t alarm);
+
+/**
+ * @brief Function to clear the alarm ALRxF bit in the ISR register of the RTC peripheral.
+ * @param[out] possible values from RTC_AlarmSel_t
+ * @return 0 if operation was OK
+ * @return 1 if the RTC_AlarmSel_t is not a valid value
+ */
+uint8_t RTC_ClearAlarm(RTC_AlarmSel_t alarm);
 
 #endif /* RTC_DRIVER_H */
