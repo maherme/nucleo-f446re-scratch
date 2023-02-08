@@ -30,7 +30,6 @@
 #include "rtc_driver.h"
 #include "stm32f446xx.h"
 #include <stdint.h>
-#include "utils.h"
 
 /***********************************************************************************************************/
 /*                                       Static Function Prototypes                                        */
