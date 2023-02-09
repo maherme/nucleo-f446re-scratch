@@ -817,8 +817,41 @@ typedef struct
  * @name Bit position definition PWR power control register.
  * @{
  */
+#define PWR_CR_LPDS         0   /**< @brief Low-power deepsleep */
+#define PWR_CR_PDDS         1   /**< @brief Power-down deepsleep */
+#define PWR_CR_CWUF         2   /**< @brief Clear wakeup flag */
+#define PWR_CR_CSBF         3   /**< @brief Clear standby flag */
+#define PWR_CR_PVDE         4   /**< @brief Power voltage detector enable */
+#define PWR_CR_PLS          5   /**< @brief PVD level selection */
 #define PWR_CR_DBP          8   /**< @brief Disable backup domain write protection */
-/**@}*/
+#define PWR_CR_FPDS         9   /**< @brief Flash power-down in Stop  mode */
+#define PWR_CR_LPUDS        10  /**< @brief Low-power regulator in deepsleep under-drive mode */
+#define PWR_CR_MRUDS        11  /**< @brief Main regulator in deepsleep under-drive mode */
+#define PWR_CR_ADCDC1       13  /**< @brief Watch Reference Manual */
+#define PWR_CR_VOS          14  /**< @brief Regulator voltage scaling output selection */
+#define PWR_CR_ODEN         16  /**< @brief Over-drive enable */
+#define PWR_CR_ODSWEN       17  /**< @brief Over-drive switching enabled */
+#define PWR_CR_UDEN         18  /**< @brief Under-drive enable in stop mode */
+#define PWR_CR_FMSSR        20  /**< @brief Flash memory stop while system run */
+#define PWR_CR_FISSR        21  /**< @brief Flash interface stop while system run */
+/** @} */
+
+/**
+ * @name Bit position definition power controller control status register
+ * @{
+ */
+#define PWR_CSR_WUF         0   /**< @brief Wakeup flag */
+#define PWR_CSR_SBF         1   /**< @brief Standby flag */
+#define PWR_CSR_PVDO        2   /**< @brief PVD output */
+#define PWR_CSR_BRR         3   /**< @brief Backup regulator ready */
+#define PWR_CSR_EWUP2       7   /**< @brief Enable WKUP2 pin */
+#define PWR_CSR_EWUP1       8   /**< @brief Enable WKUP1 pin */
+#define PWR_CSR_BRE         9   /**< @brief Backup regulator enable */
+#define PWR_CSR_VOSRDY      14  /**< @brief Regulator voltage scaling output selection ready bit */
+#define PWR_CSR_ODRDY       16  /**< @brief Over-drive mode ready */
+#define PWR_CSR_ODSWRDY     17  /**< @brief Over-drive mode switching ready */
+#define PWR_CSR_UDRDY       18  /**< @brief Under-drive ready flag */
+/** @} */
 
 /**
  * @name Bit position definition TIM control register 1.
