@@ -467,6 +467,53 @@ typedef struct
     volatile uint32_t BKPxR[20];    /**< @brief Backup register x                   Address offset 0x50 */
 }RTC_RegDef_t;
 
+/**
+ * @brief Peripheral register definition structure for CAN
+ */
+typedef struct
+{
+    volatile uint32_t MCR;              /**< @brief Master control register         Address offset 0x00  */
+    volatile uint32_t MSR;              /**< @brief Master status register          Address offset 0x04  */
+    volatile uint32_t TSR;              /**< @brief Transmit status register        Address offset 0x08  */
+    volatile uint32_t RF0R;             /**< @brief Receive FIFO 0 register         Address offset 0x0C  */
+    volatile uint32_t RF1R;             /**< @brief Receive FIFO 1 register         Address offset 0x10  */
+    volatile uint32_t IER;              /**< @brief Interrupt enable register       Address offset 0x14  */
+    volatile uint32_t ESR;              /**< @brief Error status register           Address offset 0x18  */
+    volatile uint32_t BTR;              /**< @brief Bit timing register             Address offset 0x1C  */
+    volatile uint32_t RESERVED1[88];    /**< @brief Reserved                        Address offset 0x20  */
+    volatile uint32_t TI0R;             /**< @brief Tx mailbox idenfifier register  Address offset 0x180 */
+    volatile uint32_t TDT0R;            /**< @brief Mailbox data len control reg    Address offset 0x184 */
+    volatile uint32_t TDL0R;            /**< @brief Mailbox data low register       Address offset 0x188 */
+    volatile uint32_t TDH0R;            /**< @brief Mailbox data high register      Address offset 0x18C */
+    volatile uint32_t TI1R;             /**< @brief Tx mailbox idenfifier register  Address offset 0x190 */
+    volatile uint32_t TDT1R;            /**< @brief Mailbox data len control reg    Address offset 0x194 */
+    volatile uint32_t TDL1R;            /**< @brief Mailbox data low register       Address offset 0x198 */
+    volatile uint32_t TDH1R;            /**< @brief Mailbox data high register      Address offset 0x19C */
+    volatile uint32_t TI2R;             /**< @brief Tx mailbox idenfifier register  Address offset 0x1A0 */
+    volatile uint32_t TDT2R;            /**< @brief Mailbox data len control reg    Address offset 0x1A4 */
+    volatile uint32_t TDL2R;            /**< @brief Mailbox data low register       Address offset 0x1A8 */
+    volatile uint32_t TDH2R;            /**< @brief Mailbox data high register      Address offset 0x1AC */
+    volatile uint32_t RI0R;             /**< @brief Rx FIFO mailbox id register     Address offset 0x1B0 */
+    volatile uint32_t RDT0R;            /**< @brief Rx FIFO mailbox data len ctrl   Address offset 0x1B4 */
+    volatile uint32_t RDL0R;            /**< @brief Rx FIFO mailbox data low reg    Address offset 0x1B8 */
+    volatile uint32_t RDH0R;            /**< @brief Rx FIFO mailbox data high reg   Address offset 0x1BC */
+    volatile uint32_t RI1R;             /**< @brief Rx FIFO mailbox id register     Address offset 0x1C0 */
+    volatile uint32_t RDT1R;            /**< @brief Rx FIFO mailbox data len ctrl   Address offset 0x1C4 */
+    volatile uint32_t RDL1R;            /**< @brief Rx FIFO mailbox data low reg    Address offset 0x1C8 */
+    volatile uint32_t RDH1R;            /**< @brief Rx FIFO mailbox data high reg   Address offset 0x1CC */
+    volatile uint32_t RESERVED2[12];    /**< @brief Reserved                        Address offset 0x1D0 */
+    volatile uint32_t FMR;              /**< @brief Filter master register          Address offset 0x200 */
+    volatile uint32_t FM1R;             /**< @brief Filter mode register            Address offset 0x204 */
+    volatile uint32_t RESERVED3;        /**< @brief Reserved                        Address offset 0x208 */
+    volatile uint32_t FS1R;             /**< @brief Filter scale register           Address offset 0x20C */
+    volatile uint32_t RESERVED4;        /**< @brief Reserved                        Address offset 0x210 */
+    volatile uint32_t FFA1R;            /**< @brief Filter FIFO assignment reg      Address offset 0x214 */
+    volatile uint32_t RESERVED5;        /**< @brief Reserved                        Address offset 0x218 */
+    volatile uint32_t FA1R;             /**< @brief Filter activation register      Address offset 0x21C */
+    volatile uint32_t RESERVED6[8];     /**< @brief Reserved                        Address offset 0x220 */
+    volatile uint32_t FiRx[56];         /**< @brief Filter bank i register x        Address offset 0x240 */
+}CAN_RegDef_t;
+
 /***********************************************************************************************************/
 /*                          Bit Position Definition of Peripheral Register                                 */
 /***********************************************************************************************************/
