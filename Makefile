@@ -29,7 +29,8 @@ OBJS1 = $(OBJ_DIR)/main.o \
 		$(OBJ_DIR)/flash_driver.o \
 		$(OBJ_DIR)/timer_driver.o \
 		$(OBJ_DIR)/dma_driver.o \
-		$(OBJ_DIR)/rtc_driver.o
+		$(OBJ_DIR)/rtc_driver.o \
+		$(OBJ_DIR)/can_driver.o
 OBJS2 = $(OBJ_DIR)/main.o \
 		$(OBJ_DIR)/startup.o \
 		$(OBJ_DIR)/utils.o \
@@ -49,7 +50,8 @@ OBJS2 = $(OBJ_DIR)/main.o \
 		$(OBJ_DIR)/flash_driver.o \
 		$(OBJ_DIR)/timer_driver.o \
 		$(OBJ_DIR)/dma_driver.o \
-		$(OBJ_DIR)/rtc_driver.o
+		$(OBJ_DIR)/rtc_driver.o \
+		$(OBJ_DIR)/can_driver.o
 OBJS_LIB = $(OBJ_DIR)/gpio_driver.o \
 		   $(OBJ_DIR)/spi_driver.o \
 		   $(OBJ_DIR)/rcc_driver.o \
@@ -58,7 +60,8 @@ OBJS_LIB = $(OBJ_DIR)/gpio_driver.o \
 		   $(OBJ_DIR)/flash_driver.o \
 		   $(OBJ_DIR)/timer_driver.o \
 		   $(OBJ_DIR)/dma_driver.o \
-		   $(OBJ_DIR)/rtc_driver.o
+		   $(OBJ_DIR)/rtc_driver.o \
+		   $(OBJ_DIR)/can_driver.o
 CC = arm-none-eabi-gcc
 AR = arm-none-eabi-ar
 CR = arm-none-eabi-ranlib

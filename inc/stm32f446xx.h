@@ -1285,6 +1285,119 @@ typedef struct
 #define RTC_ALRMxR_MSK4     31  /**< @brief Alarm x date mask */
 /** @} */
 
+/**
+ * @name Bit position definition CAN master control register
+ * @{
+ */
+#define CAN_MCR_INRQ        0   /**< @brief Initialization request */
+#define CAN_MCR_SLEEP       1   /**< @brief Sleep mode request */
+#define CAN_MCR_TXFP        2   /**< @brief Transmit FIFO priority */
+#define CAN_MCR_RFLM        3   /**< @brief Receive FIFO locked mode */
+#define CAN_MCR_NART        4   /**< @brief No automatic retransmission */
+#define CAN_MCR_AWUM        5   /**< @brief Automatic wakeup mode */
+#define CAN_MCR_ABOM        6   /**< @brief Automatic bus-off management */
+#define CAN_MCR_TTCM        7   /**< @brief Time triggered communication mode */
+#define CAN_MCR_RESET       15  /**< @brief bxCAN software master reset */
+#define CAN_MCR_DBF         16  /**< @brief Debug freeze */
+/** @} */
+
+/**
+ * @name Bit position definition CAN master status register
+ * @{
+ */
+#define CAN_MSR_INAK        0   /**< @brief Initialization acknowledge */
+#define CAN_MSR_SLAK        1   /**< @brief Sleep acknowledge */
+#define CAN_MSR_ERRI        2   /**< @brief Error interrupt */
+#define CAN_MSR_WKUI        3   /**< @brief Wakeup interrupt */
+#define CAN_MSR_SLAKI       4   /**< @brief Sleep acknowledge interrupt */
+#define CAN_MSR_TXM         8   /**< @brief Transmit mode */
+#define CAN_MSR_RXM         9   /**< @brief Receive mode */
+#define CAN_MSR_SAMP        10  /**< @brief Last sample point */
+#define CAN_MSR_RX          11  /**< @brief CAN Rx signal */
+/** @} */
+
+/**
+ * @name Bit position definition CAN transmit status register
+ * @{
+ */
+#define CAN_TSR_RQCP0       0   /**< @brief Request completed mailbox0 */
+#define CAN_TSR_TXOK0       1   /**< @brief Transmission OK of mailbox0 */
+#define CAN_TSR_ALST0       2   /**< @brief Arbitration lost for mailbox0 */
+#define CAN_TSR_TERR0       3   /**< @brief Transmission error of mailbox0 */
+#define CAN_TSR_ABRQ0       7   /**< @brief Abort request for mailbox0 */
+#define CAN_TSR_RQCP1       8   /**< @brief Request completed mailbox1 */
+#define CAN_TSR_TXOK1       9   /**< @brief Transmission OK of mailbox1 */
+#define CAN_TSR_ALST1       10  /**< @brief Arbitration lost for mailbox1 */
+#define CAN_TSR_TERR1       11  /**< @brief Transmission error of mailbox1 */
+#define CAN_TSR_ABRQ1       15  /**< @brief Abort request for mailbox1 */
+#define CAN_TSR_RQCP2       16  /**< @brief Request completed mailbox2 */
+#define CAN_TSR_TXOK2       17  /**< @brief Transmission OK of mailbox2 */
+#define CAN_TSR_ALST2       18  /**< @brief Arbitration lost for mailbox2 */
+#define CAN_TSR_TERR2       19  /**< @brief Transmission error of mailbox2 */
+#define CAN_TSR_ABRQ2       23  /**< @brief Abort request for mailbox2 */
+#define CAN_TSR_CODE        24  /**< @brief Mailbox code */
+#define CAN_TSR_TME0        26  /**< @brief Transmit mailbox 0 empty */
+#define CAN_TSR_TME1        27  /**< @brief Transmit mailbox 1 empty */
+#define CAN_TSR_TME2        28  /**< @brief Transmit mailbox 2 empty */
+#define CAN_TSR_LOW0        29  /**< @brief Lowest priority flag for mailbox 0 */
+#define CAN_TSR_LOW1        30  /**< @brief Lowest priority flag for mailbox 1 */
+#define CAN_TSR_LOW2        31  /**< @brief Lowest priority flag for mailbox 2 */
+/** @} */
+
+/**
+ * @name Bit position definition CAN receive FIFO x register
+ * @{
+ */
+#define CAN_RFxR_FMP        0   /**< @brief FIFO message pending */
+#define CAN_RFxR_FULL       3   /**< @brief FIFO full */
+#define CAN_RFxR_FOVR       4   /**< @brief FIFO overrun */
+#define CAN_RFxR_RFOM       5   /**< @brief Release FIFO output mailbox */
+/** @} */
+
+/**
+ * @name Bit position definition CAN interrupt enable register
+ * @{
+ */
+#define CAN_IER_TMEIE       0   /**< @brief Transmit mailbox empty interrupt enable */
+#define CAN_IER_FMPIE0      1   /**< @brief FIFO message pending interrupt enable */
+#define CAN_IER_FFIE0       2   /**< @brief FIFO full interrupt enable */
+#define CAN_IER_FOVIE0      3   /**< @brief FIFO overrun interrupt enable */
+#define CAN_IER_FMPIE1      4   /**< @brief FIFO message pending interrupt enable */
+#define CAN_IER_FFIE1       5   /**< @brief FIFO full interrupt enable */
+#define CAN_IER_FOVIE1      6   /**< @brief FIFO overrun interrupt enable */
+#define CAN_IER_EWGIE       8   /**< @brief Error warning interrupt enable */
+#define CAN_IER_EPVIE       9   /**< @brief Error passive interrupt enable */
+#define CAN_IER_BOFIE       10  /**< @brief Bus-off interrupt enable */
+#define CAN_IER_LECIE       11  /**< @brief Last error code interrupt enable */
+#define CAN_IER_ERRIE       15  /**< @brief Error interrupt enable */
+#define CAN_IER_WKUIE       16  /**< @brief Wakeup interrupt enable */
+#define CAN_IER_SLKIE       17  /**< @brief Sleep interrupt enable */
+/** @} */
+
+/**
+ * @name Bit position definition CAN error status register
+ * @{
+ */
+#define CAN_ESR_EWGF        0   /**< @brief Error warning flag */
+#define CAN_ESR_EPVF        1   /**< @brief Error passive flag */
+#define CAN_ESR_BOFF        2   /**< @brief Bus-off flag */
+#define CAN_ESR_LEC         4   /**< @brief Last error code */
+#define CAN_ESR_TEC         16  /**< @brief Least significant byte of the 9-bit transmit error counter */
+#define CAN_ESR_REC         24  /**< @brief Receive error counter */
+/** @} */
+
+/**
+ * @name Bit position definition CAN bit timing register
+ * @{
+ */
+#define CAN_BTR_BRP         0   /**< @brief Baud rate prescaler */
+#define CAN_BTR_TS1         16  /**< @brief Time segment 1 */
+#define CAN_BTR_TS2         20  /**< @brief Time segment 2 */
+#define CAN_BTR_SJW         24  /**< @brief Resynchronization jump width */
+#define CAN_BTR_LBKM        30  /**< @brief Loop back mode (debug) */
+#define CAN_BTR_SILM        31  /**< @brief Silent mode (debug) */
+/** @} */
+
 /***********************************************************************************************************/
 /*          Peripheral definitions (peripheral base addresses typecasted to xxx_RegDef_t)                  */
 /***********************************************************************************************************/
@@ -1368,6 +1481,9 @@ typedef struct
 #define DMA2_STR7   ((DMA_Stream_RegDef_t*)DMA2_STR7_BASEADDR)  /**< @brief DMA2 str7 base addr reg def */
 
 #define RTC         ((RTC_RegDef_t*)RTCBKP_BASEADDR)         /**< @brief RTC base addr reg definition */
+
+#define CAN1        ((CAN_RegDef_t*)CAN1_BASEADDR)              /**< @brief CAN1 base addr reg definition */
+#define CAN2        ((CAN_RegDef_t*)CAN2_BASEADDR)              /**< @brief CAN2 base addr reg definition */
 /** @} */
 
 /***********************************************************************************************************/
@@ -1476,6 +1592,14 @@ typedef struct
 /** @} */
 
 /**
+ * @name Clock enable macros for CAN peripheral
+ * @{
+ */
+#define CAN1_PCLK_EN()      (RCC->APB1ENR |= (1 << 25))     /**< @brief clock enable for CAN1 */
+#define CAN2_PCLK_EN()      (RCC->APB1ENR |= (1 << 26))     /**< @brief clock enable for CAN2 */
+/** @} */
+
+/**
  * @name Clock disable macros for GPIOx peripheral.
  * @{
  */
@@ -1574,6 +1698,14 @@ typedef struct
  * @{
  */
 #define RTC_PCLK_DI()       (RCC->BDCR &= ~(1 << 15))       /**< @brief clock disable for RTC */
+/** @} */
+
+/**
+ * @name Clock disable macros for CAN peripheral
+ * @{
+ */
+#define CAN1_PCLK_DI()      (RCC->APB1ENR &= ~(1 << 25))    /**< @brief clock enable for CAN1 */
+#define CAN2_PCLK_DI()      (RCC->APB1ENR &= ~(1 << 26))    /**< @brief clock enable for CAN2 */
 /** @} */
 
 /**
@@ -1704,6 +1836,16 @@ typedef struct
 #define DMA1_REG_RESET()    do{(RCC->AHB1RSTR |= (1 << 21)); (RCC->AHB1RSTR &= ~(1 << 21));}while(0)
 /** @brief Reset macro for DMA2 */
 #define DMA2_REG_RESET()    do{(RCC->AHB1RSTR |= (1 << 22)); (RCC->AHB1RSTR &= ~(1 << 22));}while(0)
+/** @} */
+
+/**
+ * @name Reset macros CAN peripheral
+ * @{
+ */
+/** @brief Reset macro for CAN1 */
+#define CAN1_REG_RESET()   do{(RCC->APB1RSTR |= (1 << 25)); (RCC->APB1RSTR &= ~(1 << 25));}while(0)
+/** @brief Reset macro for CAN2 */
+#define CAN2_REG_RESET()   do{(RCC->APB1RSTR |= (1 << 26)); (RCC->APB1RSTR &= ~(1 << 26));}while(0)
 /** @} */
 
 /***********************************************************************************************************/
