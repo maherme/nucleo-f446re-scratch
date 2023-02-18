@@ -24,6 +24,7 @@
 #include "test_timer.h"
 #include "test_dma.h"
 #include "test_rtc.h"
+#include "test_can.h"
 #include "utils.h"
 
 /***********************************************************************************************************/
@@ -93,6 +94,10 @@ void test_init(void){
 
 #if TEST_RTC
     RTC_Test_Config();
+#endif
+
+#if TEST_CAN
+    CAN1_Config();
 #endif
 }
 

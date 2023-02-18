@@ -11,6 +11,8 @@
 #ifndef TEST_RTC_H
 #define TEST_RTC_H
 
+#if TEST_RTC
+
 /***********************************************************************************************************/
 /*                                       APIs Supported                                                    */
 /***********************************************************************************************************/
@@ -26,5 +28,7 @@ void RTC_Test_Config(void);
  * @return void
  */
 void RTC_Test_Reset(void);
+
+#endif /* if TEST_RTC */
 
 #endif /* TEST_RTC_H */

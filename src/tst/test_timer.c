@@ -242,7 +242,7 @@ void Timer3_Process(void){
 /*                               Weak Function Overwrite Definitions                                       */
 /***********************************************************************************************************/
 
-#if !TEST_RTC
+#if TEST_TIMER
 
 void TIM6_DAC_Handler(void){
     Timer_IRQHandling(&Timer);

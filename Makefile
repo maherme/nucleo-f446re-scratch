@@ -1,5 +1,5 @@
-TARGET1 = $(BLD_DIR)/nucleof446re.elf
-TARGET2 = $(BLD_DIR)/nucleof446re_sh.elf
+TARGET1 = $(BLD_DIR)/nucleof446re_rel.elf
+TARGET2 = $(BLD_DIR)/nucleof446re_dbg.elf
 TARGET_LIB = $(LIB_DIR)/libstm32f446xx.a
 SRC_DIR = ./src
 DRV_DIR = ./src/drv
@@ -21,6 +21,7 @@ OBJS1 = $(OBJ_DIR)/main.o \
 		$(OBJ_DIR)/test_timer.o \
 		$(OBJ_DIR)/test_dma.o \
 		$(OBJ_DIR)/test_rtc.o \
+		$(OBJ_DIR)/test_can.o \
 		$(OBJ_DIR)/gpio_driver.o \
 		$(OBJ_DIR)/spi_driver.o \
 		$(OBJ_DIR)/rcc_driver.o \
@@ -42,6 +43,7 @@ OBJS2 = $(OBJ_DIR)/main.o \
 		$(OBJ_DIR)/test_timer.o \
 		$(OBJ_DIR)/test_dma.o \
 		$(OBJ_DIR)/test_rtc.o \
+		$(OBJ_DIR)/test_can.o \
 		$(OBJ_DIR)/gpio_driver.o \
 		$(OBJ_DIR)/spi_driver.o \
 		$(OBJ_DIR)/rcc_driver.o \
@@ -68,19 +70,21 @@ CR = arm-none-eabi-ranlib
 MACH = cortex-m4
 CFLAGS = -c -MD -mcpu=$(MACH) -mthumb -mfloat-abi=soft -std=gnu11 -Wall $(INCLUDE) -O0
 LDFLAGS = -mcpu=$(MACH) -mthumb -mfloat-abi=soft --specs=nano.specs -T $(LNK_DIR)/lk_f446re.ld \
-		  -Wl,-Map=$(BLD_DIR)/nucleof446re.map
+		  -Wl,-Map=$(BLD_DIR)/nucleof446re.map -Wl,--print-memory-usage
 LDFLAGS_SH = -mcpu=$(MACH) -mthumb -mfloat-abi=soft --specs=rdimon.specs -T $(LNK_DIR)/lk_f446re.ld \
-			 -Wl,-Map=$(BLD_DIR)/nucleof446re_sh.map
+			 -Wl,-Map=$(BLD_DIR)/nucleof446re_sh.map -Wl,--print-memory-usage
 
 $(TARGET_LIB) : $(OBJS_LIB)
 	@mkdir -p $(LIB_DIR)
 	$(AR) -rc $@ $+
 	$(CR) $@
 
+$(TARGET1) : CFLAGS += -DRELEASE
 $(TARGET1) : $(OBJS1)
 	@mkdir -p $(BLD_DIR)
 	$(CC) $(LDFLAGS) $(OBJS1) -o $(TARGET1)
 
+$(TARGET2) : CFLAGS += -DDEBUG -g
 $(TARGET2) : $(OBJS2)
 	@mkdir -p $(BLD_DIR)
 	$(CC) $(LDFLAGS_SH) $(OBJS2) -o $(TARGET2)
@@ -99,11 +103,11 @@ $(OBJ_DIR)/%.o : $(TST_DIR)/%.c
 
 -include $(OBJ_DIR)/*.d
 
-.PHONY : all
-all: $(TARGET1)
+.PHONY : release
+release: $(TARGET1)
 
-.PHONY : semi
-semi: $(TARGET2)
+.PHONY : debug
+debug: $(TARGET2)
 
 .PHONY : clean
 clean:

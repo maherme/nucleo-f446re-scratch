@@ -18,6 +18,8 @@
 #include "stm32f446xx.h"
 #include <stdio.h>
 
+#if TEST_RTC
+
 /** @brief Set to 1 for testing using alarm interrupt */
 #define TEST_RTC_IRQ    1
 
@@ -201,8 +203,6 @@ static void RTC_Test_Timer6_Config(void){
 /*                               Weak Function Overwrite Definitions                                       */
 /***********************************************************************************************************/
 
-#if !TEST_TIMER
-
 void TIM6_DAC_Handler(void){
     Timer_IRQHandling(&RTC_Test_Timer);
 }
@@ -218,8 +218,6 @@ void Timer_ApplicationEventCallback(Timer_Num_t tim_num, Timer_Event_t timer_eve
         /* do nothing */
     }
 }
-
-#endif
 
 #if TEST_RTC_IRQ
 
@@ -245,3 +243,5 @@ void RTC_AlarmEventCallback(RTC_AlarmSel_t alarm){
 }
 
 #endif
+
+#endif /* if TEST_RTC */
