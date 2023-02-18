@@ -7,6 +7,8 @@
 *       - void CAN_Init(CAN_Handle_t* pCAN_Handle)
 *       - void CAN_DeInit(CAN_RegDef_t* pCANx)
 *       - void CAN_PerClkCtrl(CAN_RegDef_t* pCANx, uint8_t en_or_di)
+*       - void CAN_AddTxMsg(CAN_RegDef_t* pCANx, CAN_TxHeader_t* pTxHeader, uint8_t* msg)
+*       - uint8_t CAN_TxMsgPending(CAN_RegDef_t* pCANx)
 */
 
 #ifndef CAN_DRIVER_H
@@ -74,6 +76,22 @@
 /**@}*/
 
 /**
+ * @defgroup CAN_id_extension defines the identifier type of message in the mailbox
+ * @{
+ */
+#define CAN_STDI                        0   /**< @brief Standard identifier */
+#define CAN_EXID                        1   /**< @brief Extended identifier */
+/**@}*/
+
+/**
+ * @defgroup CAN_remote_tx_request remote transmission request
+ * @{
+ */
+#define CAN_DATA_FRAME                  0   /**< @brief Data frame */
+#define CAN_REMOTE_FRAME                1   /**< @brief Remote frame */
+/**@}*/
+
+/**
  * @brief Handle structure for CAN peripheral.
  */
 typedef struct
@@ -96,9 +114,21 @@ typedef struct
  */
 typedef struct
 {
-    CAN_RegDef_t* pCANx;            /**< Base address of the DMAx peripheral */
-    CAN_Config_t CAN_Config;        /**< DMAx peripheral configuration settings */
+    CAN_RegDef_t* pCANx;            /**< @brief Base address of the DMAx peripheral */
+    CAN_Config_t CAN_Config;        /**< @brief DMAx peripheral configuration settings */
 }CAN_Handle_t;
+
+/**
+ * @brief Structure for CAN Tx message header.
+ */
+typedef struct
+{
+    uint16_t StId;                  /**< @brief Standard identifier */
+    uint32_t ExId;                  /**< @brief Extended identifier */
+    uint8_t IDE;                    /**< @brief Possible values of @ref CAN_id_extension */
+    uint8_t RTR;                    /**< @brief Possible values of @ref CAN_remote_tx_request */
+    uint8_t DLC;                    /**< @brief Data length code */
+}CAN_TxHeader_t;
 
 /***********************************************************************************************************/
 /*                                       APIs Supported                                                    */
@@ -107,5 +137,7 @@ typedef struct
 void CAN_Init(CAN_Handle_t* pCAN_Handle);
 void CAN_DeInit(CAN_RegDef_t* pCANx);
 void CAN_PerClkCtrl(CAN_RegDef_t* pCANx, uint8_t en_or_di);
+void CAN_AddTxMsg(CAN_RegDef_t* pCANx, CAN_TxHeader_t* pTxHeader, uint8_t* msg);
+uint8_t CAN_TxMsgPending(CAN_RegDef_t* pCANx);
 
 #endif /* CAN_DRIVER_H */

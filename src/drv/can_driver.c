@@ -7,6 +7,8 @@
 *       - void CAN_Init(CAN_Handle_t* pCAN_Handle)
 *       - void CAN_DeInit(CAN_RegDef_t* pCANx)
 *       - void CAN_PerClkCtrl(CAN_RegDef_t* pCANx, uint8_t en_or_di)
+*       - void CAN_AddTxMsg(CAN_RegDef_t* pCANx, CAN_TxHeader_t* pTxHeader, uint8_t* msg)
+*       - uint8_t CAN_TxMsgPending(CAN_RegDef_t* pCANx)
 *
 * @note
 *       For further information about functions refer to the corresponding header file.
@@ -55,6 +57,10 @@ void CAN_Init(CAN_Handle_t* pCAN_Handle){
             (pCAN_Handle->CAN_Config.CAN_TimeSeg2 << CAN_BTR_TS2));
     pCAN_Handle->pCANx->BTR &= ~(0xFFFFFFFF);
     pCAN_Handle->pCANx->BTR = temp;
+
+    /* Exit from initialization mode */
+    pCAN_Handle->pCANx->MCR &= ~(1 << CAN_MCR_INRQ);
+    while(pCAN_Handle->pCANx->MSR & (1 << CAN_MSR_INAK));
 }
 
 void CAN_DeInit(CAN_RegDef_t* pCANx){
@@ -94,6 +100,58 @@ void CAN_PerClkCtrl(CAN_RegDef_t* pCANx, uint8_t en_or_di){
             /* do nothing */
         }
     }
+}
+
+void CAN_AddTxMsg(CAN_RegDef_t* pCANx, CAN_TxHeader_t* pTxHeader, uint8_t* msg){
+
+    uint32_t temp = 0;
+
+    /* Set CAN Tx mailbox identifier register */
+    pCANx->TI0R &= ~(0xFFFFFFFF);
+
+    if(pTxHeader->IDE == CAN_STDI){
+        temp |= (pTxHeader->StId << CAN_TIxR_STID);
+    }
+    else{
+        temp |= (pTxHeader->ExId << CAN_TIxR_EXID);
+    }
+    temp |= ((pTxHeader->IDE << CAN_TIxR_IDE) |
+            (pTxHeader->RTR << CAN_TIxR_RTR));
+    pCANx->TI0R = temp;
+
+    /* Set DLC value */
+    pCANx->TDT0R &= ~(0x0000000F);
+    pCANx->TDT0R |= (pTxHeader->DLC << CAN_TDTxR_DLC);
+
+    /* Set CAN mailbox data register */
+    pCANx->TDL0R &= ~(0xFFFFFFFF);
+    pCANx->TDH0R &= ~(0xFFFFFFFF);
+    temp = 0;
+    temp |= ((msg[0] << 0) |
+            (msg[1] << 8) |
+            (msg[2] << 16) |
+            (msg[3] << 24));
+    pCANx->TDL0R = temp;
+    temp = 0;
+    temp |= ((msg[4] << 0) |
+            (msg[5] << 8) |
+            (msg[6] << 16) |
+            (msg[7] << 24));
+    pCANx->TDH0R = temp;
+
+    /* Request transmission */
+    pCANx->TI0R |= (1 << CAN_TIxR_TXRQ);
+}
+
+uint8_t CAN_TxMsgPending(CAN_RegDef_t* pCANx){
+
+    uint8_t ret = 0;
+
+    if(pCANx->TSR & (1 << CAN_TSR_TME0)){
+        return 1;
+    }
+
+    return ret;
 }
 
 /***********************************************************************************************************/

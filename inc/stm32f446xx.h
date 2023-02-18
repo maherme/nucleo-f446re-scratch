@@ -1398,6 +1398,26 @@ typedef struct
 #define CAN_BTR_SILM        31  /**< @brief Silent mode (debug) */
 /** @} */
 
+/**
+ * @name Bit position definition CAN Tx mailbox identifier register
+ * @{
+ */
+#define CAN_TIxR_TXRQ       0   /**< @brief Transmit mailbox request */
+#define CAN_TIxR_RTR        1   /**< @brief Remote transmission request */
+#define CAN_TIxR_IDE        2   /**< @brief Identifier extension */
+#define CAN_TIxR_EXID       3   /**< @brief Extended identifier */
+#define CAN_TIxR_STID       21  /**< @brief Standard identifier */
+/** @} */
+
+/**
+ * @name Bit position definition CAN mailbox data length control and time stamp register
+ * @{
+ */
+#define CAN_TDTxR_DLC       0   /**< @brief Data length code */
+#define CAN_TDTxR_TGT       8   /**< @brief Transmit global time */
+#define CAN_TDTxR_TIME      16  /**< @brief Message time stamp */
+/** @} */
+
 /***********************************************************************************************************/
 /*          Peripheral definitions (peripheral base addresses typecasted to xxx_RegDef_t)                  */
 /***********************************************************************************************************/

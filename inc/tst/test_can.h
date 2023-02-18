@@ -5,6 +5,7 @@
 *
 * Public Functions:
 *       - void CAN1_Config(void)
+*       - void CAN1_Send(void)
 **/
 
 #ifndef TEST_CAN_H
@@ -15,5 +16,6 @@
 /***********************************************************************************************************/
 
 void CAN1_Config(void);
+void CAN1_Send(void);
 
 #endif /* TEST_CAN_H */

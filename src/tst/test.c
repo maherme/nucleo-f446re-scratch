@@ -169,6 +169,10 @@ void EXTI15_10_Handler(void){
     RTC_Test_Reset();
 #endif
 
+#if TEST_CAN
+    CAN1_Send();
+#endif
+
     /* Toggle LED */
     GPIO_ToggleOutputPin(GPIOA, GPIO_PIN_NO_5);
 }
