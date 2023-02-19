@@ -4,7 +4,7 @@
 * @brief Header file containing the prototypes of the APIs for configuring the CAN peripheral.
 *
 * Public Functions:
-*       - void CAN_Init(CAN_Handle_t* pCAN_Handle)
+*       - uint8_t CAN_Init(CAN_Handle_t* pCAN_Handle)
 *       - void CAN_DeInit(CAN_RegDef_t* pCANx)
 *       - void CAN_PerClkCtrl(CAN_RegDef_t* pCANx, uint8_t en_or_di)
 *       - void CAN_AddTxMsg(CAN_RegDef_t* pCANx, CAN_TxHeader_t* pTxHeader, uint8_t* msg)
@@ -134,10 +134,44 @@ typedef struct
 /*                                       APIs Supported                                                    */
 /***********************************************************************************************************/
 
-void CAN_Init(CAN_Handle_t* pCAN_Handle);
+/**
+ * @brief Function to initialize CAN peripheral.
+ * @param[in] pCAN_Handle handle structure for the CAN peripheral.
+ * @return 0 is the initialization process was OK
+ * @return 1 is the timing paratemers are not correct
+ */
+uint8_t CAN_Init(CAN_Handle_t* pCAN_Handle);
+
+/**
+ * @brief Function to reset all register of a CAN peripheral.
+ * @param[in] pCANx the base address of the CANx peripheral.
+ * @return void
+ */
 void CAN_DeInit(CAN_RegDef_t* pCANx);
+
+/**
+ * @brief Function to control the peripheral clock of the CAN peripheral.
+ * @param[in] pCANx the base address of the CANx peripheral.
+ * @param[in] en_or_di for enable or disable.
+ * @return void
+ */
 void CAN_PerClkCtrl(CAN_RegDef_t* pCANx, uint8_t en_or_di);
+
+/**
+ * @brief Function to add a message to a transmission mailbox.
+ * @param[in] pCANx the base address of the CANx peripheral.
+ * @param[in] pTxHeader struct with information about the message header.
+ * @param[in] msg is a pointer to the information to be sent.
+ * @return void
+ */
 void CAN_AddTxMsg(CAN_RegDef_t* pCANx, CAN_TxHeader_t* pTxHeader, uint8_t* msg);
+
+/**
+ * @brief Function to check if a transmission request is pending in a mailbox.
+ * @param[in] pCANx the base address of the CANx peripheral.
+ * @return 0 if no transmission is pending.
+ * @return 1 if a transmission is pending.
+ */
 uint8_t CAN_TxMsgPending(CAN_RegDef_t* pCANx);
 
 #endif /* CAN_DRIVER_H */

@@ -13,6 +13,8 @@
 
 #include "can_driver.h"
 #include "gpio_driver.h"
+#include "rcc_driver.h"
+#include "flash_driver.h"
 #include <stdint.h>
 #include <string.h>
 
@@ -31,6 +33,14 @@
  */
 static void CAN1_GPIOInit(void);
 
+/**
+ * @brief Function for setting the system clock and the frequency of the CAN peripheral
+ * @return void.
+ *
+ * @note System clock is set to 50MHz and APB1 peripheral clock is set to 25MHz.
+ */
+static void CAN1_SetClk(void);
+
 /***********************************************************************************************************/
 /*                                       Public API Definitions                                            */
 /***********************************************************************************************************/
@@ -40,7 +50,7 @@ void CAN1_Config(void){
     CAN_Handle_t CAN_Handler = {0};
 
     CAN_Handler.pCANx = CAN1;
-    CAN_Handler.CAN_Config.CAN_Mode = CAN_MODE_NORMAL;
+    CAN_Handler.CAN_Config.CAN_Mode = CAN_MODE_LOOPBACK;
     CAN_Handler.CAN_Config.CAN_AutoBusOff = CAN_ABOM_DISABLE;
     CAN_Handler.CAN_Config.CAN_AutoRetransmission = CAN_NART_ON;
     CAN_Handler.CAN_Config.CAN_AutoWakeup = CAN_AUTO_WAKEUP_OFF;
@@ -48,13 +58,15 @@ void CAN1_Config(void){
     CAN_Handler.CAN_Config.CAN_TimeTriggerMode = CAN_TTCM_DISABLE;
     CAN_Handler.CAN_Config.CAN_TxFifoPriority = CAN_TXFP_ID;
 
+    /* The time register is set to work at 500Kbps */
     CAN_Handler.CAN_Config.CAN_Prescalar = 5;
-    CAN_Handler.CAN_Config.CAN_SyncJumpWidth = 0;
-    CAN_Handler.CAN_Config.CAN_TimeSeg1 = 7;
-    CAN_Handler.CAN_Config.CAN_TimeSeg2 = 0;
+    CAN_Handler.CAN_Config.CAN_SyncJumpWidth = 1;
+    CAN_Handler.CAN_Config.CAN_TimeSeg1 = 8;
+    CAN_Handler.CAN_Config.CAN_TimeSeg2 = 1;
 
+    CAN1_SetClk();
     CAN1_GPIOInit();
-    CAN_Init(&CAN_Handler);
+    (void)CAN_Init(&CAN_Handler);
 }
 
 void CAN1_Send(void){
@@ -96,7 +108,27 @@ static void CAN1_GPIOInit(void){
     CANPins.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_12;
     GPIO_Init(&CANPins);
 
-    /* USART3 RX */
+    /* CAN1 RX */
     CANPins.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_11;
     GPIO_Init(&CANPins);
+}
+
+static void CAN1_SetClk(void){
+
+    RCC_Config_t RCC_Cfg = {0};
+
+    /* Set FLASH latency according to clock frequency (see reference manual) */
+    Flash_SetLatency(1);
+
+    /* Set configuration */
+    RCC_Cfg.clk_source = RCC_CLK_SOURCE_PLL_P;
+    RCC_Cfg.pll_source = PLL_SOURCE_HSE;
+    RCC_Cfg.ahb_presc = AHB_NO_PRESC;
+    RCC_Cfg.apb1_presc = APB1_PRESC_2;
+    RCC_Cfg.apb2_presc = APB2_NO_PRESC;
+    RCC_Cfg.pll_n = 50;
+    RCC_Cfg.pll_m = 4;
+    RCC_Cfg.pll_p = PLL_P_2;
+    /* Set clock */
+    RCC_SetSystemClock(RCC_Cfg);
 }

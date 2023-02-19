@@ -15,7 +15,16 @@
 /*                                       APIs Supported                                                    */
 /***********************************************************************************************************/
 
+/**
+ * @brief Function to configure the CAN1 peripheral.
+ * @return void
+ */
 void CAN1_Config(void);
+
+/**
+ * @brief Function for sending a message using CAN1 peripheral.
+ * @return void
+ */
 void CAN1_Send(void);
 
 #endif /* TEST_CAN_H */

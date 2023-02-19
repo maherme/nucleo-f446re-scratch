@@ -4,7 +4,7 @@
 * @brief File containing the APIs for configuring the CAN peripheral.
 *
 * Public Functions:
-*       - void CAN_Init(CAN_Handle_t* pCAN_Handle)
+*       - uint8_t CAN_Init(CAN_Handle_t* pCAN_Handle)
 *       - void CAN_DeInit(CAN_RegDef_t* pCANx)
 *       - void CAN_PerClkCtrl(CAN_RegDef_t* pCANx, uint8_t en_or_di)
 *       - void CAN_AddTxMsg(CAN_RegDef_t* pCANx, CAN_TxHeader_t* pTxHeader, uint8_t* msg)
@@ -26,9 +26,23 @@
 /*                                       Public API Definitions                                            */
 /***********************************************************************************************************/
 
-void CAN_Init(CAN_Handle_t* pCAN_Handle){
+uint8_t CAN_Init(CAN_Handle_t* pCAN_Handle){
 
     uint32_t temp = 0;
+
+    /* Initial check of parameters */
+    if((pCAN_Handle->CAN_Config.CAN_SyncJumpWidth < 1) || (pCAN_Handle->CAN_Config.CAN_SyncJumpWidth > 4)){
+        return 1;
+    }
+    if((pCAN_Handle->CAN_Config.CAN_Prescalar < 1) || (pCAN_Handle->CAN_Config.CAN_Prescalar > 0x400)){
+        return 1;
+    }
+    if((pCAN_Handle->CAN_Config.CAN_TimeSeg1 < 1) || (pCAN_Handle->CAN_Config.CAN_TimeSeg1 > 0x10)){
+        return 1;
+    }
+    if((pCAN_Handle->CAN_Config.CAN_TimeSeg2 < 1) || (pCAN_Handle->CAN_Config.CAN_TimeSeg2 > 8)){
+        return 1;
+    }
 
     /* Enable the peripheral clock */
     CAN_PerClkCtrl(pCAN_Handle->pCANx, ENABLE);
@@ -51,16 +65,18 @@ void CAN_Init(CAN_Handle_t* pCAN_Handle){
     /* Set bit timing register */
     temp = 0;
     temp |= ((pCAN_Handle->CAN_Config.CAN_Mode << CAN_BTR_LBKM) |
-            (pCAN_Handle->CAN_Config.CAN_SyncJumpWidth << CAN_BTR_SJW) |
-            (pCAN_Handle->CAN_Config.CAN_Prescalar << CAN_BTR_BRP) |
-            (pCAN_Handle->CAN_Config.CAN_TimeSeg1 << CAN_BTR_TS1) |
-            (pCAN_Handle->CAN_Config.CAN_TimeSeg2 << CAN_BTR_TS2));
+            ((pCAN_Handle->CAN_Config.CAN_SyncJumpWidth - 1) << CAN_BTR_SJW) |
+            ((pCAN_Handle->CAN_Config.CAN_Prescalar - 1) << CAN_BTR_BRP) |
+            ((pCAN_Handle->CAN_Config.CAN_TimeSeg1 - 1) << CAN_BTR_TS1) |
+            ((pCAN_Handle->CAN_Config.CAN_TimeSeg2 - 1) << CAN_BTR_TS2));
     pCAN_Handle->pCANx->BTR &= ~(0xFFFFFFFF);
     pCAN_Handle->pCANx->BTR = temp;
 
     /* Exit from initialization mode */
     pCAN_Handle->pCANx->MCR &= ~(1 << CAN_MCR_INRQ);
     while(pCAN_Handle->pCANx->MSR & (1 << CAN_MSR_INAK));
+
+    return 0;
 }
 
 void CAN_DeInit(CAN_RegDef_t* pCANx){
