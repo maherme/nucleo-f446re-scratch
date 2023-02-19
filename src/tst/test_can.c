@@ -79,8 +79,9 @@ void CAN1_Send(void){
     tx_header.RTR = CAN_DATA_FRAME;
     tx_header.DLC = 5;
 
-    CAN_AddTxMsg(CAN1, &tx_header, message);
-    while(CAN_TxMsgPending(CAN1));
+    CAN_AddTxMsg(CAN1, &tx_header, message, CAN_MAILBOX_0);
+    CAN_AddTxMsg(CAN1, &tx_header, message, CAN_MAILBOX_1);
+    CAN_AddTxMsg(CAN1, &tx_header, message, CAN_MAILBOX_2);
 }
 
 /***********************************************************************************************************/

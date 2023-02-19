@@ -7,8 +7,8 @@
 *       - uint8_t CAN_Init(CAN_Handle_t* pCAN_Handle)
 *       - void CAN_DeInit(CAN_RegDef_t* pCANx)
 *       - void CAN_PerClkCtrl(CAN_RegDef_t* pCANx, uint8_t en_or_di)
-*       - void CAN_AddTxMsg(CAN_RegDef_t* pCANx, CAN_TxHeader_t* pTxHeader, uint8_t* msg)
-*       - uint8_t CAN_TxMsgPending(CAN_RegDef_t* pCANx)
+*       - uint8_t CAN_AddTxMsg(CAN_RegDef_t* pCANx, CAN_TxHeader_t* pTxHeader, uint8_t* msg, uint32_t mailbox)
+*       - uint8_t CAN_TxMsgPending(CAN_RegDef_t* pCANx, uint32_t mailbox)
 */
 
 #ifndef CAN_DRIVER_H
@@ -92,6 +92,15 @@
 /**@}*/
 
 /**
+ * @defgroup CAN_mailboxes mailboxes for CAN
+ * @{
+ */
+#define CAN_MAILBOX_0                   (uint32_t)0x00000001    /**< @brief Mailbox 0 */
+#define CAN_MAILBOX_1                   (uint32_t)0x00000002    /**< @brief Mailbox 1 */
+#define CAN_MAILBOX_2                   (uint32_t)0x00000004    /**< @brief Mailbox 2 */
+/**@}*/
+
+/**
  * @brief Handle structure for CAN peripheral.
  */
 typedef struct
@@ -162,16 +171,18 @@ void CAN_PerClkCtrl(CAN_RegDef_t* pCANx, uint8_t en_or_di);
  * @param[in] pCANx the base address of the CANx peripheral.
  * @param[in] pTxHeader struct with information about the message header.
  * @param[in] msg is a pointer to the information to be sent.
+ * @param[in] mailbox the selected mailbox: possible value of @ref CAN_mailboxes.
  * @return void
  */
-void CAN_AddTxMsg(CAN_RegDef_t* pCANx, CAN_TxHeader_t* pTxHeader, uint8_t* msg);
+uint8_t CAN_AddTxMsg(CAN_RegDef_t* pCANx, CAN_TxHeader_t* pTxHeader, uint8_t* msg, uint32_t mailbox);
 
 /**
  * @brief Function to check if a transmission request is pending in a mailbox.
  * @param[in] pCANx the base address of the CANx peripheral.
+ * @param[in] mailbox the selected mailbox: possible value of @ref CAN_mailboxes.
  * @return 0 if no transmission is pending.
  * @return 1 if a transmission is pending.
  */
-uint8_t CAN_TxMsgPending(CAN_RegDef_t* pCANx);
+uint8_t CAN_TxMsgPending(CAN_RegDef_t* pCANx, uint32_t mailbox);
 
 #endif /* CAN_DRIVER_H */

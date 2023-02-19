@@ -7,8 +7,8 @@
 *       - uint8_t CAN_Init(CAN_Handle_t* pCAN_Handle)
 *       - void CAN_DeInit(CAN_RegDef_t* pCANx)
 *       - void CAN_PerClkCtrl(CAN_RegDef_t* pCANx, uint8_t en_or_di)
-*       - void CAN_AddTxMsg(CAN_RegDef_t* pCANx, CAN_TxHeader_t* pTxHeader, uint8_t* msg)
-*       - uint8_t CAN_TxMsgPending(CAN_RegDef_t* pCANx)
+*       - uint8_t CAN_AddTxMsg(CAN_RegDef_t* pCANx, CAN_TxHeader_t* pTxHeader, uint8_t* msg, uint32_t mailbox)
+*       - uint8_t CAN_TxMsgPending(CAN_RegDef_t* pCANx, uint32_t mailbox)
 *
 * @note
 *       For further information about functions refer to the corresponding header file.
@@ -17,6 +17,7 @@
 #include "can_driver.h"
 #include "stm32f446xx.h"
 #include <stdint.h>
+#include <stddef.h>
 
 /***********************************************************************************************************/
 /*                                       Static Function Prototypes                                        */
@@ -118,12 +119,28 @@ void CAN_PerClkCtrl(CAN_RegDef_t* pCANx, uint8_t en_or_di){
     }
 }
 
-void CAN_AddTxMsg(CAN_RegDef_t* pCANx, CAN_TxHeader_t* pTxHeader, uint8_t* msg){
+uint8_t CAN_AddTxMsg(CAN_RegDef_t* pCANx, CAN_TxHeader_t* pTxHeader, uint8_t* msg, uint32_t mailbox){
 
     uint32_t temp = 0;
+    uint32_t* pTIxR = NULL;
+
+    switch(mailbox){
+        case CAN_MAILBOX_0:
+            pTIxR = (uint32_t*)&(pCANx->TI0R);
+            break;
+        case CAN_MAILBOX_1:
+            pTIxR = (uint32_t*)&(pCANx->TI1R);
+            break;
+        case CAN_MAILBOX_2:
+            pTIxR = (uint32_t*)&(pCANx->TI2R);
+            break;
+        default:
+            return 1;
+            break;
+    }
 
     /* Set CAN Tx mailbox identifier register */
-    pCANx->TI0R &= ~(0xFFFFFFFF);
+    *pTIxR &= ~(0xFFFFFFFF);
 
     if(pTxHeader->IDE == CAN_STDI){
         temp |= (pTxHeader->StId << CAN_TIxR_STID);
@@ -133,37 +150,43 @@ void CAN_AddTxMsg(CAN_RegDef_t* pCANx, CAN_TxHeader_t* pTxHeader, uint8_t* msg){
     }
     temp |= ((pTxHeader->IDE << CAN_TIxR_IDE) |
             (pTxHeader->RTR << CAN_TIxR_RTR));
-    pCANx->TI0R = temp;
+    *pTIxR = temp;
 
-    /* Set DLC value */
-    pCANx->TDT0R &= ~(0x0000000F);
-    pCANx->TDT0R |= (pTxHeader->DLC << CAN_TDTxR_DLC);
+    /* Set DLC value (TDTxR register has offset 4 bytes from TIxR register) */
+    *(pTIxR + 1) &= ~(0x0000000F);
+    *(pTIxR + 1) |= (pTxHeader->DLC << CAN_TDTxR_DLC);
 
     /* Set CAN mailbox data register */
-    pCANx->TDL0R &= ~(0xFFFFFFFF);
-    pCANx->TDH0R &= ~(0xFFFFFFFF);
+    /* Clear TDLxR register (offset 8 bytes from TIxR register) */
+    *(pTIxR + 2) &= ~(0xFFFFFFFF);
+    /* Clear TDHxR register (offset 12 bytes from TIxR register) */
+    *(pTIxR + 3) &= ~(0xFFFFFFFF);
+    /* Set TDLxR register */
     temp = 0;
     temp |= ((msg[0] << 0) |
             (msg[1] << 8) |
             (msg[2] << 16) |
             (msg[3] << 24));
-    pCANx->TDL0R = temp;
+    *(pTIxR + 2) = temp;
+    /* Set TDHxR register */
     temp = 0;
     temp |= ((msg[4] << 0) |
             (msg[5] << 8) |
             (msg[6] << 16) |
             (msg[7] << 24));
-    pCANx->TDH0R = temp;
+    *(pTIxR + 3) = temp;
 
     /* Request transmission */
-    pCANx->TI0R |= (1 << CAN_TIxR_TXRQ);
+    *(pTIxR) |= (1 << CAN_TIxR_TXRQ);
+
+    return 0;
 }
 
-uint8_t CAN_TxMsgPending(CAN_RegDef_t* pCANx){
+uint8_t CAN_TxMsgPending(CAN_RegDef_t* pCANx, uint32_t mailbox){
 
     uint8_t ret = 0;
 
-    if(pCANx->TSR & (1 << CAN_TSR_TME0)){
+    if(pCANx->TSR & (mailbox << CAN_TSR_TME0)){
         return 1;
     }
 
