@@ -124,6 +124,12 @@ uint8_t CAN_AddTxMsg(CAN_RegDef_t* pCANx, CAN_TxHeader_t* pTxHeader, uint8_t* ms
     uint32_t temp = 0;
     uint32_t* pTIxR = NULL;
 
+    /* Check if the mailbox is free */
+    if(!(pCANx->TSR & (mailbox << CAN_TSR_TME0))){
+        return 2;
+    }
+
+    /* Set the selected mailbox address to manage it */
     switch(mailbox){
         case CAN_MAILBOX_0:
             pTIxR = (uint32_t*)&(pCANx->TI0R);

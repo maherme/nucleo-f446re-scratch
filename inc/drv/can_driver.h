@@ -172,7 +172,9 @@ void CAN_PerClkCtrl(CAN_RegDef_t* pCANx, uint8_t en_or_di);
  * @param[in] pTxHeader struct with information about the message header.
  * @param[in] msg is a pointer to the information to be sent.
  * @param[in] mailbox the selected mailbox: possible value of @ref CAN_mailboxes.
- * @return void
+ * @return 0 is adding message was OK.
+ * @return 1 is an invalid mailbox value is passed as parameter.
+ * @return 2 is the selected mailbox is in transmission pending state.
  */
 uint8_t CAN_AddTxMsg(CAN_RegDef_t* pCANx, CAN_TxHeader_t* pTxHeader, uint8_t* msg, uint32_t mailbox);
 
