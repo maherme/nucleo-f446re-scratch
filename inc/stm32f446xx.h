@@ -1418,6 +1418,14 @@ typedef struct
 #define CAN_TDTxR_TIME      16  /**< @brief Message time stamp */
 /** @} */
 
+/**
+ * @name Bit position definition CAN filter master register
+ * @{
+ */
+#define CAN_FMR_FINIT       0   /**< @brief Filter initialization mode */
+#define CAN_FMR_CANSB       8   /**< @brief CAN start bank */
+/** @} */
+
 /***********************************************************************************************************/
 /*          Peripheral definitions (peripheral base addresses typecasted to xxx_RegDef_t)                  */
 /***********************************************************************************************************/

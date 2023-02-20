@@ -9,6 +9,7 @@
 *       - void CAN_PerClkCtrl(CAN_RegDef_t* pCANx, uint8_t en_or_di)
 *       - uint8_t CAN_AddTxMsg(CAN_RegDef_t* pCANx, CAN_TxHeader_t* pTxHeader, uint8_t* msg, uint32_t mailbox)
 *       - uint8_t CAN_TxMsgPending(CAN_RegDef_t* pCANx, uint32_t mailbox)
+*       - uint8_t CAN_SetFilter(CAN_Filter_t* filter)
 *
 * @note
 *       For further information about functions refer to the corresponding header file.
@@ -197,6 +198,54 @@ uint8_t CAN_TxMsgPending(CAN_RegDef_t* pCANx, uint32_t mailbox){
     }
 
     return ret;
+}
+
+uint8_t CAN_SetFilter(CAN_Filter_t* filter){
+
+    uint32_t temp = 0;
+
+    /* Check the filter number is valid */
+    if(filter->FilterNumber > 27){
+        return 1;
+    }
+
+    /* Enter in filter initialization mode */
+    CAN1->FMR |= (1 << CAN_FMR_FINIT);
+
+    /* Set filter mode */
+    CAN1->FM1R &= ~(1 << filter->FilterNumber);
+    CAN1->FM1R |= (filter->Mode << filter->FilterNumber);
+
+    /* Set filter scale */
+    CAN1->FS1R &= ~(1 << filter->FilterNumber);
+    CAN1->FS1R |= (filter->Scale << filter->FilterNumber);
+
+    /* Set filter FIFO assignment */
+    CAN1->FFA1R &= ~(1 << filter->FilterNumber);
+    CAN1->FFA1R |= (filter->FIFO << filter->FilterNumber);
+
+    /* Set filter banks */
+    /* Clear identifier filter register */
+    CAN1->FiRx[2*(filter->FilterNumber)] &= ~(0xFFFFFFFF);
+    /* Set identifier filter register */
+    temp |= ((filter->IdentifierHR << 16) |
+            (filter->IdentifierLR));
+    CAN1->FiRx[2*(filter->FilterNumber)] = temp;
+    /* Clear mask filter register */
+    CAN1->FiRx[2*(filter->FilterNumber) + 1] &= ~(0xFFFFFFFF);
+    /* Set mask filter register */
+    temp = 0;
+    temp |= ((filter->MaskHR << 16) |
+            (filter->MaskLR));
+    CAN1->FiRx[2*(filter->FilterNumber) + 1] = temp;
+
+    /* Active filters mode */
+    CAN1->FMR &= ~(1 << CAN_FMR_FINIT);
+
+    /* Activate filter */
+    CAN1->FA1R |= (1 << filter->FilterNumber);
+
+    return 0;
 }
 
 /***********************************************************************************************************/

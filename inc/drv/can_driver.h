@@ -9,6 +9,7 @@
 *       - void CAN_PerClkCtrl(CAN_RegDef_t* pCANx, uint8_t en_or_di)
 *       - uint8_t CAN_AddTxMsg(CAN_RegDef_t* pCANx, CAN_TxHeader_t* pTxHeader, uint8_t* msg, uint32_t mailbox)
 *       - uint8_t CAN_TxMsgPending(CAN_RegDef_t* pCANx, uint32_t mailbox)
+*       - uint8_t CAN_SetFilter(CAN_Filter_t* filter)
 */
 
 #ifndef CAN_DRIVER_H
@@ -101,6 +102,30 @@
 /**@}*/
 
 /**
+ * @defgroup CAN_filter_mode filter mode
+ * @{
+ */
+#define CAN_FILTER_ID_MASK_MODE         0   /**< @brief Bits of filter bank x are in Identifier Mask mode */
+#define CAN_FILTER_ID_LIST_MODE         1   /**< @brief Bits of filter bank x are in Identifier List mode */
+/**@}*/
+
+/**
+ * @defgroup CAN_filter_scale filter scale configuration
+ * @{
+ */
+#define CAN_FILTER_16_BIT_SCALE         0   /**< @brief Dual 16-bit scale configuration */
+#define CAN_FILTER_32_BIT_SCALE         1   /**< @brief Single 32-bit scale configuration */
+/**@}*/
+
+/**
+ * @defgroup CAN_filter_FIFO filter FIFO assignment
+ * @{
+ */
+#define CAN_FILTER_FIFO_0               0   /**< @brief Filter assigned to FIFO 0 */
+#define CAN_FILTER_FIFO_1               1   /**< @brief Filter assigned to FIFO 1 */
+/**@}*/
+
+/**
  * @brief Handle structure for CAN peripheral.
  */
 typedef struct
@@ -138,6 +163,18 @@ typedef struct
     uint8_t RTR;                    /**< @brief Possible values of @ref CAN_remote_tx_request */
     uint8_t DLC;                    /**< @brief Data length code */
 }CAN_TxHeader_t;
+
+typedef struct 
+{
+    uint8_t FilterNumber;           /**< @brief Filter number, it must be a value from 0 to 27 */
+    uint8_t Mode;                   /**< @brief Filter mode, possible values of @ref CAN_filter_mode */
+    uint8_t Scale;                  /**< @brief Filter scale, possible values of @ref CAN_filter_scale */
+    uint8_t FIFO;                   /**< @brief FIFO assignment, possible values of @ref CAN_filter_FIFO */
+    uint16_t IdentifierLR;          /**< @brief Low half word of identifier register filter */
+    uint16_t IdentifierHR;          /**< @brief High half word of identifier register filter */
+    uint16_t MaskLR;                /**< @brief Low half word of mask register filter */
+    uint16_t MaskHR;                /**< @brief High half word of mask register filter */
+}CAN_Filter_t;
 
 /***********************************************************************************************************/
 /*                                       APIs Supported                                                    */
@@ -186,5 +223,13 @@ uint8_t CAN_AddTxMsg(CAN_RegDef_t* pCANx, CAN_TxHeader_t* pTxHeader, uint8_t* ms
  * @return 1 if a transmission is pending.
  */
 uint8_t CAN_TxMsgPending(CAN_RegDef_t* pCANx, uint32_t mailbox);
+
+/**
+ * @brief Function to configure the CAN repection filters.
+ * @param[in] filter struct with information about the filter configuration parameters.
+ * @return 0 if the filter was configured.
+ * @return 1 if the selected filter number is not correct.
+ */
+uint8_t CAN_SetFilter(CAN_Filter_t* filter);
 
 #endif /* CAN_DRIVER_H */

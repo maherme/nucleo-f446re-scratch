@@ -48,6 +48,7 @@ static void CAN1_SetClk(void);
 void CAN1_Config(void){
 
     CAN_Handle_t CAN_Handler = {0};
+    CAN_Filter_t CAN_Filter = {0};
 
     CAN_Handler.pCANx = CAN1;
     CAN_Handler.CAN_Config.CAN_Mode = CAN_MODE_LOOPBACK;
@@ -64,9 +65,20 @@ void CAN1_Config(void){
     CAN_Handler.CAN_Config.CAN_TimeSeg1 = 8;
     CAN_Handler.CAN_Config.CAN_TimeSeg2 = 1;
 
+    /* Set filter parameters */
+    CAN_Filter.FilterNumber = 0;
+    CAN_Filter.Mode = CAN_FILTER_ID_MASK_MODE;
+    CAN_Filter.Scale = CAN_FILTER_32_BIT_SCALE;
+    CAN_Filter.FIFO = CAN_FILTER_FIFO_0;
+    CAN_Filter.IdentifierLR = 0x0000;
+    CAN_Filter.IdentifierHR = 0x0000;
+    CAN_Filter.MaskLR = 0x0000;
+    CAN_Filter.MaskHR = 0x0000;
+
     CAN1_SetClk();
     CAN1_GPIOInit();
     (void)CAN_Init(&CAN_Handler);
+    (void)CAN_SetFilter(&CAN_Filter);
 }
 
 void CAN1_Send(void){
