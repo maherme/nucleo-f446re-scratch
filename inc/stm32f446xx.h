@@ -1419,6 +1419,24 @@ typedef struct
 /** @} */
 
 /**
+ * @name Bit position definition CAN Rx FIFO mailbox identifier register
+ * @{
+ */
+#define CAN_RIxR_RTR        1   /**< @brief Remote transmission request */
+#define CAN_RIxR_IDE        2   /**< @brief Identifier extension */
+#define CAN_RIxR_EXID       3   /**< @brief Extended identifier */
+#define CAN_RIxR_STID       21  /**< @brief Standard identifier */
+
+/**
+ * @name Bit position definition CAN mailbox data length control and time stamp register
+ * @{
+ */
+#define CAN_RDTxR_DLC       0   /**< @brief Data length code */
+#define CAN_RDTxR_FMI       8   /**< @brief Filter match index */
+#define CAN_RDTxR_TIME      16  /**< @brief Message time stamp */
+
+/** @} */
+/**
  * @name Bit position definition CAN filter master register
  * @{
  */

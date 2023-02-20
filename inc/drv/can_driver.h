@@ -10,6 +10,7 @@
 *       - uint8_t CAN_AddTxMsg(CAN_RegDef_t* pCANx, CAN_TxHeader_t* pTxHeader, uint8_t* msg, uint32_t mailbox)
 *       - uint8_t CAN_TxMsgPending(CAN_RegDef_t* pCANx, uint32_t mailbox)
 *       - uint8_t CAN_SetFilter(CAN_Filter_t* filter)
+*       - uint8_t CAN_GetRxMsg(CAN_RegDef_t* pCANx, CAN_RxMessage_t* pRxMessage, uint8_t FIFO_number)
 */
 
 #ifndef CAN_DRIVER_H
@@ -176,6 +177,20 @@ typedef struct
     uint16_t MaskHR;                /**< @brief High half word of mask register filter */
 }CAN_Filter_t;
 
+/**
+ * @brief Structure for CAN Rx message.
+ */
+typedef struct
+{
+    uint16_t StId;                  /**< @brief Standard identifier */
+    uint32_t ExId;                  /**< @brief Extended identifier */
+    uint8_t IDE;                    /**< @brief Identifier extension */
+    uint8_t RTR;                    /**< @brief Remote transmission request  */
+    uint8_t DLC;                    /**< @brief Data length code */
+    uint32_t DataLR;                /**< @brief Receive FIFO mailbox data low register */
+    uint32_t DataHR;                /**< @brief Receive FIFO mailbox data high register */
+}CAN_RxMessage_t;
+
 /***********************************************************************************************************/
 /*                                       APIs Supported                                                    */
 /***********************************************************************************************************/
@@ -231,5 +246,16 @@ uint8_t CAN_TxMsgPending(CAN_RegDef_t* pCANx, uint32_t mailbox);
  * @return 1 if the selected filter number is not correct.
  */
 uint8_t CAN_SetFilter(CAN_Filter_t* filter);
+
+/**
+ * @brief Function to get a message from a selected receive FIFO.
+ * @param[in] pCANx the base address of the CANx peripheral.
+ * @param[out] pRxMessage struct for storing the received message.
+ * @param[in] FIFO_number the selected receive FIFO for getting the message.
+ * @return 0 if a message was stored in the pRxMessage struct.
+ * @return 1 if the selected FIFO number is not correct.
+ * @return 2 if the FIFO has not a message pending.
+ */
+uint8_t CAN_GetRxMsg(CAN_RegDef_t* pCANx, CAN_RxMessage_t* pRxMessage, uint8_t FIFO_number);
 
 #endif /* CAN_DRIVER_H */

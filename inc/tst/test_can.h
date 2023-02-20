@@ -6,6 +6,7 @@
 * Public Functions:
 *       - void CAN1_Config(void)
 *       - void CAN1_Send(void)
+*       - void CAN1_Send_Receive(void)
 **/
 
 #ifndef TEST_CAN_H
@@ -26,5 +27,11 @@ void CAN1_Config(void);
  * @return void
  */
 void CAN1_Send(void);
+
+/**
+ * @brief Function for sending and receiving a message using CAN1 peripheral.
+ * @return void
+ */
+void CAN1_Send_Receive(void);
 
 #endif /* TEST_CAN_H */

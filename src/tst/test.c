@@ -170,7 +170,8 @@ void EXTI15_10_Handler(void){
 #endif
 
 #if TEST_CAN
-    CAN1_Send();
+    //CAN1_Send();
+    CAN1_Send_Receive();
 #endif
 
     /* Toggle LED */

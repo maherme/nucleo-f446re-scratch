@@ -10,6 +10,7 @@
 *       - uint8_t CAN_AddTxMsg(CAN_RegDef_t* pCANx, CAN_TxHeader_t* pTxHeader, uint8_t* msg, uint32_t mailbox)
 *       - uint8_t CAN_TxMsgPending(CAN_RegDef_t* pCANx, uint32_t mailbox)
 *       - uint8_t CAN_SetFilter(CAN_Filter_t* filter)
+*       - uint8_t CAN_GetRxMsg(CAN_RegDef_t* pCANx, CAN_RxMessage_t* pRxMessage, uint8_t FIFO_number)
 *
 * @note
 *       For further information about functions refer to the corresponding header file.
@@ -244,6 +245,43 @@ uint8_t CAN_SetFilter(CAN_Filter_t* filter){
 
     /* Activate filter */
     CAN1->FA1R |= (1 << filter->FilterNumber);
+
+    return 0;
+}
+
+uint8_t CAN_GetRxMsg(CAN_RegDef_t* pCANx, CAN_RxMessage_t* pRxMessage, uint8_t FIFO_number){
+
+    uint32_t* pFIFO = NULL;
+
+    /* Check if selected FIFO has a message pending */
+    if(FIFO_number == 0){
+        if(!(pCANx->RF0R & (0x3 << CAN_RFxR_FMP))){
+            return 2;
+        }
+        pFIFO = (uint32_t*)&(pCANx->RI0R);
+    }
+    else if(FIFO_number == 1){
+        if(!(pCANx->RF1R & (0x3 << CAN_RFxR_FMP))){
+            return 2;
+        }
+        pFIFO = (uint32_t*)&(pCANx->RI1R);
+    }
+    else{
+        /* If FIFO number is not correct return error */
+        return 1;
+    }
+
+    pRxMessage->IDE = (*pFIFO << CAN_RIxR_IDE);
+    pRxMessage->RTR = (*pFIFO << CAN_RIxR_RTR);
+    if(pRxMessage->IDE == 0){
+        pRxMessage->StId = (*pFIFO << CAN_RIxR_STID);
+    }
+    else{
+        pRxMessage->ExId = (*pFIFO << CAN_RIxR_EXID);
+    }
+    pRxMessage->DLC = (*(pFIFO + 1) << CAN_RDTxR_DLC);
+    pRxMessage->DataLR = *(pFIFO + 2);
+    pRxMessage->DataHR = *(pFIFO + 3);
 
     return 0;
 }

@@ -6,6 +6,7 @@
 * Public Functions:
 *       - void CAN1_Config(void)
 *       - void CAN1_Send(void)
+*       - void CAN1_Send_Receive(void)
 *
 * @note
 *       For further information about functions refer to the corresponding header file.
@@ -17,6 +18,7 @@
 #include "flash_driver.h"
 #include <stdint.h>
 #include <string.h>
+#include <stdio.h>
 
 /***********************************************************************************************************/
 /*                                       Static Function Prototypes                                        */
@@ -94,6 +96,22 @@ void CAN1_Send(void){
     CAN_AddTxMsg(CAN1, &tx_header, message, CAN_MAILBOX_0);
     CAN_AddTxMsg(CAN1, &tx_header, message, CAN_MAILBOX_1);
     CAN_AddTxMsg(CAN1, &tx_header, message, CAN_MAILBOX_2);
+}
+
+void CAN1_Send_Receive(void){
+
+    uint8_t message[5] = {'H', 'e', 'l', 'l', 'o'};
+    CAN_TxHeader_t tx_header = {0};
+    CAN_RxMessage_t rx_message = {0};
+
+    tx_header.StId = 0x65D;
+    tx_header.IDE = CAN_STDI;
+    tx_header.RTR = CAN_DATA_FRAME;
+    tx_header.DLC = 5;
+
+    CAN_AddTxMsg(CAN1, &tx_header, message, CAN_MAILBOX_0);
+    while(CAN_GetRxMsg(CAN1, &rx_message, 0) == 2);
+    printf("Received message: %s\n", (char*)&rx_message.DataLR);
 }
 
 /***********************************************************************************************************/
