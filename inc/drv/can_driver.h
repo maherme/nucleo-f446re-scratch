@@ -11,6 +11,13 @@
 *       - uint8_t CAN_TxMsgPending(CAN_RegDef_t* pCANx, uint32_t mailbox)
 *       - uint8_t CAN_SetFilter(CAN_Filter_t* filter)
 *       - uint8_t CAN_GetRxMsg(CAN_RegDef_t* pCANx, CAN_RxMessage_t* pRxMessage, uint8_t FIFO_number)
+*       - uint8_t CAN_InterruptsEnable(CAN_RegDef_t* pCANx, uint32_t irq_flags)
+*       - uint8_t CAN_InterruptsDisable(CAN_RegDef_t* pCANx, uint32_t irq_flags)
+*       - void CAN_Tx_IRQHandling(CAN_RegDef_t* pCANx)
+*       - void CAN_Rx0_IRQHandling(CAN_RegDef_t* pCANx)
+*       - void CAN_Rx1_IRQHandling(CAN_RegDef_t* pCANx)
+*       - void CAN_SCE_IRQHandling(CAN_RegDef_t* pCANx)
+*       - void CAN_ApplicationEventCallback(CAN_RegDef_t* pCANx, can_app_event_t app_event)
 */
 
 #ifndef CAN_DRIVER_H
@@ -127,6 +134,26 @@
 /**@}*/
 
 /**
+ * @defgroup CAN_interrupt_options possible interrupts to be enable
+ * @{
+ */
+#define CAN_IRQ_TMEIE                   0x00000001  /**< @brief Tx mailbox empty interrupt enable */
+#define CAN_IRQ_FMPIE0                  0x00000002  /**< @brief FIFO message pending interrupt enable */
+#define CAN_IRQ_FFIE0                   0x00000004  /**< @brief FIFO full interrupt enable */
+#define CAN_IRQ_FOVIE0                  0x00000008  /**< @brief FIFO overrun interrupt enable */
+#define CAN_IRQ_FMPIE1                  0x00000010  /**< @brief FIFO message pending interrupt enable */
+#define CAN_IRQ_FFIE1                   0x00000020  /**< @brief FIFO full interrupt enable */
+#define CAN_IRQ_FOVIE1                  0x00000040  /**< @brief FIFO overrun interrupt enable */
+#define CAN_IRQ_EWGIE                   0x00000100  /**< @brief Error warning interrupt enable */
+#define CAN_IRQ_EPVIE                   0x00000200  /**< @brief Error passive interrupt enable */
+#define CAN_IRQ_BOFIE                   0x00000400  /**< @brief Buf-off interrupt enable */
+#define CAN_IRQ_LECIE                   0x00000800  /**< @brief Last error code interrupt enable */
+#define CAN_IRQ_ERRIE                   0x00008000  /**< @brief Error interrupt enable */
+#define CAN_IRQ_WKUIE                   0x00010000  /**< @brief Wakeup interrupt enable */
+#define CAN_IRQ_SLKIE                   0x00020000  /**< @brief Sleep interrupt enable */
+/**@}*/
+
+/**
  * @brief Handle structure for CAN peripheral.
  */
 typedef struct
@@ -191,6 +218,16 @@ typedef struct
     uint32_t DataHR;                /**< @brief Receive FIFO mailbox data high register */
 }CAN_RxMessage_t;
 
+/**
+ * @brief Enum for notifying the interrupt events.
+ */
+typedef enum
+{
+    CAN_TX_REQ_CMPT_M0,             /**< @brief Transmission OK of mailbox 0 */
+    CAN_TX_REQ_CMPT_M1,             /**< @brief Transmission OK of mailbox 1 */
+    CAN_TX_REQ_CMPT_M2              /**< @brief Transmission OK of mailbox 2 */
+}can_app_event_t;
+
 /***********************************************************************************************************/
 /*                                       APIs Supported                                                    */
 /***********************************************************************************************************/
@@ -233,7 +270,7 @@ uint8_t CAN_AddTxMsg(CAN_RegDef_t* pCANx, CAN_TxHeader_t* pTxHeader, uint8_t* ms
 /**
  * @brief Function to check if a transmission request is pending in a mailbox.
  * @param[in] pCANx the base address of the CANx peripheral.
- * @param[in] mailbox the selected mailbox: possible value of @ref CAN_mailboxes.
+ * @param[in] mailbox the selected mailbox: possible value from @ref CAN_mailboxes.
  * @return 0 if no transmission is pending.
  * @return 1 if a transmission is pending.
  */
@@ -257,5 +294,29 @@ uint8_t CAN_SetFilter(CAN_Filter_t* filter);
  * @return 2 if the FIFO has not a message pending.
  */
 uint8_t CAN_GetRxMsg(CAN_RegDef_t* pCANx, CAN_RxMessage_t* pRxMessage, uint8_t FIFO_number);
+
+/**
+ * @brief Function to enable the CAN interrupts.
+ * @param[in] pCANx the base address of the CANx peripheral.
+ * @param[in] irq_flags bits to be set: possible values from @ref CAN_interrupt_options.
+ * @return 0 if the CAN interrupt enable register (CAN_IER) was written.
+ * @return 1 if the irq_flags is not correct.
+ */
+uint8_t CAN_InterruptsEnable(CAN_RegDef_t* pCANx, uint32_t irq_flags);
+
+/**
+ * @brief Function to disable the CAN interrupts.
+ * @param[in] pCANx the base address of the CANx peripheral.
+ * @param[in] irq_flags bits to be set: possible values from @ref CAN_interrupt_options.
+ * @return 0 if the CAN interrupt enable register (CAN_IER) was written.
+ * @return 1 if the irq_flags is not correct.
+ */
+uint8_t CAN_InterruptsDisable(CAN_RegDef_t* pCANx, uint32_t irq_flags);
+
+void CAN_Tx_IRQHandling(CAN_RegDef_t* pCANx);
+void CAN_Rx0_IRQHandling(CAN_RegDef_t* pCANx);
+void CAN_Rx1_IRQHandling(CAN_RegDef_t* pCANx);
+void CAN_SCE_IRQHandling(CAN_RegDef_t* pCANx);
+void CAN_ApplicationEventCallback(CAN_RegDef_t* pCANx, can_app_event_t app_event);
 
 #endif /* CAN_DRIVER_H */

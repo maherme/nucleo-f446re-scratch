@@ -11,6 +11,13 @@
 *       - uint8_t CAN_TxMsgPending(CAN_RegDef_t* pCANx, uint32_t mailbox)
 *       - uint8_t CAN_SetFilter(CAN_Filter_t* filter)
 *       - uint8_t CAN_GetRxMsg(CAN_RegDef_t* pCANx, CAN_RxMessage_t* pRxMessage, uint8_t FIFO_number)
+*       - uint8_t CAN_InterruptsEnable(CAN_RegDef_t* pCANx, uint32_t irq_flags)
+*       - uint8_t CAN_InterruptsDisable(CAN_RegDef_t* pCANx, uint32_t irq_flags)
+*       - void CAN_Tx_IRQHandling(CAN_RegDef_t* pCANx)
+*       - void CAN_Rx0_IRQHandling(CAN_RegDef_t* pCANx)
+*       - void CAN_Rx1_IRQHandling(CAN_RegDef_t* pCANx)
+*       - void CAN_SCE_IRQHandling(CAN_RegDef_t* pCANx)
+*       - void CAN_ApplicationEventCallback(CAN_RegDef_t* pCANx, can_app_event_t app_event)
 *
 * @note
 *       For further information about functions refer to the corresponding header file.
@@ -294,10 +301,66 @@ uint8_t CAN_GetRxMsg(CAN_RegDef_t* pCANx, CAN_RxMessage_t* pRxMessage, uint8_t F
     return 0;
 }
 
+uint8_t CAN_InterruptsEnable(CAN_RegDef_t* pCANx, uint32_t irq_flags){
+
+    if(irq_flags & 0xFFFC7080){
+        return 1;
+    }
+
+    pCANx->IER |= irq_flags;
+
+    return 0;
+}
+
+uint8_t CAN_InterruptsDisable(CAN_RegDef_t* pCANx, uint32_t irq_flags){
+
+    if(irq_flags & 0xFFFC7080){
+        return 1;
+    }
+
+    pCANx->IER &= ~irq_flags;
+
+    return 0;
+}
+
+void CAN_Tx_IRQHandling(CAN_RegDef_t* pCANx){
+
+    if(pCANx->TSR & (1 << CAN_TSR_RQCP0)){
+        CAN_ApplicationEventCallback(pCANx, CAN_TX_REQ_CMPT_M0);
+    }
+    else if(pCANx->TSR & (1 << CAN_TSR_RQCP1)){
+        CAN_ApplicationEventCallback(pCANx, CAN_TX_REQ_CMPT_M1);
+    }
+    else if(pCANx->TSR & (1 << CAN_TSR_RQCP2)){
+        CAN_ApplicationEventCallback(pCANx, CAN_TX_REQ_CMPT_M2);
+    }
+    else{
+        /* do nothing */
+    }
+
+}
+
+void CAN_Rx0_IRQHandling(CAN_RegDef_t* pCANx){
+
+}
+
+void CAN_Rx1_IRQHandling(CAN_RegDef_t* pCANx){
+
+}
+
+void CAN_SCE_IRQHandling(CAN_RegDef_t* pCANx){
+
+}
+
 /***********************************************************************************************************/
 /*                                       Weak Functions                                                    */
 /*            This is a weak implementation. The application may override this function                    */
 /***********************************************************************************************************/
+
+__attribute__((weak)) void CAN_ApplicationEventCallback(CAN_RegDef_t* pCANx, can_app_event_t app_event){
+
+    /* This is a weak implementation. The application may override this function */
+}
 
 /***********************************************************************************************************/
 /*                                       Static Function Definitions                                       */

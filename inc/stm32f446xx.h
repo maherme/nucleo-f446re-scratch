@@ -1914,24 +1914,11 @@ typedef struct
 #define IRQ_NO_DMA1_STREAM4         15  /**< @brief Interrupt Num for DMA1 Stream4 */
 #define IRQ_NO_DMA1_STREAM5         16  /**< @brief Interrupt Num for DMA1 Stream5 */
 #define IRQ_NO_DMA1_STREAM6         17  /**< @brief Interrupt Num for DMA1 Stream6 */
+#define IRQ_NO_CAN1_TX              19  /**< @brief Interrupt Num for CAN1 TX */
+#define IRQ_NO_CAN1_RX0             20  /**< @brief Interrupt Num for CAN1 RX0 */
+#define IRQ_NO_CAN1_RX1             21  /**< @brief Interrupt Num for CAN1 RX1 */
+#define IRQ_NO_CAN1_SCE             22  /**< @brief Interrupt Num for CAN1 SCE */
 #define IRQ_NO_EXTI9_5              23  /**< @brief Interrupt Num for EXTI5 to EXTI9 */
-#define IRQ_NO_EXTI15_10            40  /**< @brief Interrupt Num for EXTI10 to EXTI15 */
-#define IRQ_NO_SPI1                 35  /**< @brief Interrupt Num for SPI1 */
-#define IRQ_NO_SPI2                 36  /**< @brief Interrupt Num for SPI2 */
-#define IRQ_NO_SPI3                 51  /**< @brief Interrupt Num for SPI3 */
-#define IRQ_NO_SPI4                 84  /**< @brief Interrupt Num for SPI4 */
-#define IRQ_NO_I2C1_EV              31  /**< @brief Interrupt Num for I2C1 EV */
-#define IRQ_NO_I2C1_ER              32  /**< @brief Interrupt Num for I2C1 ER */
-#define IRQ_NO_I2C2_EV              33  /**< @brief Interrupt Num for I2C2 EV */
-#define IRQ_NO_I2C2_ER              34  /**< @brief Interrupt Num for I2C2 ER */
-#define IRQ_NO_I2C3_EV              72  /**< @brief Interrupt Num for I2C3 EV */
-#define IRQ_NO_I2C3_ER              73  /**< @brief Interrupt Num for I2C3 ER */
-#define IRQ_NO_USART1               37  /**< @brief Interrupt Num for USART1 */
-#define IRQ_NO_USART2               38  /**< @brief Interrupt Num for USART2 */
-#define IRQ_NO_USART3               39  /**< @brief Interrupt Num for USART3 */
-#define IRQ_NO_UART4                52  /**< @brief Interrupt Num for UART4 */
-#define IRQ_NO_UART5                53  /**< @brief Interrupt Num for UART5 */
-#define IRQ_NO_USART6               71  /**< @brief Interrupt Num for USART6 */
 #define IRQ_NO_TIM1_BRK_TIM9        24  /**< @brief Interrupt Num for TIM1 BRK and TIM9 global */
 #define IRQ_NO_TIM1_UP_TIM10        25  /**< @brief Interrupt Num for TIM1 UP and TIM10 global */
 #define IRQ_NO_TIM1_TRG_COM_TIM11   26  /**< @brief Interrupt Num for TIM1 TRG and COM and TIM 11 global */
@@ -1939,12 +1926,26 @@ typedef struct
 #define IRQ_NO_TIM2                 28  /**< @brief Interrupt Num for TIM2 */
 #define IRQ_NO_TIM3                 29  /**< @brief Interrupt Num for TIM3 */
 #define IRQ_NO_TIM4                 30  /**< @brief Interrupt Num for TIM4 */
+#define IRQ_NO_I2C1_EV              31  /**< @brief Interrupt Num for I2C1 EV */
+#define IRQ_NO_I2C1_ER              32  /**< @brief Interrupt Num for I2C1 ER */
+#define IRQ_NO_I2C2_EV              33  /**< @brief Interrupt Num for I2C2 EV */
+#define IRQ_NO_I2C2_ER              34  /**< @brief Interrupt Num for I2C2 ER */
+#define IRQ_NO_SPI1                 35  /**< @brief Interrupt Num for SPI1 */
+#define IRQ_NO_SPI2                 36  /**< @brief Interrupt Num for SPI2 */
+#define IRQ_NO_USART1               37  /**< @brief Interrupt Num for USART1 */
+#define IRQ_NO_USART2               38  /**< @brief Interrupt Num for USART2 */
+#define IRQ_NO_USART3               39  /**< @brief Interrupt Num for USART3 */
+#define IRQ_NO_EXTI15_10            40  /**< @brief Interrupt Num for EXTI10 to EXTI15 */
+#define IRQ_RTC_ALARM               41  /**< @brief Interrupt Num for RTC alarm */
 #define IRQ_NO_TIM8_BRK_TIM12       43  /**< @brief Interrupt Num for TIM8 BRK and TIM12 global */
 #define IRQ_NO_TIM8_UP_TIM13        44  /**< @brief Interrupt Num for TIM8 UP and TIM13 global */
 #define IRQ_NO_TIM8_TRG_COM_TIM14   45  /**< @brief Interrupt Num for TIM8 TRG and COM and TIM14 global */
 #define IRQ_NO_TIM8_CC              46  /**< @brief Interrupt Num for TIM8 Capture/Compare */
 #define IRQ_DMA1_STREAM7            47  /**< @brief Interrupt Num for DMA1 Stream7 */
 #define IRQ_NO_TIM5                 50  /**< @brief Interrupt Num for TIM5 */
+#define IRQ_NO_SPI3                 51  /**< @brief Interrupt Num for SPI3 */
+#define IRQ_NO_UART4                52  /**< @brief Interrupt Num for UART4 */
+#define IRQ_NO_UART5                53  /**< @brief Interrupt Num for UART5 */
 #define IRQ_NO_TIM6_DAC             54  /**< @brief Interrupt Num for TIM6 or DAC */
 #define IRQ_NO_TIM7                 55  /**< @brief Interrupt Num for TIM7 */
 #define IRQ_DMA2_STREAM0            56  /**< @brief Interrupt Num for DMA2 Stream0 */
@@ -1952,10 +1953,17 @@ typedef struct
 #define IRQ_DMA2_STREAM2            58  /**< @brief Interrupt Num for DMA2 Stream2 */
 #define IRQ_DMA2_STREAM3            59  /**< @brief Interrupt Num for DMA2 Stream3 */
 #define IRQ_DMA2_STREAM4            60  /**< @brief Interrupt Num for DMA2 Stream4 */
+#define IRQ_NO_CAN2_TX              63  /**< @brief Interrupt Num for CAN2 TX */
+#define IRQ_NO_CAN2_RX0             64  /**< @brief Interrupt Num for CAN2 RX0 */
+#define IRQ_NO_CAN2_RX1             65  /**< @brief Interrupt Num for CAN2 RX1 */
+#define IRQ_NO_CAN2_SCE             66  /**< @brief Interrupt Num for CAN2 SCE */
 #define IRQ_DMA2_STREAM5            68  /**< @brief Interrupt Num for DMA2 Stream5 */
 #define IRQ_DMA2_STREAM6            69  /**< @brief Interrupt Num for DMA2 Stream6 */
 #define IRQ_DMA2_STREAM7            70  /**< @brief Interrupt Num for DMA2 Stream7 */
-#define IRQ_RTC_ALARM               41  /**< @brief Interrupt Num for RTC alarm */
+#define IRQ_NO_USART6               71  /**< @brief Interrupt Num for USART6 */
+#define IRQ_NO_I2C3_EV              72  /**< @brief Interrupt Num for I2C3 EV */
+#define IRQ_NO_I2C3_ER              73  /**< @brief Interrupt Num for I2C3 ER */
+#define IRQ_NO_SPI4                 84  /**< @brief Interrupt Num for SPI4 */
 /** @} */
 
 /**
