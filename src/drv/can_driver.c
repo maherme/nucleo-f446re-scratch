@@ -283,6 +283,14 @@ uint8_t CAN_GetRxMsg(CAN_RegDef_t* pCANx, CAN_RxMessage_t* pRxMessage, uint8_t F
     pRxMessage->DataLR = *(pFIFO + 2);
     pRxMessage->DataHR = *(pFIFO + 3);
 
+    /* Release the output mailbox */
+    if(FIFO_number == 0){
+        pCANx->RF0R |= (1 << CAN_RFxR_RFOM);
+    }
+    else{
+        pCANx->RF1R |= (1 << CAN_RFxR_RFOM);
+    }
+
     return 0;
 }
 
