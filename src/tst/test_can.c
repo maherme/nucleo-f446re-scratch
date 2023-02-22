@@ -81,6 +81,9 @@ void CAN1_Config(void){
     CAN1_GPIOInit();
     (void)CAN_Init(&CAN_Handler);
     (void)CAN_SetFilter(&CAN_Filter);
+    /* CAN1 interrupt configuration */
+    CAN_InterruptsEnable(CAN1, CAN_FIFO0_MSG_PEND);
+    CAN_IRQConfig(IRQ_NO_CAN1_RX0, ENABLE);
 }
 
 void CAN1_Send(void){
@@ -117,6 +120,22 @@ void CAN1_Send_Receive(void){
 /***********************************************************************************************************/
 /*                               Weak Function Overwrite Definitions                                       */
 /***********************************************************************************************************/
+
+void CAN1_RX0_Handler(void){
+
+    CAN_Rx0_IRQHandling(CAN1);
+}
+
+void CAN_ApplicationEventCallback(CAN_RegDef_t* pCANx, can_app_event_t app_event){
+
+    CAN_RxMessage_t rx_message = {0};
+
+    if(app_event == CAN_FIFO0_MSG_PEND){
+        if(CAN_GetRxMsg(CAN1, &rx_message, 0) == 0){
+            printf("Received message: %s\n", (char*)&rx_message.DataLR);
+        }
+    }
+}
 
 /***********************************************************************************************************/
 /*                                       Static Function Definitions                                       */

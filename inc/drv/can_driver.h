@@ -11,6 +11,8 @@
 *       - uint8_t CAN_TxMsgPending(CAN_RegDef_t* pCANx, uint32_t mailbox)
 *       - uint8_t CAN_SetFilter(CAN_Filter_t* filter)
 *       - uint8_t CAN_GetRxMsg(CAN_RegDef_t* pCANx, CAN_RxMessage_t* pRxMessage, uint8_t FIFO_number)
+*       - void CAN_IRQConfig(uint8_t IRQNumber, uint8_t en_or_di)
+*       - void CAN_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority)
 *       - uint8_t CAN_InterruptsEnable(CAN_RegDef_t* pCANx, uint32_t irq_flags)
 *       - uint8_t CAN_InterruptsDisable(CAN_RegDef_t* pCANx, uint32_t irq_flags)
 *       - void CAN_Tx_IRQHandling(CAN_RegDef_t* pCANx)
@@ -225,7 +227,19 @@ typedef enum
 {
     CAN_TX_REQ_CMPT_M0,             /**< @brief Transmission OK of mailbox 0 */
     CAN_TX_REQ_CMPT_M1,             /**< @brief Transmission OK of mailbox 1 */
-    CAN_TX_REQ_CMPT_M2              /**< @brief Transmission OK of mailbox 2 */
+    CAN_TX_REQ_CMPT_M2,             /**< @brief Transmission OK of mailbox 2 */
+    CAN_FIFO0_MSG_PEND,             /**< @brief FIFO 0 message pending */
+    CAN_FIFO0_FULL,                 /**< @brief FIFO 0 full */
+    CAN_FIFO0_OVERRUN,              /**< @brief FIFO 0 overrun */
+    CAN_FIFO1_MSG_PEND,             /**< @brief FIFO 1 message pending */
+    CAN_FIFO1_FULL,                 /**< @brief FIFO 1 full */
+    CAN_FIFO1_OVERRUN,              /**< @brief FIFO 1 overrun */
+    CAN_ERROR_WARNING,              /**< @brief Error warning flag (EWGF) was set */
+    CAN_ERROR_PASSIVE,              /**< @brief Error passive flag (EPVF) was set */
+    CAN_ERROR_BUSOFF,               /**< @brief Bus off flag (BOFF) was set */
+    CAN_ERROR_CODE,                 /**< @brief Last error code (LEC) is not zero */
+    CAN_SLEEP_ACK,                  /**< @brief CAN has entered Sleep Mode */
+    CAN_WAKEUP_IRQ,                 /**< @brief A SOF bit has been detected in Sleep mode */
 }can_app_event_t;
 
 /***********************************************************************************************************/
@@ -294,6 +308,22 @@ uint8_t CAN_SetFilter(CAN_Filter_t* filter);
  * @return 2 if the FIFO has not a message pending.
  */
 uint8_t CAN_GetRxMsg(CAN_RegDef_t* pCANx, CAN_RxMessage_t* pRxMessage, uint8_t FIFO_number);
+
+/**
+ * @brief Function to configure the IRQ number of the CAN peripheral.
+ * @param[in] IRQNumber number of the interrupt.
+ * @param[in] en_or_di for enable or disable.
+ * @return void.
+ */
+void CAN_IRQConfig(uint8_t IRQNumber, uint8_t en_or_di);
+
+/**
+ * @brief Function to configure the IRQ number of the CAN peripheral.
+ * @param[in] IRQNumber number of the interrupt.
+ * @param[in] IRQPriority priority of the interrupt.
+ * @return void.
+ */
+void CAN_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority);
 
 /**
  * @brief Function to enable the CAN interrupts.

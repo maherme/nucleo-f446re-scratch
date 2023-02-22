@@ -11,6 +11,8 @@
 *       - uint8_t CAN_TxMsgPending(CAN_RegDef_t* pCANx, uint32_t mailbox)
 *       - uint8_t CAN_SetFilter(CAN_Filter_t* filter)
 *       - uint8_t CAN_GetRxMsg(CAN_RegDef_t* pCANx, CAN_RxMessage_t* pRxMessage, uint8_t FIFO_number)
+*       - void CAN_IRQConfig(uint8_t IRQNumber, uint8_t en_or_di)
+*       - void CAN_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority)
 *       - uint8_t CAN_InterruptsEnable(CAN_RegDef_t* pCANx, uint32_t irq_flags)
 *       - uint8_t CAN_InterruptsDisable(CAN_RegDef_t* pCANx, uint32_t irq_flags)
 *       - void CAN_Tx_IRQHandling(CAN_RegDef_t* pCANx)
@@ -301,6 +303,53 @@ uint8_t CAN_GetRxMsg(CAN_RegDef_t* pCANx, CAN_RxMessage_t* pRxMessage, uint8_t F
     return 0;
 }
 
+void CAN_IRQConfig(uint8_t IRQNumber, uint8_t en_or_di){
+
+    if(en_or_di == ENABLE){
+        if(IRQNumber <= 31){
+            /* Program ISER0 register */
+            *NVIC_ISER0 |= (1 << IRQNumber);
+        }
+        else if(IRQNumber > 31 && IRQNumber < 64){
+            /* Program ISER1 register */
+            *NVIC_ISER1 |= (1 << (IRQNumber % 32));
+        }
+        else if(IRQNumber >= 64 && IRQNumber < 96){
+            /* Program ISER2 register */
+            *NVIC_ISER2 |= (1 << (IRQNumber % 64));
+        }
+        else{
+            /* do nothing */
+        }
+    }
+    else{
+        if(IRQNumber <= 31){
+            /* Program ICER0 register */
+            *NVIC_ICER0 |= (1 << IRQNumber);
+        }
+        else if(IRQNumber > 31 && IRQNumber < 64){
+            /* Program ICER1 register */
+            *NVIC_ICER1 |= (1 << (IRQNumber % 32));
+        }
+        else if(IRQNumber >= 64 && IRQNumber < 96){
+            /* Program ICER2 register */
+            *NVIC_ICER2 |= (1 << (IRQNumber % 64));
+        }
+        else{
+            /* do nothing */
+        }
+    }
+}
+
+void CAN_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority){
+    /* Find out the IPR register */
+    uint8_t iprx = IRQNumber / 4;
+    uint8_t iprx_section = IRQNumber % 4;
+    uint8_t shift = (8*iprx_section) + (8 - NO_PR_BITS_IMPLEMENTED);
+
+    *(NVIC_PR_BASEADDR + iprx) |= (IRQPriority << shift);
+}
+
 uint8_t CAN_InterruptsEnable(CAN_RegDef_t* pCANx, uint32_t irq_flags){
 
     if(irq_flags & 0xFFFC7080){
@@ -342,14 +391,65 @@ void CAN_Tx_IRQHandling(CAN_RegDef_t* pCANx){
 
 void CAN_Rx0_IRQHandling(CAN_RegDef_t* pCANx){
 
+    if(pCANx->RF0R & (0x3 << CAN_RFxR_FMP)){
+        CAN_ApplicationEventCallback(pCANx, CAN_FIFO0_MSG_PEND);
+    }
+    else if(pCANx->RF0R & (1 << CAN_RFxR_FULL)){
+        CAN_ApplicationEventCallback(pCANx, CAN_FIFO0_FULL);
+    }
+    else if(pCANx->RF0R & (1<< CAN_RFxR_FOVR)){
+        CAN_ApplicationEventCallback(pCANx, CAN_FIFO0_OVERRUN);
+    }
+    else{
+        /* do nothing */
+    }
 }
 
 void CAN_Rx1_IRQHandling(CAN_RegDef_t* pCANx){
 
+    if(pCANx->RF1R & (0x3 << CAN_RFxR_FMP)){
+        CAN_ApplicationEventCallback(pCANx, CAN_FIFO1_MSG_PEND);
+    }
+    else if(pCANx->RF1R & (1 << CAN_RFxR_FULL)){
+        CAN_ApplicationEventCallback(pCANx, CAN_FIFO1_FULL);
+    }
+    else if(pCANx->RF1R & (1<< CAN_RFxR_FOVR)){
+        CAN_ApplicationEventCallback(pCANx, CAN_FIFO1_OVERRUN);
+    }
+    else{
+        /* do nothing */
+    }
 }
 
 void CAN_SCE_IRQHandling(CAN_RegDef_t* pCANx){
 
+    /* Check if the irq is caused by an error */
+    if(pCANx->MSR & (1 << CAN_MSR_ERRI)){
+        if(pCANx->ESR & (1<< CAN_ESR_EWGF)){
+            CAN_ApplicationEventCallback(pCANx, CAN_ERROR_WARNING);
+        }
+        else if(pCANx->ESR & (1 << CAN_ESR_EPVF)){
+            CAN_ApplicationEventCallback(pCANx, CAN_ERROR_PASSIVE);
+        }
+        else if(pCANx->ESR & (1 << CAN_ESR_BOFF)){
+            CAN_ApplicationEventCallback(pCANx, CAN_ERROR_BUSOFF);
+        }
+        else if(pCANx->ESR & (0x7 << CAN_ESR_LEC)){
+            CAN_ApplicationEventCallback(pCANx, CAN_ERROR_CODE);
+        }
+        else{
+            /* do nothing */
+        }
+    }
+    if(pCANx->MSR & (1 << CAN_MSR_SLAKI)){
+        CAN_ApplicationEventCallback(pCANx, CAN_SLEEP_ACK);
+    }
+    else if(pCANx->MSR & (1 << CAN_MSR_WKUI)){
+        CAN_ApplicationEventCallback(pCANx, CAN_WAKEUP_IRQ);
+    }
+    else{
+        /* do nothing */
+    }
 }
 
 /***********************************************************************************************************/
