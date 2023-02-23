@@ -1,0 +1,18 @@
+{
+    "configurations": [
+         {
+            "name": "CrossARM",
+            "includePath": [
+                "${workspaceFolder}/**"
+            ],
+            "defines": [
+            ],
+            "forcedInclude": [],
+            "compilerPath": "/usr/bin/arm-none-eabi-gcc",
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "gcc-arm"
+        }
+    ],
+    "version": 4
+}

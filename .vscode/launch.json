@@ -1,0 +1,33 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [       
+        {
+            "cwd": "${workspaceFolder}",
+            "executable": "${workspaceRoot}/build/nucleof446re_dbg.elf",
+            "name": "JTAG DEBUGGING ",
+            "request": "launch",
+            "type": "cortex-debug",
+            "servertype": "openocd",
+            "armToolchainPath": "/opt/arm_tools/gcc-arm-none-eabi-10.3-2021.10/bin",
+            "interface": "swd",
+            "svdFile": "${workspaceRoot}/dvc/STM32F446.svd",
+            "runToEntryPoint": "main",
+            "configFiles": [
+                "interface/stlink.cfg",
+                "target/stm32f4x.cfg"
+            ],
+            "debuggerArgs": [
+            ],
+            "preRestartCommands": [
+                "load",
+                "enable breakpoint",
+                "monitor reset"
+            ],
+            "showDevDebugOutput": "raw",
+            "preLaunchTask": "Build Debug"
+       }
+    ]
+}
