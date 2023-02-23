@@ -1,11 +1,7 @@
 TARGET1 = $(BLD_DIR)/nucleof446re_rel.elf
 TARGET2 = $(BLD_DIR)/nucleof446re_dbg.elf
 TARGET_LIB = $(LIB_DIR)/libstm32f446xx.a
-SRC_DIR = ./src
-DRV_DIR = ./src/drv/*/
-TST_DIR = ./src/tst
-TST_SUBDIR = ./src/tst/*/
-UTL_DIR = ./src/utl
+VPATH = $(shell find ./src/ -type d)
 INCLUDE = -I./inc \
 		  -I./src/utl \
 		  -I./src/tst \
@@ -112,23 +108,7 @@ $(TARGET2) : $(OBJS2)
 	@mkdir -p $(BLD_DIR)
 	$(CC) $(LDFLAGS_SH) $(OBJS2) -o $(TARGET2)
 
-$(OBJ_DIR)/%.o : $(SRC_DIR)/%.c
-	@mkdir -p $(OBJ_DIR)
-	$(CC) $(CFLAGS) $< -o $@
-
-$(OBJ_DIR)/%.o : $(DRV_DIR)/%.c
-	@mkdir -p $(OBJ_DIR)
-	$(CC) $(CFLAGS) $< -o $@
-
-$(OBJ_DIR)/%.o : $(TST_DIR)/%.c
-	@mkdir -p $(OBJ_DIR)
-	$(CC) $(CFLAGS) $< -o $@
-
-$(OBJ_DIR)/%.o : $(TST_SUBDIR)/%.c
-	@mkdir -p $(OBJ_DIR)
-	$(CC) $(CFLAGS) $< -o $@
-
-$(OBJ_DIR)/%.o : $(UTL_DIR)/%.c
+$(OBJ_DIR)/%.o : %.c
 	@mkdir -p $(OBJ_DIR)
 	$(CC) $(CFLAGS) $< -o $@
 
@@ -150,3 +130,6 @@ lib: $(TARGET_LIB)
 .PHONY : load
 load:
 	openocd -f board/st_nucleo_f4.cfg
+
+all:
+	@echo $(VPATH)
