@@ -2,28 +2,7 @@ TARGET1 = $(BLD_DIR)/nucleof446re_rel.elf
 TARGET2 = $(BLD_DIR)/nucleof446re_dbg.elf
 TARGET_LIB = $(LIB_DIR)/libstm32f446xx.a
 VPATH = $(shell find ./src/ -type d)
-INCLUDE = -I./inc \
-		  -I./src/utl \
-		  -I./src/tst \
-		  -I./src/tst/spi \
-		  -I./src/tst/i2c \
-		  -I./src/tst/usart \
-		  -I./src/tst/rcc \
-		  -I./src/tst/timer \
-		  -I./src/tst/dma \
-		  -I./src/tst/rtc \
-		  -I./src/tst/can \
-		  -I./src/drv \
-		  -I./src/drv/gpio \
-		  -I./src/drv/spi \
-		  -I./src/drv/i2c \
-		  -I./src/drv/usart \
-		  -I./src/drv/flash \
-		  -I./src/drv/rcc \
-		  -I./src/drv/timer \
-		  -I./src/drv/dma \
-		  -I./src/drv/rtc \
-		  -I./src/drv/can
+INCLUDE = $(VPATH:%=-I%) 
 LNK_DIR = ./lnk
 OBJ_DIR = ./obj
 LIB_DIR = ./lib
