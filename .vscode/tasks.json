@@ -5,6 +5,22 @@
     "tasks": [
         {
             "type": "shell",
+            "label": "Build All",
+            "command": "make all",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": {
+                "base": "$gcc", 
+                "fileLocation": ["relative", "${workspaceFolder}"]
+            }
+        },
+        {
+            "type": "shell",
             "label": "Build Release",
             "command": "make release",
             "options": {
@@ -37,8 +53,63 @@
         },
         {
             "type": "shell",
-            "label": "Clean",
+            "label": "Build Library",
+            "command": "make lib",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": {
+                "base": "$gcc", 
+                "fileLocation": ["relative", "${workspaceFolder}"]
+            }
+        },
+        {
+            "type": "shell",
+            "label": "Clean All",
             "command": "make clean",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": "build",
+            "problemMatcher": {
+                "base": "$gcc", 
+                "fileLocation": ["relative", "${workspaceFolder}"]
+            }
+        },
+        {
+            "type": "shell",
+            "label": "Clean Debug",
+            "command": "make clean MODE=debug",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": "build",
+            "problemMatcher": {
+                "base": "$gcc", 
+                "fileLocation": ["relative", "${workspaceFolder}"]
+            }
+        },
+        {
+            "type": "shell",
+            "label": "Clean Release",
+            "command": "make clean MODE=release",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": "build",
+            "problemMatcher": {
+                "base": "$gcc", 
+                "fileLocation": ["relative", "${workspaceFolder}"]
+            }
+        },
+        {
+            "type": "shell",
+            "label": "Clean Library",
+            "command": "make clean MODE=lib",
             "options": {
                 "cwd": "${workspaceFolder}"
             },

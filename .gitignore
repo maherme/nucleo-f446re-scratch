@@ -11,3 +11,4 @@ lib/
 # Generated vscode files
 ###################
 .vscode/.cortex-debug.*
+.vscode/.settings.json
