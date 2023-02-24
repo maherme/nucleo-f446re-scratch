@@ -15,7 +15,6 @@
 *       For further information about functions refer to the corresponding header file.
 **/
 
-#include <stdio.h>
 #include "test.h"
 #include "test_timer.h"
 #include "timer_driver.h"
@@ -23,6 +22,8 @@
 #include "rcc_driver.h"
 #include "stm32f446xx.h"
 #include "utils.h"
+#include "cortex_m4.h"
+#include <stdio.h>
 
 /** @brief Handler structure for Timer peripheral */
 Timer_Handle_t Timer = {0};
@@ -61,7 +62,7 @@ void Timer6_Config(void){
     Timer.period = 64000 - 1;
 
     Timer_Init(&Timer);
-    Timer_IRQConfig(IRQ_NO_TIM6_DAC, ENABLE);
+    IRQConfig(IRQ_NO_TIM6_DAC, ENABLE);
     Timer_Start(&Timer);
 }
 
@@ -96,7 +97,7 @@ void Timer2_Config(void){
     GPIO_Init(&GpioIC);
 
     /* Enable interrupt */
-    Timer_IRQConfig(IRQ_NO_TIM2, ENABLE);
+    IRQConfig(IRQ_NO_TIM2, ENABLE);
     /* Start timer */
     Timer_Start(&Timer);
 }
@@ -178,7 +179,7 @@ void Timer4_Config(void){
     GPIO_Init(&GpioOC);
 
     /* Enable interrupt */
-    Timer_IRQConfig(IRQ_NO_TIM4, ENABLE);
+    IRQConfig(IRQ_NO_TIM4, ENABLE);
     /* Start timer */
     Timer_Start(&Timer);
 }

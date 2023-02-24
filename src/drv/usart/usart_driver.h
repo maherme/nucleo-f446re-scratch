@@ -12,8 +12,6 @@
 *       - uint8_t USART_SendDataIT(USART_Handle_t* pUSART_Handle, uint8_t* pTxBuffer, uint32_t len)
 *       - uint8_t USART_ReceiveDataIT(USART_Handle_t* pUSART_Handle, uint8_t* pRxBuffer, uint32_t len)
 *       - void    USART_SetBaudRate(USART_RegDef_t* pUSARTx, uint32_t baudrate)
-*       - void    USART_IRQConfig(uint8_t IRQNumber, uint8_t en_or_di)
-*       - void    USART_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority)
 *       - void    USART_IRQHandling(USART_Handle_t* pUSART_Handle)
 *       - void    USART_Enable(USART_RegDef_t* pUSARTx, uint8_t en_or_di)
 *       - uint8_t USART_GetFlagStatus(USART_RegDef_t* pUSARTx, uint32_t flagname)
@@ -223,22 +221,6 @@ uint8_t USART_ReceiveDataIT(USART_Handle_t* pUSART_Handle, uint8_t* pRxBuffer, u
  * @return void
  */
 void USART_SetBaudRate(USART_RegDef_t* pUSARTx, uint32_t baudrate);
-
-/**
- * @brief Function to configure the IRQ number of the USART peripheral.
- * @param[in] IRQNumber number of the interrupt.
- * @param[in] en_or_di for enable or disable.
- * @return void.
- */
-void USART_IRQConfig(uint8_t IRQNumber, uint8_t en_or_di);
-
-/**
- * @brief Function to configure the IRQ number of the USART peripheral.
- * @param[in] IRQNumber number of the interrupt.
- * @param[in] IRQPriority priority of the interrupt.
- * @return void.
- */
-void USART_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority);
 
 /**
  * @brief Function to handle the interrupt of the USART peripheral.

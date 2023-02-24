@@ -16,6 +16,7 @@
 #include "gpio_driver.h"
 #include "rcc_driver.h"
 #include "flash_driver.h"
+#include "cortex_m4.h"
 #include <stdint.h>
 #include <string.h>
 #include <stdio.h>
@@ -83,7 +84,7 @@ void CAN1_Config(void){
     (void)CAN_SetFilter(&CAN_Filter);
     /* CAN1 interrupt configuration */
     CAN_InterruptsEnable(CAN1, CAN_FIFO0_MSG_PEND);
-    CAN_IRQConfig(IRQ_NO_CAN1_RX0, ENABLE);
+    IRQConfig(IRQ_NO_CAN1_RX0, ENABLE);
 }
 
 void CAN1_Send(void){

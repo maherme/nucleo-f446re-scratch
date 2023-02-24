@@ -19,8 +19,6 @@
 *       - uint8_t RTC_ClearAlarm(RTC_AlarmSel_t alarm)
 *       - uint8_t RTC_DisableAlarm(RTC_AlarmSel_t alarm)
 *       - void RTC_Alarm_IRQHandling(void)
-*       - void RTC_IRQConfig(uint8_t IRQNumber, uint8_t en_or_di)
-*       - void RTC_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority)
 *       - void RTC_AlarmEventCallback(RTC_AlarmSel_t alarm)
 */
 
@@ -257,22 +255,6 @@ uint8_t RTC_DisableAlarm(RTC_AlarmSel_t alarm);
  * @return void.
  */
 void RTC_Alarm_IRQHandling(void);
-
-/**
- * @brief Function to configure the IRQ number of the RTC peripheral.
- * @param[in] IRQNumber number of the interrupt.
- * @param[in] en_or_di for enable or disable.
- * @return void.
- */
-void RTC_IRQConfig(uint8_t IRQNumber, uint8_t en_or_di);
-
-/**
- * @brief Function to configure the IRQ number of the RTC.
- * @param[in] IRQNumber number of the interrupt.
- * @param[in] IRQPriority priority of the interrupt.
- * @return void
- */
-void RTC_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority);
 
 /**
  * @brief Function for application callback.

@@ -11,8 +11,6 @@
 *       - void    SPI_ReceiveData(SPI_RegDef_t* pSPIx, uint8_t* pRxBuffer, uint32_t len)
 *       - uint8_t SPI_SendDataIT(SPI_Handle_t* pSPI_Handle, uint8_t* pTxBuffer, uint32_t len)
 *       - uint8_t SPI_ReceiveDataIT(SPI_Handle_t* pSPI_Handle, uint8_t* pRxBuffer, uint32_t len)
-*       - void    SPI_IRQConfig(uint8_t IRQNumber, uint8_t en_or_di)
-*       - void    SPI_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority)
 *       - void    SPI_IRQHandling(SPI_Handle_t* pSPI_Handle)
 *       - void    SPI_Enable(SPI_RegDef_t *pSPIx, uint8_t en_or_di)
 *       - void    SPI_SSICfg(SPI_RegDef_t* pSPIx, uint8_t en_or_di)
@@ -212,22 +210,6 @@ uint8_t SPI_SendDataIT(SPI_Handle_t* pSPI_Handle, uint8_t* pTxBuffer, uint32_t l
  * @return @ref SPI_AppStates.
  */
 uint8_t SPI_ReceiveDataIT(SPI_Handle_t* pSPI_Handle, uint8_t* pRxBuffer, uint32_t len);
-
-/**
- * @brief Function to configure the IRQ number of the SPI peripheral.
- * @param[in] IRQNumber number of the interrupt.
- * @param[in] en_or_di for enable or disable.
- * @return void.
- */
-void SPI_IRQConfig(uint8_t IRQNumber, uint8_t en_or_di);
-
-/**
- * @brief Function to configure the IRQ number of the SPI peripheral.
- * @param[in] IRQNumber number of the interrupt.
- * @param[in] IRQPriority priority of the interrupt.
- * @return void.
- */
-void SPI_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority);
 
 /**
  * @brief Function to handle the interrupt of the SPI peripheral.

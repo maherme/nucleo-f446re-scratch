@@ -11,12 +11,10 @@
 *       For further information about functions refer to the corresponding header file.
 **/
 
-#include <string.h>
-#include <stdint.h>
-#include <stdio.h>
+#include "test.h"
+#include "cortex_m4.h"
 #include "stm32f446xx.h"
 #include "gpio_driver.h"
-#include "test.h"
 #include "test_spi.h"
 #include "test_i2c.h"
 #include "test_usart.h"
@@ -26,6 +24,9 @@
 #include "test_rtc.h"
 #include "test_can.h"
 #include "utils.h"
+#include <string.h>
+#include <stdint.h>
+#include <stdio.h>
 
 /***********************************************************************************************************/
 /*                                       Static Function Prototypes                                        */
@@ -56,8 +57,8 @@ void test_init(void){
     Button_GPIOInit();
 
     /* IRQ configuration for button */
-    GPIO_IRQPriorityConfig(IRQ_NO_EXTI15_10, NVIC_IRQ_PRIORITY15);
-    GPIO_IRQConfig(IRQ_NO_EXTI15_10, ENABLE);
+    IRQPriorityConfig(IRQ_NO_EXTI15_10, NVIC_IRQ_PRIORITY15);
+    IRQConfig(IRQ_NO_EXTI15_10, ENABLE);
 
 #if TEST_SPI
     /* Configure and initialise SPI2 peripheral */

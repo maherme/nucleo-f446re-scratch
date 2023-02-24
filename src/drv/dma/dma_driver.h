@@ -20,8 +20,6 @@
 *       - uint32_t  DMA_Get_Direct_Mode_Error_Int_Flag(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stream_Num)
 *       - uint32_t  DMA_Get_FIFO_Error_Int_Flag(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stream_Num)
 *       - void      DMA_IRQHandling(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stream_Num)
-*       - void      DMA_IRQConfig(uint8_t IRQNumber, uint8_t en_or_di)
-*       - void      DMA_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority)
 */
 
 #ifndef DMA_DRIVER_H
@@ -297,21 +295,5 @@ uint32_t  DMA_Get_FIFO_Error_Int_Flag(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stre
  * @return void
  */
 void DMA_IRQHandling(DMA_RegDef_t* pDMAx, DMA_Stream_Num_t Stream_Num);
-
-/**
- * @brief Function to configure the IRQ number of the DMA.
- * @param[in] IRQNumber number of the interrupt.
- * @param[in] en_or_di for enable or disable.
- * @return void
- */
-void DMA_IRQConfig(uint8_t IRQNumber, uint8_t en_or_di);
-
-/**
- * @brief Function to configure the IRQ number of the DMA.
- * @param[in] IRQNumber number of the interrupt.
- * @param[in] IRQPriority priority of the interrupt.
- * @return void
- */
-void DMA_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority);
 
 #endif /* DMA_DRIVER_H */

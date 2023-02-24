@@ -12,11 +12,11 @@
 *       For further information about functions refer to the corresponding header file.
 **/
 
-#include <string.h>
 #include "dma_driver.h"
 #include "usart_driver.h"
 #include "gpio_driver.h"
-
+#include "cortex_m4.h"
+#include <string.h>
 #include <stdio.h>
 
 /** @brief Handler structure for DMA peripheral */
@@ -86,7 +86,7 @@ void DMA1_Config(void){
     DMA1_Stream3_Init(&Stream3Handle);
 
     /* DMA1 Stream3 interrupt configuration */
-    DMA_IRQConfig(IRQ_NO_DMA1_STREAM3, ENABLE);
+    IRQConfig(IRQ_NO_DMA1_STREAM3, ENABLE);
 
     /* Enable DMA1 Stream3 */
     DMA_Stream_Enable(&Stream3Handle);

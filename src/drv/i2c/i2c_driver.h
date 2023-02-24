@@ -29,8 +29,6 @@
 *                                     sr_t sr)
 *   - void    I2C_SlaveSendData(I2C_RegDef_t* pI2Cx, uint8_t data)
 *   - uint8_t I2C_SlaveReceiveData(I2C_RegDef_t* pI2Cx)
-*   - void    I2C_IRQConfig(uint8_t IRQNumber, uint8_t en_or_di)
-*   - void    I2C_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority)
 *   - void    I2C_EV_IRQHandling(I2C_Handle_t* pI2C_Handle)
 *   - void    I2C_ER_IRQHandling(I2C_Handle_t* pI2C_Handle)
 *   - void    I2C_Enable(I2C_RegDef_t* pI2Cx, uint8_t en_or_di)
@@ -263,22 +261,6 @@ void I2C_SlaveSendData(I2C_RegDef_t* pI2Cx, uint8_t data);
  * @return received data.
  */
 uint8_t I2C_SlaveReceiveData(I2C_RegDef_t* pI2Cx);
-
-/**
- * @brief Function to configure the IRQ number of the I2C peripheral.
- * @param[in] IRQNumber number of the interrupt.
- * @param[in] en_or_di for enable or disable.
- * @return void.
- */
-void I2C_IRQConfig(uint8_t IRQNumber, uint8_t en_or_di);
-
-/**
- * @brief Function to configure the IRQ number of the I2C peripheral.
- * @param[in] IRQNumber number of the interrupt.
- * @param[in] IRQPriority priority of the interrupt.
- * @return void.
- */
-void I2C_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority);
 
 /**
  * @brief Function to manage event interrupt of the I2C peripheral.

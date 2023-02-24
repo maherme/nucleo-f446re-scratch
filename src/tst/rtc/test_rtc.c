@@ -16,6 +16,7 @@
 #include "rtc_driver.h"
 #include "timer_driver.h"
 #include "stm32f446xx.h"
+#include "cortex_m4.h"
 #include <stdio.h>
 
 #if TEST_RTC
@@ -77,7 +78,7 @@ void RTC_Test_Config(void){
     RTC_Init(RTC_Cfg);
 
 #if TEST_RTC_IRQ
-    RTC_IRQConfig(IRQ_RTC_ALARM, ENABLE);
+    IRQConfig(IRQ_RTC_ALARM, ENABLE);
 #endif
 
     RTC_Test_Alarm_Init();
@@ -195,7 +196,7 @@ static void RTC_Test_Timer6_Config(void){
     RTC_Test_Timer.period = 64000 - 1;
 
     Timer_Init(&RTC_Test_Timer);
-    Timer_IRQConfig(IRQ_NO_TIM6_DAC, ENABLE);
+    IRQConfig(IRQ_NO_TIM6_DAC, ENABLE);
     Timer_Start(&RTC_Test_Timer);
 }
 

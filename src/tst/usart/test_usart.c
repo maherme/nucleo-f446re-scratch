@@ -12,12 +12,13 @@
 *       For further information about functions refer to the corresponding header file.
 **/
 
-#include <stdint.h>
-#include <string.h>
-#include <stdio.h>
 #include "test_usart.h"
 #include "usart_driver.h"
 #include "gpio_driver.h"
+#include "cortex_m4.h"
+#include <stdint.h>
+#include <string.h>
+#include <stdio.h>
 
 /** @brief Flag for notifying completed reception */
 static uint8_t usart_rx_cplt = RESET;
@@ -56,7 +57,7 @@ void USART3_Config(void){
     USART3_Init(&USART3Handle);
 
     /* USART3 interrupt configuration */
-    USART_IRQConfig(IRQ_NO_USART3, ENABLE);
+    IRQConfig(IRQ_NO_USART3, ENABLE);
 }
 
 void USART3_SendHello(void){

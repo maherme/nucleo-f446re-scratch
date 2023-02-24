@@ -13,12 +13,13 @@
 *       For further information about functions refer to the corresponding header file.
 **/
 
-#include <stdint.h>
-#include <stdio.h>
-#include <string.h>
 #include "test_i2c.h"
 #include "i2c_driver.h"
 #include "gpio_driver.h"
+#include "cortex_m4.h"
+#include <stdint.h>
+#include <stdio.h>
+#include <string.h>
 
 /** @brief Slave address for I2C peripheral */
 #define I2C_SLAVE_ADDRESS   0x68
@@ -62,8 +63,8 @@ void I2C1_Config(void){
     I2C1_Init(&I2C1Handle);
 
     /* Enable I2C1 interrupt */
-    I2C_IRQConfig(IRQ_NO_I2C1_EV, ENABLE);
-    I2C_IRQConfig(IRQ_NO_I2C1_ER, ENABLE);
+    IRQConfig(IRQ_NO_I2C1_EV, ENABLE);
+    IRQConfig(IRQ_NO_I2C1_ER, ENABLE);
 
 #if I2C_MASTER == 0
     /* Enable callback events, it is needed in slave mode */

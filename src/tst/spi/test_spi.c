@@ -13,13 +13,15 @@
 *       For further information about functions refer to the corresponding header file.
 **/
 
-#include <string.h>
-#include <stdint.h>
-#include <stdio.h>
+
 #include "test_spi.h"
 #include "spi_driver.h"
 #include "gpio_driver.h"
 #include "utils.h"
+#include "cortex_m4.h"
+#include <string.h>
+#include <stdint.h>
+#include <stdio.h>
 
 /** @brief Size of the ID from the slave */
 #define SIZE_ID             11
@@ -116,7 +118,7 @@ void SPI2_Config(void){
     SPI_SSOECfg(SPI2, ENABLE);
 
     /* Enable SPI2 interrupt */
-    SPI_IRQConfig(IRQ_NO_SPI2, ENABLE);
+    IRQConfig(IRQ_NO_SPI2, ENABLE);
 }
 
 void SPI2_SendHello(void){
@@ -160,7 +162,7 @@ void SPI_IRQActions(void){
     uint8_t dummy = 0xFF;
 
     GPIO_IRQHandling(GPIO_PIN_NO_9);
-    GPIO_IRQConfig(IRQ_NO_EXTI9_5, DISABLE);
+    IRQConfig(IRQ_NO_EXTI9_5, DISABLE);
 
     rx_stop = 0;
 
@@ -181,7 +183,7 @@ void SPI_IRQActions(void){
 
     printf("Rx data = %s\n", rx_buffer);
 
-    GPIO_IRQConfig(IRQ_NO_EXTI9_5, ENABLE);
+    IRQConfig(IRQ_NO_EXTI9_5, ENABLE);
 }
 
 /***********************************************************************************************************/
@@ -265,8 +267,8 @@ static void SPI2_GPIO_IntPinInit(void){
 
     GPIO_Init(&SPIIntPin);
 
-    GPIO_IRQPriorityConfig(IRQ_NO_EXTI9_5, NVIC_IRQ_PRIORITY15);
-    GPIO_IRQConfig(IRQ_NO_EXTI9_5, ENABLE);
+    IRQPriorityConfig(IRQ_NO_EXTI9_5, NVIC_IRQ_PRIORITY15);
+    IRQConfig(IRQ_NO_EXTI9_5, ENABLE);
 }
 
 static void SPI2_Init(SPI_Handle_t* pSPI_Handle){

@@ -11,7 +11,6 @@
 *       - uint32_t Timer_CCGetValue(Timer_Handle_t* Timer_Handle, CC_Channel_t channel)
 *       - void     Timer_CCSetValue(Timer_Handle_t* Timer_Handle, CC_Channel_t channel, uint32_t value)
 *       - void     Timer_PerClkCtrl(Timer_Num_t timer_num, uint8_t en_or_di)
-*       - void     Timer_IRQConfig(uint8_t IRQNumber, uint8_t en_or_di)
 *       - void     Timer_IRQHandling(Timer_Handle_t* Timer_Handle)
 *       - void     Timer_ApplicationEventCallback(void)
 */
@@ -217,14 +216,6 @@ void Timer_CCSetValue(Timer_Handle_t* Timer_Handle, CC_Channel_t channel, uint32
  * @return void
  */
 void Timer_PerClkCtrl(Timer_Num_t timer_num, uint8_t en_or_di);
-
-/**
- * @brief Function to configure the IRQ number of the timer peripheral.
- * @param[in] IRQNumber number of the interrupt.
- * @param[in] en_or_di for enable or disable.
- * @return void.
- */
-void Timer_IRQConfig(uint8_t IRQNumber, uint8_t en_or_di);
 
 /**
  * @brief Function to handle the interrupt of the timer peripheral.

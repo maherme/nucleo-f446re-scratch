@@ -11,8 +11,6 @@
 *       - uint8_t CAN_TxMsgPending(CAN_RegDef_t* pCANx, uint32_t mailbox)
 *       - uint8_t CAN_SetFilter(CAN_Filter_t* filter)
 *       - uint8_t CAN_GetRxMsg(CAN_RegDef_t* pCANx, CAN_RxMessage_t* pRxMessage, uint8_t FIFO_number)
-*       - void CAN_IRQConfig(uint8_t IRQNumber, uint8_t en_or_di)
-*       - void CAN_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority)
 *       - uint8_t CAN_InterruptsEnable(CAN_RegDef_t* pCANx, uint32_t irq_flags)
 *       - uint8_t CAN_InterruptsDisable(CAN_RegDef_t* pCANx, uint32_t irq_flags)
 *       - void CAN_Tx_IRQHandling(CAN_RegDef_t* pCANx)
@@ -308,22 +306,6 @@ uint8_t CAN_SetFilter(CAN_Filter_t* filter);
  * @return 2 if the FIFO has not a message pending.
  */
 uint8_t CAN_GetRxMsg(CAN_RegDef_t* pCANx, CAN_RxMessage_t* pRxMessage, uint8_t FIFO_number);
-
-/**
- * @brief Function to configure the IRQ number of the CAN peripheral.
- * @param[in] IRQNumber number of the interrupt.
- * @param[in] en_or_di for enable or disable.
- * @return void.
- */
-void CAN_IRQConfig(uint8_t IRQNumber, uint8_t en_or_di);
-
-/**
- * @brief Function to configure the IRQ number of the CAN peripheral.
- * @param[in] IRQNumber number of the interrupt.
- * @param[in] IRQPriority priority of the interrupt.
- * @return void.
- */
-void CAN_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority);
 
 /**
  * @brief Function to enable the CAN interrupts.
