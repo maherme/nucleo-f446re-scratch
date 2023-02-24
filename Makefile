@@ -1,114 +1,103 @@
-TARGET1 = $(BLD_DIR)/nucleof446re_rel.elf
-TARGET2 = $(BLD_DIR)/nucleof446re_dbg.elf
+TARGET_ELF_RELEASE = $(BLD_RELEASE_DIR)/nucleof446re_rel.elf
+TARGET_MAP_RELEASE = $(BLD_RELEASE_DIR)/nucleof446re_rel.map
+TARGET_ELF_DEBUG = $(BLD_DEBUG_DIR)/nucleof446re_dbg.elf
+TARGET_MAP_DEBUG = $(BLD_DEBUG_DIR)/nucleof446re_dbg.map
 TARGET_LIB = $(LIB_DIR)/libstm32f446xx.a
+
 VPATH = $(shell find ./src/ -type d)
-INCLUDE = $(VPATH:%=-I%) 
-LNK_DIR = ./lnk
-OBJ_DIR = ./obj
 LIB_DIR = ./lib
 BLD_DIR = ./build
-OBJS1 = $(OBJ_DIR)/main.o \
-		$(OBJ_DIR)/startup.o \
-		$(OBJ_DIR)/syscalls.o \
-		$(OBJ_DIR)/utils.o \
-		$(OBJ_DIR)/test.o \
-		$(OBJ_DIR)/test_spi.o \
-		$(OBJ_DIR)/test_i2c.o \
-		$(OBJ_DIR)/test_usart.o \
-		$(OBJ_DIR)/test_rcc.o \
-		$(OBJ_DIR)/test_timer.o \
-		$(OBJ_DIR)/test_dma.o \
-		$(OBJ_DIR)/test_rtc.o \
-		$(OBJ_DIR)/test_can.o \
-		$(OBJ_DIR)/gpio_driver.o \
-		$(OBJ_DIR)/spi_driver.o \
-		$(OBJ_DIR)/rcc_driver.o \
-		$(OBJ_DIR)/i2c_driver.o \
-		$(OBJ_DIR)/usart_driver.o \
-		$(OBJ_DIR)/flash_driver.o \
-		$(OBJ_DIR)/timer_driver.o \
-		$(OBJ_DIR)/dma_driver.o \
-		$(OBJ_DIR)/rtc_driver.o \
-		$(OBJ_DIR)/can_driver.o
-OBJS2 = $(OBJ_DIR)/main.o \
-		$(OBJ_DIR)/startup.o \
-		$(OBJ_DIR)/utils.o \
-		$(OBJ_DIR)/test.o \
-		$(OBJ_DIR)/test_spi.o \
-		$(OBJ_DIR)/test_i2c.o \
-		$(OBJ_DIR)/test_usart.o \
-		$(OBJ_DIR)/test_rcc.o \
-		$(OBJ_DIR)/test_timer.o \
-		$(OBJ_DIR)/test_dma.o \
-		$(OBJ_DIR)/test_rtc.o \
-		$(OBJ_DIR)/test_can.o \
-		$(OBJ_DIR)/gpio_driver.o \
-		$(OBJ_DIR)/spi_driver.o \
-		$(OBJ_DIR)/rcc_driver.o \
-		$(OBJ_DIR)/i2c_driver.o \
-		$(OBJ_DIR)/usart_driver.o \
-		$(OBJ_DIR)/flash_driver.o \
-		$(OBJ_DIR)/timer_driver.o \
-		$(OBJ_DIR)/dma_driver.o \
-		$(OBJ_DIR)/rtc_driver.o \
-		$(OBJ_DIR)/can_driver.o
-OBJS_LIB = $(OBJ_DIR)/gpio_driver.o \
-		   $(OBJ_DIR)/spi_driver.o \
-		   $(OBJ_DIR)/rcc_driver.o \
-		   $(OBJ_DIR)/i2c_driver.o \
-		   $(OBJ_DIR)/usart_driver.o \
-		   $(OBJ_DIR)/flash_driver.o \
-		   $(OBJ_DIR)/timer_driver.o \
-		   $(OBJ_DIR)/dma_driver.o \
-		   $(OBJ_DIR)/rtc_driver.o \
-		   $(OBJ_DIR)/can_driver.o
+BLD_RELEASE_DIR = $(BLD_DIR)/release
+BLD_DEBUG_DIR = $(BLD_DIR)/debug
+OBJ_RELEASE_DIR = $(BLD_RELEASE_DIR)/obj
+OBJ_DEBUG_DIR = $(BLD_DEBUG_DIR)/obj
+OBJ_LIB_DIR = $(LIB_DIR)/obj
+LNK_DIR = ./lnk
+
+INCLUDE = $(VPATH:%=-I%) 
+SOURCES = $(shell find ./src/ -type f -name "*.c")
+OBJECTS = $(notdir $(patsubst %.c, %.o, $(SOURCES)))
+OBJS_DRV = $(notdir $(patsubst %.c, %.o, $(filter ./src/drv/%, $(SOURCES))))
+OBJS_RELEASE = $(addprefix $(OBJ_RELEASE_DIR)/, $(OBJECTS))
+OBJS_DEBUG = $(addprefix $(OBJ_DEBUG_DIR)/, $(filter-out %syscalls.o, $(OBJECTS)))
+OBJS_LIB = $(addprefix $(OBJ_LIB_DIR)/, $(OBJS_DRV))
+
+MODE = all
+
 CC = arm-none-eabi-gcc
 AR = arm-none-eabi-ar
 CR = arm-none-eabi-ranlib
 MACH = cortex-m4
 CFLAGS = -c -MD -mcpu=$(MACH) -mthumb -mfloat-abi=soft -std=gnu11 -Wall $(INCLUDE) -O0
-LDFLAGS = -mcpu=$(MACH) -mthumb -mfloat-abi=soft --specs=nano.specs -T $(LNK_DIR)/lk_f446re.ld \
-		  -Wl,-Map=$(BLD_DIR)/nucleof446re.map -Wl,--print-memory-usage
-LDFLAGS_SH = -mcpu=$(MACH) -mthumb -mfloat-abi=soft --specs=rdimon.specs -T $(LNK_DIR)/lk_f446re.ld \
-			 -Wl,-Map=$(BLD_DIR)/nucleof446re_sh.map -Wl,--print-memory-usage
+LDFLAGS_RELEASE = -mcpu=$(MACH) -mthumb -mfloat-abi=soft --specs=nano.specs -T $(LNK_DIR)/lk_f446re.ld \
+				  -Wl,-Map=$(TARGET_MAP_RELEASE) -Wl,--print-memory-usage
+LDFLAGS_DEBUG = -mcpu=$(MACH) -mthumb -mfloat-abi=soft --specs=rdimon.specs -T $(LNK_DIR)/lk_f446re.ld \
+				  -Wl,-Map=$(TARGET_MAP_DEBUG) -Wl,--print-memory-usage
 
+
+$(TARGET_ELF_RELEASE) : CFLAGS += -DRELEASE
+$(TARGET_ELF_RELEASE) : $(OBJS_RELEASE)
+	@mkdir -p $(BLD_DIR)
+	$(CC) $(LDFLAGS_RELEASE) $(OBJS_RELEASE) -o $(TARGET_ELF_RELEASE)
+
+$(TARGET_ELF_DEBUG) : CFLAGS += -DDEBUG -g
+$(TARGET_ELF_DEBUG) : $(OBJS_DEBUG)
+	@mkdir -p $(BLD_DIR)
+	$(CC) $(LDFLAGS_DEBUG) $(OBJS_DEBUG) -o $(TARGET_ELF_DEBUG)
+
+$(TARGET_LIB) : CFLAGS += -DRELEASE
 $(TARGET_LIB) : $(OBJS_LIB)
 	@mkdir -p $(LIB_DIR)
 	$(AR) -rc $@ $+
 	$(CR) $@
 
-$(TARGET1) : CFLAGS += -DRELEASE
-$(TARGET1) : $(OBJS1)
-	@mkdir -p $(BLD_DIR)
-	$(CC) $(LDFLAGS) $(OBJS1) -o $(TARGET1)
-
-$(TARGET2) : CFLAGS += -DDEBUG -g
-$(TARGET2) : $(OBJS2)
-	@mkdir -p $(BLD_DIR)
-	$(CC) $(LDFLAGS_SH) $(OBJS2) -o $(TARGET2)
-
-$(OBJ_DIR)/%.o : %.c
-	@mkdir -p $(OBJ_DIR)
+$(OBJ_RELEASE_DIR)/%.o : %.c
+	@mkdir -p $(OBJ_RELEASE_DIR)
 	$(CC) $(CFLAGS) $< -o $@
 
--include $(OBJ_DIR)/*.d
+$(OBJ_DEBUG_DIR)/%.o : %.c
+	@mkdir -p $(OBJ_DEBUG_DIR)
+	$(CC) $(CFLAGS) $< -o $@
+
+$(OBJ_LIB_DIR)/%.o : %.c
+	@mkdir -p $(OBJ_LIB_DIR)
+	$(CC) $(CFLAGS) $< -o $@
+
+-include $(OBJ_RELEASE_DIR)/*.d
+-include $(OBJ_DEBUG_DIR)/*.d
+
+.PHONY all:
+all: $(TARGET_ELF_DEBUG) \
+	 $(TARGET_ELF_RELEASE) \
+	 $(TARGET_LIB)
 
 .PHONY : release
-release: $(TARGET1)
+release: $(TARGET_ELF_RELEASE)
 
 .PHONY : debug
-debug: $(TARGET2)
-
-.PHONY : clean
-clean:
-	rm -r $(OBJ_DIR) $(BLD_DIR) $(LIB_DIR)
+debug: $(TARGET_ELF_DEBUG)
 
 .PHONY : lib
 lib: $(TARGET_LIB)
 
+clean: $(addprefix clean-, $(MODE))
+
+.PHONY : clean-all
+clean-all:
+	@rm -rf $(BLD_DIR) $(LIB_DIR)
+
+.PHONY : clean-debug
+clean-debug:
+	@rm -rf $(BLD_DEBUG_DIR)
+
+.PHONY : clean-release
+clean-release:
+	@rm -rf $(BLD_RELEASE_DIR)
+
+.PHONY : clean-lib
+clean-lib:
+	@rm -rf $(LIB_DIR)
+
 .PHONY : load
 load:
 	openocd -f board/st_nucleo_f4.cfg
-
-all:
-	@echo $(VPATH)
