@@ -1,7 +1,7 @@
 # NUCLEO-F446RE from Scratch
 This is an embedded project for [NUCLEO-F446RE](https://www.st.com/en/evaluation-tools/nucleo-f446re.html) board, based on [STM32F446RE](https://www.st.com/en/microcontrollers-microprocessors/stm32f446re.html) microcontroller.
 
-It contains drivers for GPIO, SPI, I2C, USART, RCC, TIMER, DMA and RTC peripherals.
+It contains drivers for GPIO, SPI, I2C, USART, RCC, TIMER, DMA, RTC and CAN peripherals.
 
 ## OpenOCD
 You can use OpenOCD (Open On-Chip Debugger) for programming or debugging this project. You can starting OpenOCD typing:
@@ -30,11 +30,11 @@ arm semihosting enable
 ### Test SPI Driver
 For testing the SPI driver you need to use the Nucleo board, an Arduino UNO board and also a logic level converter; due to the Nucleo board works with 3.3V PIN level and Arduino UNO board works with 5V PIN level.
 
-You need to set TEST_SPI to 1 in the [test.h](inc/tst/test.h) file for enabling the code to test the SPI peripheral driver.
+You need to set TEST_SPI to 1 in the [test.h](src/tst/test.h) file for enabling the code to test the SPI peripheral driver.
 
-You can use the SPI2_SendHello API placed in [test_spi.c](src/tst/test_spi.c) file which sends the "Hello World" string to the Arduino board, for testing with this API you need to use the [SPISlvRx.ino](ard/SPI/SPISlvRx/SPISlvRx.ino) sketch. You need to open a Serial Monitor using the Arduino IDE configuring a speed of 9600 baud for receiving this string.
+You can use the SPI2_SendHello API placed in [test_spi.c](src/tst/spi/test_spi.c) file which sends the "Hello World" string to the Arduino board, for testing with this API you need to use the [SPISlvRx.ino](ard/SPI/SPISlvRx/SPISlvRx.ino) sketch. You need to open a Serial Monitor using the Arduino IDE configuring a speed of 9600 baud for receiving this string.
 
-You can test the SPI driver in a bidirectional way using the SPI_SendCmds API placed in [test_spi.c](src/tst/test_spi.c) file or using the different APIs for commands in that file. For testing the command APIs you need to use the [SPISlvCmd.ino](ard/SPI/SPISlvCmd/SPISlvCmd.ino) sketch. You need to open a Serial Monitor using the Arduino IDE configuring a speed of 9600 baud and you should use also the semi hosting binary for the STM32 microcontroller for watching further information.
+You can test the SPI driver in a bidirectional way using the SPI_SendCmds API placed in [test_spi.c](src/tst/spi/test_spi.c) file or using the different APIs for commands in that file. For testing the command APIs you need to use the [SPISlvCmd.ino](ard/SPI/SPISlvCmd/SPISlvCmd.ino) sketch. You need to open a Serial Monitor using the Arduino IDE configuring a speed of 9600 baud and you should use also the semi hosting binary for the STM32 microcontroller for watching further information.
 
 Finally, if you want to test the interrupt mode in the SPI driver you need to use the [SPISlvTxIrq.ino](ard/SPI/SPISlvTxIrq/SPISlvTxIrq.ino) sketch. In this test you will send a string typed in the Serial Monitor of the Arduino IDE to the Nucleo board, and it will be printed in a terminal using semi hosting. You need to open a Serial Monitor using the Arduino IDE configuring a speed of 9600 baud for typing the string, and you need to use the semi hosting binary for the STM32 microcontroller in order to watch the received string.
 
@@ -52,21 +52,21 @@ In this diagram:
 ### Test I2C Driver
 For testing the I2C driver you need to use the Nucleo board, an Arduino UNO board and also a logic level converter; due to the Nucleo board works with 3.3V PIN level and Arduino UNO board works with 5V PIN level.
 
-You need to set TEST_I2C to 1 in the [test.h](inc/tst/test.h) file for enabling the code to test the I2C peripheral driver.
+You need to set TEST_I2C to 1 in the [test.h](src/tst/test.h) file for enabling the code to test the I2C peripheral driver.
 
-You can use the I2C1_SendHello API placed in the [test_i2c.c](src/tst/test_i2c.c) file which sends the "Hello World" string to the Arduino board, for testing with this API you need to use the [I2CSlvRx.ino](ard/I2C/I2CSlvRx/I2CSlvRx.ino) sketch. You need to open a Serial Monitor using the Arduino IDE configuring a speed of 9600 baud for receiving this string. In this test the Nucleo board is the master so you need to set the I2C_MASTER define to 1 in the [test_i2c.c](src/tst/test_i2c.c) file.
+You can use the I2C1_SendHello API placed in the [test_i2c.c](src/tst/i2c/test_i2c.c) file which sends the "Hello World" string to the Arduino board, for testing with this API you need to use the [I2CSlvRx.ino](ard/I2C/I2CSlvRx/I2CSlvRx.ino) sketch. You need to open a Serial Monitor using the Arduino IDE configuring a speed of 9600 baud for receiving this string. In this test the Nucleo board is the master so you need to set the I2C_MASTER define to 1 in the [test_i2c.c](src/tst/i2c/test_i2c.c) file.
 
-You can test transmission and reception using the I2C1_SendCmd API placed in the [test_i2c.c](src/tst/test_i2c.c) file which sends two commands to the Arduino board and this will send an answer. These commands are:
+You can test transmission and reception using the I2C1_SendCmd API placed in the [test_i2c.c](src/tst/i2c/test_i2c.c) file which sends two commands to the Arduino board and this will send an answer. These commands are:
 | Command ID | Functionality                            |
 |:----------:|:----------------------------------------:|
 | 0x51       | Request the lenght of a string to send   |
 | 0x52       | Request to send the string               |
 
-For testing with this API you need to use the [I2CSlvCmd.ino](ard/I2C/I2CSlvCmd/I2CSlvCmd.ino) sketch.You need to open a Serial Monitor using the Arduino IDE configuring a speed of 9600 baud and you should use also the semi hosting binary for the STM32 microcontroller for watching further information. In this test the Nucleo board is the master so you need to set the I2C_MASTER define to 1 in the [test_i2c.c](src/tst/test_i2c.c) file.
+For testing with this API you need to use the [I2CSlvCmd.ino](ard/I2C/I2CSlvCmd/I2CSlvCmd.ino) sketch.You need to open a Serial Monitor using the Arduino IDE configuring a speed of 9600 baud and you should use also the semi hosting binary for the STM32 microcontroller for watching further information. In this test the Nucleo board is the master so you need to set the I2C_MASTER define to 1 in the [test_i2c.c](src/tst/i2c/test_i2c.c) file.
 
 If you use the I2C1_SendCmdIT API you will test the transmission and reception using interrupt mode.
 
-You can also test the I2C driver in slave mode, you need to set the I2C_MASTER define to 0 in the [test_i2c.c](src/tst/test_i2c.c) file. For this test you need to use the [I2CMstRx.ino](ard/I2C/I2CMstRx/I2CMstRx.ino) sketch. You need to open a Serial Monitor using the Arduino IDE configuring a speed of 9600 baud for sending the commands from Arduino as master.
+You can also test the I2C driver in slave mode, you need to set the I2C_MASTER define to 0 in the [test_i2c.c](src/tst/i2c/test_i2c.c) file. For this test you need to use the [I2CMstRx.ino](ard/I2C/I2CMstRx/I2CMstRx.ino) sketch. You need to open a Serial Monitor using the Arduino IDE configuring a speed of 9600 baud for sending the commands from Arduino as master.
 
 For performing all these tests you need to follow the connection diagram below:
 ![Alt text](doc/img/nucleo-i2c-test.png)
@@ -80,11 +80,11 @@ In this diagram:
 
 For testing the USART driver you need to use the Nucleo board, an Arduino UNO board and also a logic level converter; due to the Nucleo board works with 3.3V PIN level and Arduino UNO board works with 5V PIN level.
 
-You need to set TEST_USART to 1 in the [test.h](inc/tst/test.h) file for enabling the code to test the USART peripheral driver.
+You need to set TEST_USART to 1 in the [test.h](src/tst/test.h) file for enabling the code to test the USART peripheral driver.
 
-You can use the USART3_SendHello API placed in the [test_usart.c](src/tst/test_usart.c) file which sends the "Hello World" string to the Arduino board, for testing with this API you need to use the [USARTRx.ino](ard/USART/USARTRx/USARTRx.ino) sketch. You need to open a Serial Monitor using the Arduino IDE configuring a speed of 115200 baud for receiving this string.
+You can use the USART3_SendHello API placed in the [test_usart.c](src/tst/usart/test_usart.c) file which sends the "Hello World" string to the Arduino board, for testing with this API you need to use the [USARTRx.ino](ard/USART/USARTRx/USARTRx.ino) sketch. You need to open a Serial Monitor using the Arduino IDE configuring a speed of 115200 baud for receiving this string.
 
-You can use the USART3_TxRx API for testing the transmission and reception APIs of the USART driver. This function is placed in the [test_usart.c](src/tst/test_usart.c) file. You will need to use the [USARTRxTx.ino](ard/USART/USARTRxTx/USARTRxTx.ino) sketch for the Arduino board. You need to open a Serial Monitor using the Arduino IDE configuring a speed of 115200 baud for receiving this string.
+You can use the USART3_TxRx API for testing the transmission and reception APIs of the USART driver. This function is placed in the [test_usart.c](src/tst/usart/test_usart.c) file. You will need to use the [USARTRxTx.ino](ard/USART/USARTRxTx/USARTRxTx.ino) sketch for the Arduino board. You need to open a Serial Monitor using the Arduino IDE configuring a speed of 115200 baud for receiving this string.
 
 For performing all these tests you need to follow the connection diagram below:
 ![Alt text](doc/img/nucleo-usart-test.png)
@@ -97,7 +97,7 @@ In this diagram:
 Warning!!! You need to disconnect the cable from GPIO0 (RX PIN) of Arduino board before programming the sketch; in other way the programming process will fail.
 
 ### Test Reset and Clock Control (RCC) Driver
-You need to set TEST_RCC to 1 in the [test.h](inc/tst/test.h) file for enabling the code to test the RCC peripheral driver.
+You need to set TEST_RCC to 1 in the [test.h](src/tst/test.h) file for enabling the code to test the RCC peripheral driver.
 Each API of the test enable and cofigure a different clock configuration, SetHSEBypass() and SetPLLMax() APIs will show you the configuration set using the semihosting console, while SetMCO_LSE_HSE() and SetMCO_PLL() will send two clock signals through the GPIO PA8 and PA9.
 
 Console output when SetHSEBypass() API is executed:
@@ -118,7 +118,7 @@ Snapshot of GPIO PA8 (using MCO1 with LSE crystal) (D0 channel) and PC9 (using M
 ![Alt text](doc/img/nucleo-rcc-mco-lse-hse-test.png)
 
 ### Test Timer Driver
-You need to set TEST_TIMER to 1 in the [test.h](inc/tst/test.h) file for enabling the code to test the Timer peripheral driver.
+You need to set TEST_TIMER to 1 in the [test.h](src/tst/test.h) file for enabling the code to test the Timer peripheral driver.
 - If you use Timer6 related APIs you will test a basic timer (TIM6) which generates an interrupt for toggling a LED.
 - If you use Timer2 related APIs you will test the input capture functionality (TIM2), if you introduce a clock signal in the GPIO PA0 the frequency will be calculated and showed using the semihosting console. For this test the MCO1 is configured using the LSE crystal and output using GPIO PA8. So connect the GPIO PA8 to PA0 and you will see this output console:
 ```console
@@ -135,7 +135,7 @@ Frequency: 32786.885246
 <p align="center"><img src="doc/img/nucleo-pwm-test.png" width="456" height="497"></p>
 
 ### Test DMA Driver
-You need to set TEST_DMA to 1 in the [test.h](inc/tst/test.h) file for enabling the code to test the DMA peripheral driver.
+You need to set TEST_DMA to 1 in the [test.h](src/tst/test.h) file for enabling the code to test the DMA peripheral driver.
 
 In this test the DMA1 Stream3 is used for sending a string stored in FLASH memory to the USART3 peripheral for transmitting.
 
@@ -150,11 +150,11 @@ The USART3 pins are configured as follow:
 | UART RX                | PC11       |
 
 ### Test RTC Driver
-You need to set TEST_RTC to 1 in the [test.h](inc/tst/test.h) file for enabling the code to test the RTC peripheral driver.
+You need to set TEST_RTC to 1 in the [test.h](src/tst/test.h) file for enabling the code to test the RTC peripheral driver.
 
 In this test the RTC is configured to an specific date and time, and the two alarm are also configured. The timer TIM6 is configured to rise an interrupt every second, and date and time are printed using this interrupt. When the alarms are triggered a message signaling this event is printed.
 
-The alarms can be configured using the RTC alarm irq, to do this you need to set TEST_RTC_IRQ to 1 in the [test_rtc.c](src/tst/test_rtc.c) file. Is TEST_RTC_IRQ is set to 0 the check of the alarm is done via polling.
+The alarms can be configured using the RTC alarm irq, to do this you need to set TEST_RTC_IRQ to 1 in the [test_rtc.c](src/tst/rtc/test_rtc.c) file. Is TEST_RTC_IRQ is set to 0 the check of the alarm is done via polling.
 
 The information is printed using semihosting, so you do not need to follow any connection diagram for testing the RTC, only connect the nucleo board to the PC using the USB port.
 
