@@ -4,10 +4,15 @@
 * @brief File containing the APIs for configuring the Cortex M4.
 *
 * Public Functions:
+*       - void IRQConfig(uint8_t IRQNumber, uint8_t en_or_di)
+*       - void IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority)
+*       - void EnableSleepOnExit(void)
 *
 * @note
 *       For further information about functions refer to the corresponding header file.
 **/
+
+#define SCR_REG     0xE000ED10
 
 #include "cortex_m4.h"
 #include "stm32f446xx.h"
@@ -58,4 +63,9 @@ void IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority){
     uint8_t shift = (8*iprx_section) + (8 - NO_PR_BITS_IMPLEMENTED);
 
     *(NVIC_PR_BASEADDR + iprx) |= (IRQPriority << shift);
+}
+
+void EnableSleepOnExit(void){
+
+    SCB->SCR |= (1 << SCB_SCR_SLEEPONEXIT);
 }

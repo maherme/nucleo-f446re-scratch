@@ -31,31 +31,6 @@
 /** @} */
 
 /***********************************************************************************************************/
-/*                          ARM Cortex M4 Processor Specific Registers                                     */
-/***********************************************************************************************************/
-
-/**
- * @name ARM Cortex M4 Processor Specific Registers.
- * @{
- */
-#define NVIC_ISER0      ((volatile uint32_t*)0xE000E100)        /**< @brief NVIC ISER0 Register Addr */
-#define NVIC_ISER1      ((volatile uint32_t*)0xE000E104)        /**< @brief NVIC ISER1 Register Addr */
-#define NVIC_ISER2      ((volatile uint32_t*)0xE000E108)        /**< @brief NVIC ISER2 Register Addr */
-#define NVIC_ISER3      ((volatile uint32_t*)0xE000E10C)        /**< @brief NVIC ISER3 Register Addr */
-
-#define NVIC_ICER0      ((volatile uint32_t*)0xE000E180)        /**< @brief NVIC ICER0 Register Addr */
-#define NVIC_ICER1      ((volatile uint32_t*)0xE000E184)        /**< @brief NVIC ICER1 Register Addr */
-#define NVIC_ICER2      ((volatile uint32_t*)0xE000E188)        /**< @brief NVIC ICER2 Register Addr */
-#define NVIC_ICER3      ((volatile uint32_t*)0xE000E18C)        /**< @brief NVIC ICER3 Register Addr */
-
-#define NVIC_PR_BASEADDR    ((volatile uint32_t*)0xE000E400)    /**< @brief NVIC Priority Register Addr */
-
-#define DBGMCU_BASEADDR     0xE0042000                          /**< @brief Debug Peripheral Base Addr */
-
-#define NO_PR_BITS_IMPLEMENTED  4 /**< @brief Numb of priority bits implemented in the Priority Register */
-/** @} */
-
-/***********************************************************************************************************/
 /*                          Memory and Bus Base Address Definition                                         */
 /***********************************************************************************************************/
 
@@ -1966,26 +1941,4 @@ typedef struct
 #define IRQ_NO_SPI4                 84  /**< @brief Interrupt Num for SPI4 */
 /** @} */
 
-/**
- * @name IRQ priority.
- * @{
- */
-#define NVIC_IRQ_PRIORITY0      0   /**< @brief Interrupt Priority 0 */
-#define NVIC_IRQ_PRIORITY1      1   /**< @brief Interrupt Priority 1 */
-#define NVIC_IRQ_PRIORITY2      2   /**< @brief Interrupt Priority 2 */
-#define NVIC_IRQ_PRIORITY3      3   /**< @brief Interrupt Priority 3 */
-#define NVIC_IRQ_PRIORITY4      4   /**< @brief Interrupt Priority 4 */
-#define NVIC_IRQ_PRIORITY5      5   /**< @brief Interrupt Priority 5 */
-#define NVIC_IRQ_PRIORITY6      6   /**< @brief Interrupt Priority 6 */
-#define NVIC_IRQ_PRIORITY7      7   /**< @brief Interrupt Priority 7 */
-#define NVIC_IRQ_PRIORITY8      8   /**< @brief Interrupt Priority 8 */
-#define NVIC_IRQ_PRIORITY9      9   /**< @brief Interrupt Priority 9 */
-#define NVIC_IRQ_PRIORITY10     10  /**< @brief Interrupt Priority 10 */
-#define NVIC_IRQ_PRIORITY11     11  /**< @brief Interrupt Priority 11 */
-#define NVIC_IRQ_PRIORITY12     12  /**< @brief Interrupt Priority 12 */
-#define NVIC_IRQ_PRIORITY13     13  /**< @brief Interrupt Priority 13 */
-#define NVIC_IRQ_PRIORITY14     14  /**< @brief Interrupt Priority 14 */
-#define NVIC_IRQ_PRIORITY15     15  /**< @brief Interrupt Priority 15 */
-/** @} */
-
-#endif /* STM32F446XX_H */
+#endif  /* STM32F446XX_H */

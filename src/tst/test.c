@@ -23,6 +23,7 @@
 #include "test_dma.h"
 #include "test_rtc.h"
 #include "test_can.h"
+#include "test_pwr.h"
 #include "utils.h"
 #include <string.h>
 #include <stdint.h>
@@ -100,6 +101,10 @@ void test_init(void){
 #if TEST_CAN
     CAN1_Config();
 #endif
+
+#if TEST_PWR
+    Test_SleepOnExit();
+#endif
 }
 
 void test_process(void){
@@ -173,6 +178,10 @@ void EXTI15_10_Handler(void){
 #if TEST_CAN
     CAN1_Send();
     //CAN1_Send_Receive();
+#endif
+
+#if TEST_PWR
+    //Test_PWR_SetPLLMax();
 #endif
 
     /* Toggle LED */

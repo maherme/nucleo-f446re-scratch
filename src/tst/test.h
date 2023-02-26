@@ -22,7 +22,8 @@
 #define TEST_TIMER  0   /**< @brief Set to 1 for enabling the Timer test */
 #define TEST_DMA    0   /**< @brief Set to 1 for enabling the DMA test */
 #define TEST_RTC    0   /**< @brief Set to 1 for enabling the RTC test */
-#define TEST_CAN    1   /**< @brief Set to 1 for enabling the CAN test */
+#define TEST_CAN    0   /**< @brief Set to 1 for enabling the CAN test */
+#define TEST_PWR    1   /**< @brief Set to 1 for enabling the PWR test */
 /** @} */
 
 /***********************************************************************************************************/

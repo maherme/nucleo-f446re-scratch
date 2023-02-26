@@ -15,6 +15,8 @@
 *       For further information about functions refer to the corresponding header file.
 **/
 
+#if TEST_TIMER
+
 #include "test.h"
 #include "test_timer.h"
 #include "timer_driver.h"
@@ -243,8 +245,6 @@ void Timer3_Process(void){
 /*                               Weak Function Overwrite Definitions                                       */
 /***********************************************************************************************************/
 
-#if TEST_TIMER
-
 void TIM6_DAC_Handler(void){
     Timer_IRQHandling(&Timer);
 }
@@ -312,8 +312,6 @@ void Timer_ApplicationEventCallback(Timer_Num_t tim_num, Timer_Event_t timer_eve
     }
 }
 
-#endif
-
 /***********************************************************************************************************/
 /*                                       Static Function Definitions                                       */
 /***********************************************************************************************************/
@@ -346,3 +344,5 @@ static void SetMCO_LSE(void){
     MCOPin.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_8;
     GPIO_Init(&MCOPin);
 }
+
+#endif
