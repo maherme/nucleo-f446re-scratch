@@ -81,6 +81,8 @@ void Test_PWR_SetPLLMax(void){
     PWR_SetOverDrive();
     /* Set FLASH latency according to clock frequency (see reference manual) */
     Flash_SetLatency(5);
+    /* Enable cache options in FLASH for performance */
+    Flash_EnableCache(FLASH_DATA_CACHE | FLASH_INSTRUCTION_CACHE | FLASH_PREFETCH);
     /* Set PLL to system clock */
     RCC_SetSystemClock(RCC_Cfg);
 

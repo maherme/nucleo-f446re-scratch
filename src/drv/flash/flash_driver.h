@@ -19,6 +19,8 @@
 *       - uint8_t Flash_Busy(void)
 *       - void    Flash_GetOBCfg(OPT_Cfg_t* OPTCfg)
 *       - uint8_t Flash_SetLatency(uint8_t latency)
+*       - void Flash_EnableCache(flash_cache_t cache_options)
+*       - void Flash_DisableCache(flash_cache_t cache_options)
 */
 
 #ifndef FLASH_DRIVER_H
@@ -49,6 +51,15 @@ typedef struct{
     uint8_t  user;   /**< User configuration */
     uint8_t  BOR;    /**< BOR reset level */
 }OPT_Cfg_t;
+
+/**
+ * @brief List of allowed cache option values for FLASH ARC register.
+ */
+typedef enum{
+    FLASH_DATA_CACHE        = 0x00000400,
+    FLASH_INSTRUCTION_CACHE = 0x00000200,
+    FLASH_PREFETCH          = 0x00000100
+}flash_cache_t;
 
 /***********************************************************************************************************/
 /*                                       APIs Supported                                                    */
@@ -172,5 +183,19 @@ void Flash_GetOBCfg(OPT_Cfg_t* OPTCfg);
  * @return 1 is fail.
  */
 uint8_t Flash_SetLatency(uint8_t latency);
+
+/**
+ * @brief Function for setting the cache options of the flash.
+ * @param[in] flash_cache are the options to be enabled.
+ * @return void.
+ */
+void Flash_EnableCache(flash_cache_t flash_cache);
+
+/**
+ * @brief Function for disabling the cache options of the flash.
+ * @param[in] flash_cache are the options to be disabled.
+ * @return void.
+ */
+void Flash_DisableCache(flash_cache_t flash_cache);
 
 #endif

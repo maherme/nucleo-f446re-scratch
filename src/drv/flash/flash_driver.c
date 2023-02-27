@@ -19,6 +19,8 @@
 *       - uint8_t Flash_Busy(void)
 *       - void    Flash_GetOBCfg(OPT_Cfg_t* OPTCfg)
 *       - uint8_t Flash_SetLatency(uint8_t latency)
+*       - void Flash_EnableCache(flash_cache_t cache_options)
+*       - void Flash_DisableCache(flash_cache_t cache_options)
 *
 * @note
 *       For further information about functions refer to the corresponding header file.
@@ -337,4 +339,14 @@ uint8_t Flash_SetLatency(uint8_t latency){
     FLASHINTR->ACR |= (latency << FLASH_ACR_LATENCY);
 
     return 0;
+}
+
+void Flash_EnableCache(flash_cache_t cache_options){
+
+    FLASHINTR->ACR |= cache_options;
+}
+
+void Flash_DisableCache(flash_cache_t cache_options){
+
+    FLASHINTR->ACR &= ~cache_options;
 }
