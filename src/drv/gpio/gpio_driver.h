@@ -54,7 +54,9 @@
 #define GPIO_MODE_IT_FT     4   /**< @brief Interrupt falling edge trigger */
 #define GPIO_MODE_IT_RT     5   /**< @brief Interrupt rising edge trigger */
 #define GPIO_MODE_IT_RFT    6   /**< @brief Interrupt rising and falling edge trigger */
-
+#define GPIO_MODE_EV_FT     7   /**< @brief Event falling edge trigger */
+#define GPIO_MODE_EV_RT     8   /**< @brief Event rising edge trigger */
+#define GPIO_MODE_EV_RFT    9   /**< @brief Event rising and falling edge trigger */
 /** @} */
 
 /**

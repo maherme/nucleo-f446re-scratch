@@ -6,6 +6,8 @@
 * Public Functions:
 *       - void Test_PWR_SetPLLMax(void)
 *       - void Test_SleepOnExit(void)
+*       - void Test_WFE_init(void)
+*       - void Test_WFE_process(void)
 **/
 
 #ifndef TEST_PWR_H
@@ -16,15 +18,28 @@
 /***********************************************************************************************************/
 
 /**
- * @brief Function to set the PLL to maximum frequency.
+ * @brief Function to test the PLL to maximum frequency.
  * @return void.
  */
 void Test_PWR_SetPLLMax(void);
 
 /**
- * @brief Function to set the sleep on exit core functionality.
+ * @brief Function to test the sleep on exit core functionality.
  * @return void.
  */
 void Test_SleepOnExit(void);
+
+/**
+ * @brief Function to initialize the test for the WFE instruction.
+ * @return void.
+ */
+void Test_WFE_init(void);
+
+/**
+ * @brief Function to test the WFE instruction in the main loop. Pressing the button connected to the PC13
+ *        the CPU exits from low power state.
+ * @return void.
+ */
+void Test_WFE_process(void);
 
 #endif  /* TEST_PWR_H */

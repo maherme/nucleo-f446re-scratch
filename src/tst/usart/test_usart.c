@@ -20,6 +20,8 @@
 #include <string.h>
 #include <stdio.h>
 
+#if TEST_USART
+
 /** @brief Flag for notifying completed reception */
 static uint8_t usart_rx_cplt = RESET;
 /** @brief Handler structure for USART peripheral */
@@ -168,3 +170,5 @@ static void USART3_GPIOInit(void){
     USARTPins.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_11;
     GPIO_Init(&USARTPins);
 }
+
+#endif  /* TEST_USART */

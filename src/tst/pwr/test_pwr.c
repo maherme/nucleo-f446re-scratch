@@ -6,6 +6,8 @@
 * Public Functions:
 *       - void Test_PWR_SetPLLMax(void)
 *       - void Test_SleepOnExit(void)
+*       - void Test_WFE_init(void)
+*       - void Test_WFE_process(void)
 *
 * @note
 *       For further information about functions refer to the corresponding header file.
@@ -16,15 +18,41 @@
 #include "rcc_driver.h"
 #include "flash_driver.h"
 #include "timer_driver.h"
+#include "gpio_driver.h"
+#include "usart_driver.h"
 #include "stm32f446xx.h"
 #include "cortex_m4.h"
 #include <stdint.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "gpio_driver.h"
 
 /** @brief Handler structure for Timer peripheral */
 Timer_Handle_t Timer = {0};
+/** @brief Handler structure for USART peripheral */
+USART_Handle_t USART3Handle;
+
+/***********************************************************************************************************/
+/*                                       Static Function Prototypes                                        */
+/***********************************************************************************************************/
+
+/**
+ * @brief Function to initialize USART3 peripheral.
+ * @return void.
+ */
+static void USART3_Init(USART_Handle_t* pUSART_Handle);
+
+/**
+ * @brief Function to initialize GPIO port for the USART3 peripheral.
+ * @return void.
+ *
+ * @note
+ *      PC10 -> USART3 TX
+ *      PC11 -> USART3 RX
+ *      Alt function mode -> 7
+ */
+static void USART3_GPIOInit(void);
 
 /***********************************************************************************************************/
 /*                                       Public API Definitions                                            */
@@ -76,6 +104,35 @@ void Test_SleepOnExit(void){
     Timer_Start(&Timer);
 }
 
+void Test_WFE_init(void){
+
+    /* Configure USART3 */
+    USART3_GPIOInit();
+    USART3_Init(&USART3Handle);
+    USART_Enable(USART3, ENABLE);
+    /* Disable IRQ for button */
+    IRQConfig(IRQ_NO_EXTI15_10, DISABLE);
+    /* Set SEVONPEND bit in cortex */
+    EnableSEVONPEND();
+}
+
+void Test_WFE_process(void){
+
+    const char msg_awake[] = "Hello I am awake\n";
+    const char msg_sleep[] = "Bye I go to sleep\n";
+
+    /* Notify sleep */
+    USART_SendData(&USART3Handle, (uint8_t*)msg_sleep, strlen(msg_sleep));
+    /* Enter in low power mode */
+    Enter_WFE();
+    /* Notify awake */
+    USART_SendData(&USART3Handle, (uint8_t*)msg_awake, strlen(msg_awake));
+    /* Clear event pending bit */
+    GPIO_IRQHandling(GPIO_PIN_NO_13);
+    /* Clear interrupt pending in NVIC */
+    IRQClearPending(IRQ_NO_EXTI15_10);
+}
+
 /***********************************************************************************************************/
 /*                               Weak Function Overwrite Definitions                                       */
 /***********************************************************************************************************/
@@ -94,4 +151,45 @@ void Timer_ApplicationEventCallback(Timer_Num_t tim_num, Timer_Event_t timer_eve
     else{
         /* do nothing */
     }
+}
+
+/***********************************************************************************************************/
+/*                                       Static Function Definitions                                       */
+/***********************************************************************************************************/
+
+static void USART3_Init(USART_Handle_t* pUSART_Handle){
+
+    memset(pUSART_Handle, 0, sizeof(*pUSART_Handle));
+
+    pUSART_Handle->pUSARTx = USART3;
+    pUSART_Handle->USART_Config.USART_Baud = USART_STD_BAUD_115200;
+    pUSART_Handle->USART_Config.USART_HWFlowControl = USART_HW_FLOW_CTRL_NONE;
+    pUSART_Handle->USART_Config.USART_Mode = USART_MODE_TXRX;
+    pUSART_Handle->USART_Config.USART_NoOfStopBits = USART_STOPBITS_1;
+    pUSART_Handle->USART_Config.USART_WordLength = USART_WORDLEN_8BITS;
+    pUSART_Handle->USART_Config.USART_ParityControl = USART_PARITY_DISABLE;
+
+    USART_Init(pUSART_Handle);
+}
+
+static void USART3_GPIOInit(void){
+
+    GPIO_Handle_t USARTPins;
+
+    memset(&USARTPins, 0, sizeof(USARTPins));
+
+    USARTPins.pGPIOx = GPIOC;
+    USARTPins.GPIO_PinConfig.GPIO_PinMode = GPIO_MODE_ALTFN;
+    USARTPins.GPIO_PinConfig.GPIO_PinOPType = GPIO_OP_TYPE_PP;
+    USARTPins.GPIO_PinConfig.GPIO_PinPuPdControl = GPIO_PIN_PU;
+    USARTPins.GPIO_PinConfig.GPIO_PinSpeed = GPIO_SPEED_FAST;
+    USARTPins.GPIO_PinConfig.GPIO_PinAltFunMode = 7;
+
+    /* USART3 TX */
+    USARTPins.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_10;
+    GPIO_Init(&USARTPins);
+
+    /* USART3 RX */
+    USARTPins.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_11;
+    GPIO_Init(&USARTPins);
 }

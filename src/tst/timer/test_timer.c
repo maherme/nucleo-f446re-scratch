@@ -15,8 +15,6 @@
 *       For further information about functions refer to the corresponding header file.
 **/
 
-#if TEST_TIMER
-
 #include "test.h"
 #include "test_timer.h"
 #include "timer_driver.h"
@@ -26,6 +24,8 @@
 #include "utils.h"
 #include "cortex_m4.h"
 #include <stdio.h>
+
+#if TEST_TIMER
 
 /** @brief Handler structure for Timer peripheral */
 Timer_Handle_t Timer = {0};
@@ -345,4 +345,4 @@ static void SetMCO_LSE(void){
     GPIO_Init(&MCOPin);
 }
 
-#endif
+#endif  /* TEST_TIMER */

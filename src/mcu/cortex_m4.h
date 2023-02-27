@@ -6,9 +6,12 @@
 * Public Functions:
 *       - void IRQConfig(uint8_t IRQNumber, uint8_t en_or_di)
 *       - void IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority)
+*       - void IRQClearPending(uint8_t IRQNumber)
 *       - void Enter_WFI(void)
 *       - void Enter_WFE(void)
 *       - void EnableSleepOnExit(void)
+*       - void EnableSEVONPEND(void)
+*       - void DisableSEVONPEND(void)
 */
 
 #ifndef CORTEX_M4_H
@@ -33,6 +36,11 @@
 #define NVIC_ICER1      ((volatile uint32_t*)0xE000E184)        /**< @brief NVIC ICER1 Register Addr */
 #define NVIC_ICER2      ((volatile uint32_t*)0xE000E188)        /**< @brief NVIC ICER2 Register Addr */
 #define NVIC_ICER3      ((volatile uint32_t*)0xE000E18C)        /**< @brief NVIC ICER3 Register Addr */
+
+#define NVIC_ICPR0      ((volatile uint32_t*)0xE000E280)        /**< @brief NVIC ICPR0 Register Addr */
+#define NVIC_ICPR1      ((volatile uint32_t*)0xE000E284)        /**< @brief NVIC ICPR1 Register Addr */
+#define NVIC_ICPR2      ((volatile uint32_t*)0xE000E288)        /**< @brief NVIC ICPR2 Register Addr */
+#define NVIC_ICPR3      ((volatile uint32_t*)0xE000E28C)        /**< @brief NVIC ICPR3 Register Addr */
 
 #define NVIC_PR_BASEADDR    ((volatile uint32_t*)0xE000E400)    /**< @brief NVIC Priority Register Addr */
 #define SCB_BASEADDR        ((volatile uint32_t*)0xE000E008)    /**< @brief System control block Reg Addr */
@@ -146,6 +154,13 @@ void IRQConfig(uint8_t IRQNumber, uint8_t en_or_di);
 void IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority);
 
 /**
+ * @brief Function to clear the pending bit of the IRQ number.
+ * @param[in] IRQNumber number of the interrupt.
+ * @return void.
+ */
+void IRQClearPending(uint8_t IRQNumber);
+
+/**
  * @brief Function to execute the Wait For Interrupt instruction.
  * @return void.
  */
@@ -168,5 +183,17 @@ __attribute__((always_inline)) static inline void Enter_WFE(void){
  * @return void.
  */
 void EnableSleepOnExit(void);
+
+/**
+ * @brief Function to set SEVONPEND bit in SCR register.
+ * @return void.
+ */
+void EnableSEVONPEND(void);
+
+/**
+ * @brief Function to clear SEVONPEND bit in SCR register.
+ * @return void.
+ */
+void DisableSEVONPEND(void);
 
 #endif /* CORTEX_M4_H */

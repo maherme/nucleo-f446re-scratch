@@ -103,7 +103,8 @@ void test_init(void){
 #endif
 
 #if TEST_PWR
-    Test_SleepOnExit();
+    //Test_SleepOnExit();
+    Test_WFE_init();
 #endif
 }
 
@@ -121,6 +122,10 @@ void test_process(void){
 #if TEST_TIMER
     //Timer2_Process();
     //Timer3_Process();
+#endif
+
+#if TEST_PWR
+    Test_WFE_process();
 #endif
 }
 

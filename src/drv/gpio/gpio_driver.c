@@ -43,18 +43,25 @@ void GPIO_Init(GPIO_Handle_t* pGPIOHandle){
     }
     else{
         /* Interrupt mode */
-        if(pGPIOHandle->GPIO_PinConfig.GPIO_PinMode == GPIO_MODE_IT_FT){
+        if((pGPIOHandle->GPIO_PinConfig.GPIO_PinMode == GPIO_MODE_IT_FT) ||
+           (pGPIOHandle->GPIO_PinConfig.GPIO_PinMode == GPIO_MODE_EV_FT)){
             /* Configure the FTSR */
             EXTI->FTSR |= (1 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);
             /* Clear the corresponding RTSR bit */
             EXTI->RTSR &= ~(1 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);
         }
-        else if(pGPIOHandle->GPIO_PinConfig.GPIO_PinMode == GPIO_MODE_IT_RT){
+        else if((pGPIOHandle->GPIO_PinConfig.GPIO_PinMode == GPIO_MODE_IT_RT) ||
+                (pGPIOHandle->GPIO_PinConfig.GPIO_PinMode == GPIO_MODE_EV_RT)){
+            /* Configure the RTSR */
+            EXTI->RTSR |= (1 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);
+            /* Clear the corresponding FTSR bit */
+            EXTI->FTSR &= ~(1 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);
+        }
+        else if((pGPIOHandle->GPIO_PinConfig.GPIO_PinMode == GPIO_MODE_IT_RFT) ||
+                (pGPIOHandle->GPIO_PinConfig.GPIO_PinMode == GPIO_MODE_EV_RFT)){
             /* Configure both the FTSR and RTSR */
             EXTI->RTSR |= (1 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);
             EXTI->FTSR |= (1 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);
-        }
-        else if(pGPIOHandle->GPIO_PinConfig.GPIO_PinMode == GPIO_MODE_IT_RFT){
         }
 
         /* Configure the GPIO port selection in SYSCFG_EXTICR */
@@ -64,8 +71,14 @@ void GPIO_Init(GPIO_Handle_t* pGPIOHandle){
         SYSCFG_PCLK_EN();
         SYSCFG->EXTICR[temp1] = portcode << (temp2*4);
 
-        /* Enable the EXTI interrupt delivery using IMR */
-        EXTI->IMR |= (1 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);
+        if(pGPIOHandle->GPIO_PinConfig.GPIO_PinMode <= GPIO_MODE_IT_RFT){
+            /* Enable the EXTI interrupt delivery using IMR */
+            EXTI->IMR |= (1 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);
+        }
+        else{
+            /* Enable the EXTI event delivery using EMR */
+            EXTI->EMR |= (1 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);
+        }
     }
 
     temp = 0;
