@@ -7,6 +7,8 @@
 *       - void PWR_SetOverDrive(void)
 *       - void PWR_UnsetOverDrive(void)
 *       - void PWR_SetRegVoltageScal(PWR_RegVoltScal_t reg_volt_scal)
+*       - void PWR_DisableBackupWrProtec(void)
+*       - void PWR_EnableBackupWrProtec(void)
 **/
 
 #ifndef PWR_DRIVER_H
@@ -44,5 +46,17 @@ void PWR_UnsetOverDrive(void);
  * @return void.
  */
 void PWR_SetRegVoltageScal(PWR_RegVoltScal_t reg_volt_scal);
+
+/**
+ * @brief Function to disable the backup domain write protection.
+ * @return void.
+ */
+void PWR_DisableBackupWrProtec(void);
+
+/**
+ * @brief Function to enable the backup domain write protection.
+ * @return void.
+ */
+void PWR_EnableBackupWrProtec(void);
 
 #endif  /* PWR_DRIVER_H */

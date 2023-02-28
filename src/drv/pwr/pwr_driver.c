@@ -7,6 +7,8 @@
 *       - void PWR_SetOverDrive(void)
 *       - void PWR_UnsetOverDrive(void)
 *       - void PWR_SetRegVoltageScal(PWR_RegVoltScal_t reg_volt_scal)
+*       - void PWR_DisableBackupWrProtec(void)
+*       - void PWR_EnableBackupWrProtec(void)
 *
 * @note
 *       For further information about functions refer to the corresponding header file.
@@ -47,4 +49,14 @@ void PWR_SetRegVoltageScal(PWR_RegVoltScal_t reg_volt_scal){
 
     PWR->CR &= ~(0x2 << PWR_CR_VOS);
     PWR->CR |= (reg_volt_scal << PWR_CR_VOS);
+}
+
+void PWR_DisableBackupWrProtec(void){
+
+    PWR->CR |= (1 << PWR_CR_DBP);
+}
+
+void PWR_EnableBackupWrProtec(void){
+
+    PWR->CR &= ~(1 << PWR_CR_DBP);
 }

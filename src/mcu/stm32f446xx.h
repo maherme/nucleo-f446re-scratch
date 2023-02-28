@@ -47,7 +47,7 @@
 #define SRAM                SRAM1_BASEADDR  /**< @brief Base addr of the SRAM memory, size 128KB */
 #define ROM                 0x1FFF0000U     /**< @brief Base addr of system memory or ROM, size 30KB */
 #define BKPSRAM_ENDADDR     0x40024FFFU     /**< @brief End addr of the total backup SRAM, size 4KB */
-#define OTP_BASEADDR        0x1FFF7800      /**< @brief Base addr of One-time programmable bytes */
+#define OTP_BASEADDR        0x1FFF7800U     /**< @brief Base addr of One-time programmable bytes */
 #define OTP_SECTOR_SIZE     32              /**< @brief Size of OTP sector in bytes */
 /** @} */
 
