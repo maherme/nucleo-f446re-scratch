@@ -116,6 +116,8 @@ void Test_WFE_init(void){
     IRQConfig(IRQ_NO_EXTI15_10, DISABLE);
     /* Set SEVONPEND bit in cortex */
     EnableSEVONPEND();
+    /* Set SLEEPDEEP in cortex */
+    EnableSleepDeep();
 }
 
 void Test_WFE_process(void){

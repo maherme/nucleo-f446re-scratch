@@ -10,8 +10,11 @@
 *       - void Enter_WFI(void)
 *       - void Enter_WFE(void)
 *       - void EnableSleepOnExit(void)
+*       - void DisableSleepOnExit(void)
 *       - void EnableSEVONPEND(void)
 *       - void DisableSEVONPEND(void)
+*       - void EnableSleepDeep(void)
+*       - void DisableSleepDeep(void)
 */
 
 #ifndef CORTEX_M4_H
@@ -179,10 +182,16 @@ __attribute__((always_inline)) static inline void Enter_WFE(void){
 }
 
 /**
- * @brief Function to set sleep on exit.
+ * @brief Function to enable sleep on exit.
  * @return void.
  */
 void EnableSleepOnExit(void);
+
+/**
+ * @brief Function to disable sleep on exit.
+ * @return void.
+ */
+void DisableSleepOnExit(void);
 
 /**
  * @brief Function to set SEVONPEND bit in SCR register.
@@ -195,5 +204,17 @@ void EnableSEVONPEND(void);
  * @return void.
  */
 void DisableSEVONPEND(void);
+
+/**
+ * @brief Function to enable deep sleep.
+ * @return void.
+ */
+void EnableSleepDeep(void);
+
+/**
+ * @brief Function to disable deep sleep.
+ * @return void.
+ */
+void DisableSleepDeep(void);
 
 #endif /* CORTEX_M4_H */

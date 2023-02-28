@@ -8,8 +8,11 @@
 *       - void IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority)
 *       - void IRQClearPending(uint8_t IRQNumber)
 *       - void EnableSleepOnExit(void)
+*       - void DisableSleepOnExit(void)
 *       - void EnableSEVONPEND(void)
 *       - void DisableSEVONPEND(void)
+*       - void EnableSleepDeep(void)
+*       - void DisableSleepDeep(void)
 *
 * @note
 *       For further information about functions refer to the corresponding header file.
@@ -90,6 +93,11 @@ void EnableSleepOnExit(void){
     SCB->SCR |= (1 << SCB_SCR_SLEEPONEXIT);
 }
 
+void DisableSleepOnExit(void){
+
+    SCB->SCR &= ~(1 << SCB_SCR_SLEEPONEXIT);
+}
+
 void EnableSEVONPEND(void){
 
     SCB->SCR |= (1 << SCB_SCR_SEVONPEND);
@@ -98,4 +106,14 @@ void EnableSEVONPEND(void){
 void DisableSEVONPEND(void){
 
     SCB->SCR &= ~(1 << SCB_SCR_SEVONPEND);
+}
+
+void EnableSleepDeep(void){
+
+    SCB->SCR |= (1 << SCB_SCR_SLEEPDEPP);
+}
+
+void DisableSleepDeep(void){
+
+    SCB->SCR &= ~(1 << SCB_SCR_SLEEPDEPP);
 }
