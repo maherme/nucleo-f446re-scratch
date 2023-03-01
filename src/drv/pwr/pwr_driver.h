@@ -17,6 +17,10 @@
 *       - void PWR_ClearStandbyFlag(void)
 *       - void PWR_EnableBackupRegulator(void)
 *       - void PWR_DisableBackupRegulator(void)
+*       - void PWR_EnableFLASHPowerDown(uint8_t en_or_di)
+*       - void PWR_EnableUnderDrive(uint8_t en_or_di)
+*       - void PWR_EnableMRUnderDrive(uint8_t en_or_di)
+*       - void PWR_EnterStopMode(PWR_StopMode_t stop_mode, PWR_SleepMode_t sleep_mode)
 **/
 
 #ifndef PWR_DRIVER_H
@@ -42,6 +46,28 @@ typedef enum
     PWR_WKUP1 = 0x00000100,
     PWR_WKUP2 = 0x00000080
 }PWR_WakeupPin_t;
+
+/**
+ * @brief Possible options for entering in stop mode.
+ */
+typedef enum
+{
+    PWR_STOP_MR,        /**< @brief Main regulator ON and flash ON */
+    PWR_STOP_MR_FPD,    /**< @brief Main regulator ON and flash OFF */
+    PWR_STOP_LP,        /**< @brief Low power regulator ON and flash ON */
+    PWR_STOP_LP_FPD,    /**< @brief Low power regulator ON and flash OFF */
+    PWR_STOP_UMR_FPD,   /**< @brief Main regulator ON in under drive mode */
+    PWR_STOP_ULP_FPD,   /**< @brief Low power regulator ON in under drive mode */
+}PWR_StopMode_t;
+
+/**
+ * @brief Possible options for low power when entering in stop mode.
+ */
+typedef enum
+{
+    PWR_STOP_WFI,   /**< @brief Wake for interrupt low power mode */
+    PWR_STOP_WFE    /**< @brief Wafe for event low power mode */
+}PWR_SleepMode_t;
 
 /***********************************************************************************************************/
 /*                                       APIs Supported                                                    */
@@ -130,5 +156,41 @@ void PWR_EnableBackupRegulator(void);
  * @return void.
  */
 void PWR_DisableBackupRegulator(void);
+
+/**
+ * @brief Function to configure the FLASH power down in stop mode.
+ * @param[in] en_or_di for enable or disable.
+ * @return void.
+ */
+void PWR_EnableFLASHPowerDown(uint8_t en_or_di);
+
+/**
+ * @brief Function to configure the under drive in stop mode.
+ * @param[in] en_or_di for enable or disable.
+ * @return void.
+ */
+void PWR_EnableUnderDrive(uint8_t en_or_di);
+
+/**
+ * @brief Function to configure the main regulator in deepsleep under drive mode.
+ * @param[in] en_or_di for enable or disable.
+ * @return void.
+ */
+void PWR_EnableMRUnderDrive(uint8_t en_or_di);
+
+/**
+ * @brief Function to configure the low power regulator in deepsleep under drive mode.
+ * @param[in] en_or_di for enable or disable.
+ * @return void.
+ */
+void PWR_EnableLPRUnderDrive(uint8_t en_or_di);
+
+/**
+ * @brief Function to enter in low power stop mode.
+ * @param[in] stop_mode for selecting the stop operating modes.
+ * @param[in] sleep_mode for selecting the cortex low power mode.
+ * @return void.
+ */
+void PWR_EnterStopMode(PWR_StopMode_t stop_mode, PWR_SleepMode_t sleep_mode);
 
 #endif  /* PWR_DRIVER_H */

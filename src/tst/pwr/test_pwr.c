@@ -10,6 +10,9 @@
 *       - void Test_WFE_process(void)
 *       - void Test_BKRAM_init(void)
 *       - void Test_BKRAM_process(void)
+*       - void Test_StopMode_init(void)
+*       - void Test_StopMode_irq(void)
+*       - void Test_StopMode_process(void)
 *
 * @note
 *       For further information about functions refer to the corresponding header file.
@@ -191,9 +194,36 @@ void Test_BKRAM_process(void){
     while(GPIO_ReadFromInputPin(GPIOC, GPIO_PIN_NO_13) != GPIO_PIN_RESET);
     /* Enable wake up pin 1 (PA0) */
     PWR_EnableWakeupPin(PWR_WKUP1);
+    /* Enable back up regulator for preserving data */
+    PWR_EnableBackupRegulator();
     /* Enter standby mode */
     USART_SendData(&USART3Handle, (uint8_t*)msg_standby, strlen(msg_standby));
     PWR_EnterSTANDBY();
+}
+
+void Test_StopMode_init(void){
+
+    /* Configure USART3 */
+    USART3_GPIOInit();
+    USART3_Init(&USART3Handle);
+    USART_Enable(USART3, ENABLE);
+    /* Enable power peripheral clock */
+    PWR_PCLK_EN();
+}
+
+void Test_StopMode_irq(void){
+
+    const char msg_irq[] = "Exiting from stop mode\n";
+
+    USART_SendData(&USART3Handle, (uint8_t*)msg_irq, strlen(msg_irq));
+}
+
+void Test_StopMode_process(void){
+
+    const char msg_stop[] = "Entering in stop mode\n";
+
+    USART_SendData(&USART3Handle, (uint8_t*)msg_stop, strlen(msg_stop));
+    PWR_EnterStopMode(PWR_STOP_ULP_FPD, PWR_STOP_WFI);
 }
 
 /***********************************************************************************************************/

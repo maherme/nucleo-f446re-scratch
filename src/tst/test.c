@@ -105,7 +105,8 @@ void test_init(void){
 #if TEST_PWR
     //Test_SleepOnExit();
     //Test_WFE_init();
-    Test_BKRAM_init();
+    //Test_BKRAM_init();
+    Test_StopMode_init();
 #endif
 }
 
@@ -127,7 +128,8 @@ void test_process(void){
 
 #if TEST_PWR
     //Test_WFE_process();
-    Test_BKRAM_process();
+    //Test_BKRAM_process();
+    Test_StopMode_process();
 #endif
 }
 
@@ -189,6 +191,7 @@ void EXTI15_10_Handler(void){
 
 #if TEST_PWR
     //Test_PWR_SetPLLMax();
+    Test_StopMode_irq();
 #endif
 
     /* Toggle LED */

@@ -10,6 +10,9 @@
 *       - void Test_WFE_process(void)
 *       - void Test_BKRAM_init(void)
 *       - void Test_BKRAM_process(void)
+*       - void Test_StopMode_init(void)
+*       - void Test_StopMode_irq(void)
+*       - void Test_StopMode_process(void)
 **/
 
 #ifndef TEST_PWR_H
@@ -55,5 +58,23 @@ void Test_BKRAM_init(void);
  * @return void.
  */
 void Test_BKRAM_process(void);
+
+/**
+ * @brief Function to initialize the test for the stop mode.
+ * @return void.
+ */
+void Test_StopMode_init(void);
+
+/**
+ * @brief Function to exit from the stop mode in the test for the stop mode.
+ * @return void.
+ */
+void Test_StopMode_irq(void);
+
+/**
+ * @brief Function to enter in the stop mode in the test for the stop mode.
+ * @return void.
+ */
+void Test_StopMode_process(void);
 
 #endif  /* TEST_PWR_H */
