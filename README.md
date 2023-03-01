@@ -230,7 +230,10 @@ Date: 99-01-01
 ```
 
 ### Test PWR Driver
-You need to set TEST_PWR to 1 in the [test.h](src/tst/test.h) file for enabling the code to test the PWR peripheral driver.  You can use a multimeter connected to the IDD pins in the nucleo board to measure the consumption of the microcontroller. You will need to be cautious if you connect a debug probe to the device, since the debug event can wake up or prevent to enter the device into low power mode; for this reason some traces are printed using the USART3 peripheral.
+You need to set TEST_PWR to 1 in the [test.h](src/tst/test.h) file for enabling the code to test the PWR peripheral driver.  You can use a multimeter connected to the IDD pins in the nucleo board to measure the consumption of the microcontroller. You will need to be cautious if you connect a debug probe to the device, since the debug event can wake up or prevent to enter the device into low power mode; for this reason some traces are printed using the USART3 peripheral.  
+You can follow the connection diagram below for performing these tests:
+
+![Alt text](doc/img/nucleo-pwr-test.png)
 
 The USART3 pins are configured as follow:
 | PIN Functionality      | Nucleo PIN |
