@@ -1609,15 +1609,22 @@ typedef struct
  * @name Clock enable macros for RTC peripheral
  * @{
  */
-#define RTC_PCLK_EN()       (RCC->BDCR |= (1 << 15))    /**< @brief clock enable for RTC */
+#define RTC_PCLK_EN()       (RCC->BDCR |= (1 << 15))    /**< @brief Clock enable for RTC */
 /** @} */
 
 /**
  * @name Clock enable macros for CAN peripheral
  * @{
  */
-#define CAN1_PCLK_EN()      (RCC->APB1ENR |= (1 << 25))     /**< @brief clock enable for CAN1 */
-#define CAN2_PCLK_EN()      (RCC->APB1ENR |= (1 << 26))     /**< @brief clock enable for CAN2 */
+#define CAN1_PCLK_EN()      (RCC->APB1ENR |= (1 << 25))     /**< @brief Clock enable for CAN1 */
+#define CAN2_PCLK_EN()      (RCC->APB1ENR |= (1 << 26))     /**< @brief Clock enable for CAN2 */
+/** @} */
+
+/**
+ * @name Clock enable macros for backup SRAM interface
+ * @{}
+*/
+#define BKPSRAM_PCLK_EN()   (RCC->AHB1ENR |= (1 << 18))     /**< @brief Clock enable for backup SRAM */
 /** @} */
 
 /**
@@ -1727,6 +1734,13 @@ typedef struct
  */
 #define CAN1_PCLK_DI()      (RCC->APB1ENR &= ~(1 << 25))    /**< @brief clock enable for CAN1 */
 #define CAN2_PCLK_DI()      (RCC->APB1ENR &= ~(1 << 26))    /**< @brief clock enable for CAN2 */
+/** @} */
+
+/**
+ * @name Clock disable macros for backup SRAM interface
+ * @{}
+*/
+#define BKPSRAM_PCLK_DI()   (RCC->AHB1ENR &= ~(1 << 18))    /**< @brief Clock disable for backup SRAM */
 /** @} */
 
 /**

@@ -8,6 +8,8 @@
 *       - void Test_SleepOnExit(void)
 *       - void Test_WFE_init(void)
 *       - void Test_WFE_process(void)
+*       - void Test_BKRAM_init(void)
+*       - void Test_BKRAM_process(void)
 **/
 
 #ifndef TEST_PWR_H
@@ -41,5 +43,17 @@ void Test_WFE_init(void);
  * @return void.
  */
 void Test_WFE_process(void);
+
+/**
+ * @brief Function to initialize the test for the backup SRAM interface.
+ * @return void.
+ */
+void Test_BKRAM_init(void);
+
+/**
+ * @brief Function to enter in standby mode for testing the backup SRAM interface.
+ * @return void.
+ */
+void Test_BKRAM_process(void);
 
 #endif  /* TEST_PWR_H */

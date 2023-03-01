@@ -8,6 +8,8 @@
 *       - void Test_SleepOnExit(void)
 *       - void Test_WFE_init(void)
 *       - void Test_WFE_process(void)
+*       - void Test_BKRAM_init(void)
+*       - void Test_BKRAM_process(void)
 *
 * @note
 *       For further information about functions refer to the corresponding header file.
@@ -137,6 +139,63 @@ void Test_WFE_process(void){
     IRQClearPending(IRQ_NO_EXTI15_10);
 }
 
+void Test_BKRAM_init(void){
+
+    const char msg_bksram[] = "Hello";
+    const char msg_wake_standby[] = "Wake up from standby mode\n";
+    const char msg_preserved[] = "Backup SRAM preserved\n";
+    const char msg_not_preserved[] = "Backup SRAM not preserved\n";
+    uint32_t* pBKPSRAM_base = (uint32_t*)BKPSRAM_BASEADDR;
+
+    /* Configure USART3 */
+    USART3_GPIOInit();
+    USART3_Init(&USART3Handle);
+    USART_Enable(USART3, ENABLE);
+    /* Disable IRQ for button */
+    IRQConfig(IRQ_NO_EXTI15_10, DISABLE);
+    /* Enable backup SRAM clock */
+    BKPSRAM_PCLK_EN();
+    /* Enable power peripheral clock and disable write protection */
+    PWR_PCLK_EN();
+    PWR_DisableBackupWrProtec();
+    /* Check if wake up from standby mode */
+    if(PWR_CheckWakeupStandby()){
+        /* Notify the device has been in standby mode */
+        USART_SendData(&USART3Handle, (uint8_t*)msg_wake_standby, strlen(msg_wake_standby));
+        /* Clear wake up flag and standby flag */
+        PWR_ClearWakeupFlag();
+        PWR_ClearStandbyFlag();
+        if(*(pBKPSRAM_base) == 'H'){
+            USART_SendData(&USART3Handle, (uint8_t*)msg_preserved, strlen(msg_preserved));
+        }
+        else{
+            USART_SendData(&USART3Handle, (uint8_t*)msg_not_preserved, strlen(msg_not_preserved));
+        }
+    }
+    else{
+        /* Write some values in the backup SRAM */
+        for(uint8_t i = 0; i < (strlen(msg_bksram) + 1); i++){
+            *(pBKPSRAM_base + i) = msg_bksram[i];
+        }
+    }
+}
+
+void Test_BKRAM_process(void){
+
+    const char msg_start[] = "Press user button for entering standby mode\n";
+    const char msg_standby[] = "Entering in standby mode\n";
+
+    /* Send message for starting the test */
+    USART_SendData(&USART3Handle, (uint8_t*)msg_start, strlen(msg_start));
+    /* While for pressing the user button */
+    while(GPIO_ReadFromInputPin(GPIOC, GPIO_PIN_NO_13) != GPIO_PIN_RESET);
+    /* Enable wake up pin 1 (PA0) */
+    PWR_EnableWakeupPin(PWR_WKUP1);
+    /* Enter standby mode */
+    USART_SendData(&USART3Handle, (uint8_t*)msg_standby, strlen(msg_standby));
+    PWR_EnterSTANDBY();
+}
+
 /***********************************************************************************************************/
 /*                               Weak Function Overwrite Definitions                                       */
 /***********************************************************************************************************/
@@ -191,9 +250,5 @@ static void USART3_GPIOInit(void){
 
     /* USART3 TX */
     USARTPins.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_10;
-    GPIO_Init(&USARTPins);
-
-    /* USART3 RX */
-    USARTPins.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_11;
     GPIO_Init(&USARTPins);
 }

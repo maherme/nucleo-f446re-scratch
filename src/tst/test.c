@@ -104,7 +104,8 @@ void test_init(void){
 
 #if TEST_PWR
     //Test_SleepOnExit();
-    Test_WFE_init();
+    //Test_WFE_init();
+    Test_BKRAM_init();
 #endif
 }
 
@@ -125,7 +126,8 @@ void test_process(void){
 #endif
 
 #if TEST_PWR
-    Test_WFE_process();
+    //Test_WFE_process();
+    Test_BKRAM_process();
 #endif
 }
 
