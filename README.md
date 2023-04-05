@@ -263,3 +263,4 @@ You should get an output like this when the backup regulator is disable:
   Backup SRAM preserved
   Press user button for entering standby mode
   ```
+- If you use the ```Test_StopMode_init```, ```Test_StopMode_process``` and ```Test_StopMode_irq``` functions (uncomment these functions from [test.c](src/tst/test.c) file) the device will enter in stop mode. Depending of your selection when calling the ```PWR_EnterStopMode``` function inside the ```Test_StopMode_process``` function placed in the file [test_pwr.c](src/tst/pwr/test_pwr.c), the device will enter in one of the all possible stop modes (for futher information about this consult the reference manual of the microcontroller).
