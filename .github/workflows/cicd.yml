@@ -1,14 +1,43 @@
-name: build
+name: cicd-pipeline
 
 on: push
 
 jobs:
-  build-job:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
+        with:
+          submodules: 'true'
       - name: Install arm GNU toolchain
         uses: carlosperate/arm-none-eabi-gcc-action@v1
       - run: arm-none-eabi-gcc --version
-      - run: make all
+      - name: Compile cpputest libraries
+        run: make set-test-env QUIET="" MODE=set-test-env
+      - name: Compile project
+        run: make all QUIET="" QUIET_MAKE=""
+      - name: Upload working path as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: working-repo
+          path: .
+
+  unit_test:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: working-repo
+      - name: Install gcovr
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcovr
+      - name: Run unitary testing
+        shell: bash
+        run: |
+          chmod +x build/test/stm32f446xx.elf
+          ./build/test/stm32f446xx.elf
+          make gen-coverage MODE=test QUIET=""

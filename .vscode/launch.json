@@ -6,7 +6,7 @@
     "configurations": [       
         {
             "cwd": "${workspaceFolder}",
-            "executable": "${workspaceRoot}/build/debug/nucleof446re_dbg.elf",
+            "executable": "${workspaceRoot}/build/debug/stm32f446xx.elf",
             "name": "JTAG DEBUGGING ",
             "request": "launch",
             "type": "cortex-debug",

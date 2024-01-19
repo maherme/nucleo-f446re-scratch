@@ -5,7 +5,7 @@
 **/
 
 #include <stdio.h>
-#include "test.h"
+#include "hil.h"
 
 /** @brief Function needed for enabling semihosting */
 extern void initialise_monitor_handles(void);
@@ -16,10 +16,10 @@ int main(void){
 
     printf("Starting program!!!\n");
 
-    test_init();
+    hil_init();
 
     for(;;){
-        test_process();
+        hil_process();
     }
 
     return 0;
