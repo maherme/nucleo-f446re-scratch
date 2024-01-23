@@ -1,5 +1,5 @@
 # NUCLEO-F446RE from Scratch
-[![build](https://github.com/maherme/nucleo-f446re-scratch/actions/workflows/cicd.yml/badge.svg)]
+[![build](https://github.com/maherme/nucleo-f446re-scratch/actions/workflows/cicd.yml/badge.svg)](https://github.com/maherme/nucleo-f446re-scratch/actions)
 
 This is an embedded project for [NUCLEO-F446RE](https://www.st.com/en/evaluation-tools/nucleo-f446re.html) board, based on [STM32F446RE](https://www.st.com/en/microcontrollers-microprocessors/stm32f446re.html) microcontroller.  
 It contains drivers for GPIO, SPI, I2C, USART, RCC, TIMER, DMA, RTC, CAN and PWR peripherals.
