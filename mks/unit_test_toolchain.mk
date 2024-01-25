@@ -19,6 +19,8 @@ export LDFLAGS := -lgcov \
 				  --coverage
 
 GCOVR := gcovr
-GCOVRFLAGS := --html \
-              --html-details \
-              --exclude $(DIR_MCU)
+GCOVRFLAGS = --html-details \
+             --exclude $(DIR_MCU) \
+             -o $(DIR_TEST_COVERAGE)/coverage_report.html \
+             --json-summary \
+             $(DIR_TEST_COVERAGE)/coverage_report.json
