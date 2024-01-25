@@ -1,6 +1,4 @@
 {
-    // See https://go.microsoft.com/fwlink/?LinkId=733558
-    // for the documentation about the tasks.json format
     "version": "2.0.0",
     "tasks": [
         {
@@ -21,24 +19,8 @@
         },
         {
             "type": "shell",
-            "label": "Build Release",
-            "command": "make release",
-            "options": {
-                "cwd": "${workspaceFolder}"
-            },
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "problemMatcher": {
-                "base": "$gcc", 
-                "fileLocation": ["relative", "${workspaceFolder}"]
-            }
-        },
-        {
-            "type": "shell",
             "label": "Build Debug",
-            "command": "make debug",
+            "command": "make MODE=debug",
             "options": {
                 "cwd": "${workspaceFolder}"
             },
@@ -54,7 +36,7 @@
         {
             "type": "shell",
             "label": "Build Library",
-            "command": "make lib",
+            "command": "make",
             "options": {
                 "cwd": "${workspaceFolder}"
             },
@@ -70,11 +52,14 @@
         {
             "type": "shell",
             "label": "Clean All",
-            "command": "make clean",
+            "command": "make clean-all",
             "options": {
                 "cwd": "${workspaceFolder}"
             },
-            "group": "build",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
             "problemMatcher": {
                 "base": "$gcc", 
                 "fileLocation": ["relative", "${workspaceFolder}"]
@@ -87,20 +72,10 @@
             "options": {
                 "cwd": "${workspaceFolder}"
             },
-            "group": "build",
-            "problemMatcher": {
-                "base": "$gcc", 
-                "fileLocation": ["relative", "${workspaceFolder}"]
-            }
-        },
-        {
-            "type": "shell",
-            "label": "Clean Release",
-            "command": "make clean MODE=release",
-            "options": {
-                "cwd": "${workspaceFolder}"
+            "group": {
+                "kind": "build",
+                "isDefault": true
             },
-            "group": "build",
             "problemMatcher": {
                 "base": "$gcc", 
                 "fileLocation": ["relative", "${workspaceFolder}"]
@@ -109,11 +84,14 @@
         {
             "type": "shell",
             "label": "Clean Library",
-            "command": "make clean MODE=lib",
+            "command": "make clean",
             "options": {
                 "cwd": "${workspaceFolder}"
             },
-            "group": "build",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
             "problemMatcher": {
                 "base": "$gcc", 
                 "fileLocation": ["relative", "${workspaceFolder}"]

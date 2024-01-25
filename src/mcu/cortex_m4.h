@@ -169,7 +169,9 @@ void IRQClearPending(uint8_t IRQNumber);
  */
 __attribute__((always_inline)) static inline void Enter_WFI(void){
 
+#ifndef COMPILE_OTHER_PLATFORM
     __asm volatile ("WFI");
+#endif
 }
 
 /**
@@ -178,7 +180,9 @@ __attribute__((always_inline)) static inline void Enter_WFI(void){
  */
 __attribute__((always_inline)) static inline void Enter_WFE(void){
 
+#ifndef COMPILE_OTHER_PLATFORM
     __asm volatile ("WFE");
+#endif
 }
 
 /**

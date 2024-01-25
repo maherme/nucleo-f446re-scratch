@@ -1,103 +1,107 @@
-TARGET_ELF_RELEASE = $(BLD_RELEASE_DIR)/nucleof446re_rel.elf
-TARGET_MAP_RELEASE = $(BLD_RELEASE_DIR)/nucleof446re_rel.map
-TARGET_ELF_DEBUG = $(BLD_DEBUG_DIR)/nucleof446re_dbg.elf
-TARGET_MAP_DEBUG = $(BLD_DEBUG_DIR)/nucleof446re_dbg.map
-TARGET_LIB = $(LIB_DIR)/libstm32f446xx.a
+PROJECT_NAME := stm32f446xx
 
-VPATH = $(shell find ./src/ -type d)
-LIB_DIR = ./lib
-BLD_DIR = ./build
-BLD_RELEASE_DIR = $(BLD_DIR)/release
-BLD_DEBUG_DIR = $(BLD_DIR)/debug
-OBJ_RELEASE_DIR = $(BLD_RELEASE_DIR)/obj
-OBJ_DEBUG_DIR = $(BLD_DEBUG_DIR)/obj
-OBJ_LIB_DIR = $(LIB_DIR)/obj
-LNK_DIR = ./lnk
+export MKDIR := mkdir -p
+export RM := rm -rf
+export QUIET := @
+QUIET_MAKE := --no-print-directory
+# These variable will be filled during the make flow
+DIR_NEEDS :=
 
-INCLUDE = $(VPATH:%=-I%) 
-SOURCES = $(shell find ./src/ -type f -name "*.c")
-OBJECTS = $(notdir $(patsubst %.c, %.o, $(SOURCES)))
-OBJS_DRV = $(notdir $(patsubst %.c, %.o, $(filter ./src/drv/%, $(SOURCES))))
-OBJS_RELEASE = $(addprefix $(OBJ_RELEASE_DIR)/, $(OBJECTS))
-OBJS_DEBUG = $(addprefix $(OBJ_DEBUG_DIR)/, $(filter-out %syscalls.o, $(OBJECTS)))
-OBJS_LIB = $(addprefix $(OBJ_LIB_DIR)/, $(OBJS_DRV))
+include mks/configuration.mk
 
-MODE = all
+ifeq ($(MODE), debug)
+    include mks/cortex_m4_toolchain.mk
+    DIR_TARGET_BUILD := $(DIR_ROOT_BUILD)/debug
+    OBJECTS := $(filter-out syscalls.o,$(OBJ_MAIN)) $(OBJ_MCU) $(OBJ_UTILS)
+    DEPENDENCIES = $(COMPONENTS) $(OBJECTS)
+    CFLAGS += -g
+    LDFLAGS += --specs=rdimon.specs
+    CMD_BUILD = $(CC) $(LDFLAGS) $(DIR_OBJS)/*.o -o $@
+else ifeq ($(MODE), test)
+    include mks/unit_test_toolchain.mk
+    DIR_TARGET_BUILD := $(DIR_ROOT_BUILD)/test
+    DIR_TEST_COVERAGE := $(DIR_TARGET_BUILD)/coverage
+    DIR_NEEDS += $(DIR_TEST_COVERAGE)
+    OBJECTS := $(OBJ_TEST_MAIN) $(OBJ_MCU)
+    DEPENDENCIES = $(COMPONENTS) $(OBJECTS)
+    CFLAGS += --coverage
+    CMD_BUILD = $(CXX) $(LDFLAGS) $(DIR_OBJS)/*.o -o $@ $(LD_LIBRARIES)
+else ifeq ($(MODE), set-test-env)
+    include mks/host_toolchain.mk
+else
+    include mks/cortex_m4_toolchain.mk
+    DIR_TARGET_BUILD := $(DIR_ROOT_BUILD)/lib
+    TARGET := $(DIR_TARGET_BUILD)/lib$(PROJECT_NAME).a
+    DEPENDENCIES = $(COMPONENTS)
+    LDFLAGS += --specs=nano.specs
+    CMD_BUILD = $(AR) -rc $@ $(DIR_OBJS)/*.o && $(CR) $@
+endif
 
-CC = arm-none-eabi-gcc
-AR = arm-none-eabi-ar
-CR = arm-none-eabi-ranlib
-MACH = cortex-m4
-CFLAGS = -c -MD -mcpu=$(MACH) -mthumb -mfloat-abi=soft -std=gnu11 -Wall $(INCLUDE) -O0
-LDFLAGS_RELEASE = -mcpu=$(MACH) -mthumb -mfloat-abi=soft --specs=nano.specs -T $(LNK_DIR)/lk_f446re.ld \
-				  -Wl,-Map=$(TARGET_MAP_RELEASE) -Wl,--print-memory-usage
-LDFLAGS_DEBUG = -mcpu=$(MACH) -mthumb -mfloat-abi=soft --specs=rdimon.specs -T $(LNK_DIR)/lk_f446re.ld \
-				  -Wl,-Map=$(TARGET_MAP_DEBUG) -Wl,--print-memory-usage
+DIR_OBJS := $(DIR_TARGET_BUILD)/obj
+DIR_NEEDS += $(DIR_OBJS)
+OBJECTS := $(addprefix $(DIR_OBJS)/,$(OBJECTS))
+TARGET ?= $(DIR_TARGET_BUILD)/$(PROJECT_NAME).elf
+MAP_FILE := $(DIR_TARGET_BUILD)/$(PROJECT_NAME).map
 
+$(shell $(MKDIR) $(DIR_NEEDS))
 
-$(TARGET_ELF_RELEASE) : CFLAGS += -DRELEASE
-$(TARGET_ELF_RELEASE) : $(OBJS_RELEASE)
-	@mkdir -p $(BLD_DIR)
-	$(CC) $(LDFLAGS_RELEASE) $(OBJS_RELEASE) -o $(TARGET_ELF_RELEASE)
+$(TARGET): $(DEPENDENCIES)
+	$(QUIET) $(CMD_BUILD)
 
-$(TARGET_ELF_DEBUG) : CFLAGS += -DDEBUG -g
-$(TARGET_ELF_DEBUG) : $(OBJS_DEBUG)
-	@mkdir -p $(BLD_DIR)
-	$(CC) $(LDFLAGS_DEBUG) $(OBJS_DEBUG) -o $(TARGET_ELF_DEBUG)
+$(COMPONENTS):
+	$(QUIET) $(MAKE) $(QUIET_MAKE) --directory=$(DIR_DRIVERS)/$@ OUTPUT_DIR=$(DIR_OBJS)
 
-$(TARGET_LIB) : CFLAGS += -DRELEASE
-$(TARGET_LIB) : $(OBJS_LIB)
-	@mkdir -p $(LIB_DIR)
-	$(AR) -rc $@ $+
-	$(CR) $@
+$(DIR_OBJS)/%.o: %.c
+	$(QUIET) $(CC) $(CFLAGS) $< -o $@
 
-$(OBJ_RELEASE_DIR)/%.o : %.c
-	@mkdir -p $(OBJ_RELEASE_DIR)
-	$(CC) $(CFLAGS) $< -o $@
+$(DIR_OBJS)/%.o: %.cpp
+	$(QUIET) $(CC) $(CXXFLAGS) $< -o $@
 
-$(OBJ_DEBUG_DIR)/%.o : %.c
-	@mkdir -p $(OBJ_DEBUG_DIR)
-	$(CC) $(CFLAGS) $< -o $@
+-include $(DIR_OBJS)/*.d
 
-$(OBJ_LIB_DIR)/%.o : %.c
-	@mkdir -p $(OBJ_LIB_DIR)
-	$(CC) $(CFLAGS) $< -o $@
+.PHONY : all
+all: library debug_bin unit_test
 
--include $(OBJ_RELEASE_DIR)/*.d
--include $(OBJ_DEBUG_DIR)/*.d
+.PHONY: library
+library:
+	@echo Generating Library
+	$(QUIET) $(MAKE) $(QUIET_MAKE)
 
-.PHONY all:
-all: $(TARGET_ELF_DEBUG) \
-	 $(TARGET_ELF_RELEASE) \
-	 $(TARGET_LIB)
+.PHONY: debug_bin
+debug_bin:
+	@echo Generating Debug Binary
+	$(QUIET) $(MAKE) $(QUIET_MAKE) MODE=debug
 
-.PHONY : release
-release: $(TARGET_ELF_RELEASE)
+.PHONY: unit_test
+unit_test:
+	@echo Generating Unitary Tests
+	$(QUIET) $(MAKE) $(QUIET_MAKE) MODE=test
 
-.PHONY : debug
-debug: $(TARGET_ELF_DEBUG)
-
-.PHONY : lib
-lib: $(TARGET_LIB)
-
-clean: $(addprefix clean-, $(MODE))
-
-.PHONY : clean-all
+.PHONY: clean-all
 clean-all:
-	@rm -rf $(BLD_DIR) $(LIB_DIR)
+	$(QUIET) $(RM) $(DIR_ROOT_BUILD)
 
-.PHONY : clean-debug
-clean-debug:
-	@rm -rf $(BLD_DEBUG_DIR)
+.PHONY: clean
+clean:
+	$(QUIET) $(RM) $(DIR_TARGET_BUILD)
 
-.PHONY : clean-release
-clean-release:
-	@rm -rf $(BLD_RELEASE_DIR)
-
-.PHONY : clean-lib
-clean-lib:
-	@rm -rf $(LIB_DIR)
-
-.PHONY : load
+.PHONY: load
 load:
 	openocd -f board/st_nucleo_f4.cfg
+
+.PHONY: set-test-env
+set-test-env:
+	$(QUIET) mkdir -p $(DIR_CPPUTEST)/cpputest_build
+	$(QUIET) cd $(DIR_CPPUTEST)/cpputest_build; \
+	$(QUIET) autoreconf .. -i; \
+	$(QUIET) ../configure; \
+	$(QUIET) make
+
+.PHONY: run-test
+run-test: unit_test
+	$(QUIET) $(TARGET)
+	$(QUIET) $(MAKE) $(QUIET_MAKE) gen-coverage
+
+.PHONY: gen-coverage
+gen-coverage:
+	$(QUIET) $(GCOVR) $(GCOVRFLAGS) -o $(DIR_TEST_COVERAGE)/coverage_report.html
